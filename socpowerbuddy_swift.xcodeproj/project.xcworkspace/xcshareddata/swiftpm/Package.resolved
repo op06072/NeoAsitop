@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "pythonkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pvieito/PythonKit.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "060e1c8b0d14e4d241b3623fdbe83d0e3c81a993"
+      }
+    },
+    {
+      "identity" : "swiftshell",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kareman/SwiftShell.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "99680b2efc7c7dbcace1da0b3979d266f02e213c"
+      }
+    }
+  ],
+  "version" : 2
+}

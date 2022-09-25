@@ -6,3 +6,304 @@
 //
 
 import Foundation
+import SwiftShell
+import PythonKit
+
+class renderer {
+    private var dashing: PythonObject?
+    private var ui: PythonObject?
+    
+    init() {
+        let fm = FileManager()
+        let ver = "/Library/Frameworks/Python.framework/Versions/Current"
+        let pylib = ver + "/Python"
+        PythonLibrary.useLibrary(at: pylib)
+        let tui = "dashing"
+        
+        do {
+            try Python.attemptImport(tui)
+        } catch {
+            print("No module named \(tui)")
+            print("Installing \(tui)...")
+            module_install: while true {
+                run(bash: "\(ver)/bin/pip3 install \(tui)")
+                var pysite = try? Python.attemptImport("site")
+                pysite = pysite?.getsitepackages()[0]
+                let modules = try? fm.contentsOfDirectory(atPath: String(pysite!) ?? "")
+                for module in modules! {
+                    if module.contains("dashing") {
+                        break module_install
+                    }
+                }
+            }
+            run(bash: "clear")
+        }
+        self.dashing = try? Python.attemptImport(tui)
+    }
+    
+    func term_layout(sd: static_data, colr: UInt8 = 2) {
+        if sd.fan_exist {
+            self.ui = self.dashing!.VSplit(
+                self.dashing!.VSplit(
+                    self.dashing!.HSplit(
+                        self.dashing!.HGauge(
+                            title: "E-CPU Usage",
+                            val: 0,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "P-CPU Usage",
+                            val: 0,
+                            color: colr
+                        )
+                    ),
+                    self.dashing!.HSplit(
+                        self.dashing!.HGauge(
+                            title: "GPU Usage",
+                            val: 0,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "ANE",
+                            val: 0,
+                            color: colr
+                        )
+                    ),
+                    self.dashing!.HSplit(
+                        self.dashing!.VSplit(
+                            self.dashing!.HGauge(
+                                title: "Fan Speed",
+                                val: 0,
+                                color: colr
+                            ),
+                            self.dashing!.HGauge(
+                                val: 0,
+                                color: colr
+                            )
+                        ),
+                        self.dashing!.VSplit(
+                            self.dashing!.Text(
+                                text: "Left Fan",
+                                color: colr
+                            ),
+                            self.dashing!.Text(
+                                text: "Right Fan",
+                                color: colr
+                            ),
+                            title: " "
+                        )
+                    ),
+                    title: "Processor Utilization",
+                    //color: colr
+                    border_color: colr
+                ),
+                self.dashing!.VSplit(
+                    self.dashing!.HGauge(
+                        title: "RAM Usage",
+                        val: 0,
+                        color: colr
+                    ),
+                    self.dashing!.HSplit(
+                        self.dashing!.HGauge(
+                            title: "E-CPU B/W",
+                            val: 50,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "P-CPU B/W",
+                            val: 50,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "GPU B/W",
+                            val: 50,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "Media B/W",
+                            val: 50,
+                            color: colr
+                        ),
+                        title: "Memory Bandwidth"
+                    ),
+                    title: "Memory",
+                    //color: colr
+                    border_color: colr
+                ),
+                self.dashing!.HSplit(
+                    self.dashing!.HChart(
+                        title: "CPU Power",
+                        color: colr
+                    ),
+                    self.dashing!.HChart(
+                        title: "GPU Power",
+                        color: colr
+                    ),
+                    title: "Power Chart",
+                    //color: colr
+                    border_color: colr
+                )
+            )
+        } else {
+            self.ui = self.dashing!.VSplit(
+                self.dashing!.VSplit(
+                    self.dashing!.HSplit(
+                        self.dashing!.HGauge(
+                            title: "E-CPU Usage",
+                            val: 0,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "P-CPU Usage",
+                            val: 0,
+                            color: colr
+                        )
+                    ),
+                    self.dashing!.HSplit(
+                        self.dashing!.HGauge(
+                            title: "GPU Usage",
+                            val: 0,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "ANE",
+                            val: 0,
+                            color: colr
+                        )
+                    ),
+                    title: "Processor Utilization",
+                    //color: colr
+                    border_color: colr
+                ),
+                self.dashing!.VSplit(
+                    self.dashing!.HGauge(
+                        title: "RAM Usage",
+                        val: 0,
+                        color: colr
+                    ),
+                    self.dashing!.HSplit(
+                        self.dashing!.HGauge(
+                            title: "E-CPU B/W",
+                            val: 50,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "P-CPU B/W",
+                            val: 50,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "GPU B/W",
+                            val: 50,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            title: "Media B/W",
+                            val: 50,
+                            color: colr
+                        ),
+                        title: "Memory Bandwidth"
+                    ),
+                    title: "Memory",
+                    //color: colr
+                    border_color: colr
+                ),
+                self.dashing!.HSplit(
+                    self.dashing!.HChart(
+                        title: "CPU Power",
+                        color: colr
+                    ),
+                    self.dashing!.HChart(
+                        title: "GPU Power",
+                        color: colr
+                    ),
+                    title: "Power Chart",
+                    //color: colr
+                    border_color: colr
+                )
+            )
+        }
+        
+        
+        var cpu_title = sd.extra[0]
+        if case let mode = sd.extra[sd.extra.count-1], mode == "Apple" || mode == "Rosetta 2" {
+            if mode == "Apple" {
+                cpu_title += " (cores: \(sd.core_ep_counts[0])E+\(sd.core_ep_counts[1])P+"
+            } else if mode == "Rosetta 2" {
+                cpu_title += "[Rosetta 2] (cores: \(sd.core_ep_counts.reduce(0,+))C+"
+            }
+            cpu_title += "\(sd.gpu_core_count)GPU+\(sd.ram_capacity)GB)"
+        }
+        
+        self.ui!.items[0].title = PythonObject(cpu_title)
+        // self.ui!.display()
+    }
+    
+    func term_rendering(sd: static_data, vd: variating_data, rvd: render_value_data, colr: UInt8 = 2) {
+        let usage_gauges = self.ui!.items[0]
+        let memory_gauges = self.ui!.items[1]
+        let power_charts = self.ui!.items[2]
+        
+        let cpu_gauges = usage_gauges.items[0]
+        let cpu1_gauge = cpu_gauges.items[0]
+        let cpu2_gauge = cpu_gauges.items[1]
+        
+        let acc_gauges = usage_gauges.items[1]
+        let gpu_gauge = acc_gauges.items[0]
+        let ane_gauge = acc_gauges.items[1]
+        
+        if sd.fan_exist {
+            let fan_gauges = usage_gauges.items[2]
+            let fan_gauge = fan_gauges.items[0]
+            let fan_label = fan_gauges.items[1]
+            let lfan_gauge = fan_gauge.items[0]
+            let rfan_gauge = fan_gauge.items[1]
+            let lfan_label = fan_label.items[0]
+            let rfan_label = fan_label.items[1]
+            
+            lfan_gauge.title = rvd.lfan.title
+            lfan_gauge.value = rvd.lfan.val
+            rfan_gauge.value = rvd.rfan.val
+            lfan_label.text = rvd.lf_label
+            rfan_label.text = rvd.rf_label
+        }
+        
+        let ram_gauges = memory_gauges.items[0]
+        
+        let bw_gauges = memory_gauges.items[1]
+        let ecpu_bw_gauges = bw_gauges.items[0]
+        let pcpu_bw_gauges = bw_gauges.items[1]
+        let gpu_bw_gauges = bw_gauges.items[2]
+        let media_bw_gauges = bw_gauges.items[3]
+        
+        var cpu_power_chart = power_charts.items[0]
+        var gpu_power_chart = power_charts.items[1]
+        
+        cpu1_gauge.title = rvd.ecpu.title
+        cpu1_gauge.value = rvd.ecpu.val
+        cpu2_gauge.title = rvd.pcpu.title
+        cpu2_gauge.value = rvd.pcpu.val
+        gpu_gauge.title = rvd.gpu.title
+        gpu_gauge.value = rvd.gpu.val
+        ane_gauge.title = rvd.ane.title
+        ane_gauge.value = rvd.ane.val
+        ram_gauges.title = rvd.ram.title
+        ram_gauges.value = rvd.ram.val
+        ecpu_bw_gauges.title = rvd.ecpu_bw.title
+        ecpu_bw_gauges.value = rvd.ecpu_bw.val
+        pcpu_bw_gauges.title = rvd.pcpu_bw.title
+        pcpu_bw_gauges.value = rvd.pcpu_bw.val
+        gpu_bw_gauges.title = rvd.gpu_bw.title
+        gpu_bw_gauges.value = rvd.gpu_bw.val
+        media_bw_gauges.title = rvd.media_bw.title
+        media_bw_gauges.value = rvd.media_bw.val
+        bw_gauges.title = rvd.total_bw
+        power_charts.title = rvd.system_pwr
+        cpu_power_chart.title = rvd.cpu_pwr.title
+        cpu_power_chart.append(rvd.cpu_pwr.val)
+        gpu_power_chart.title = rvd.gpu_pwr.title
+        gpu_power_chart.append(rvd.gpu_pwr.val)
+        
+        self.ui!.display()
+    }
+}

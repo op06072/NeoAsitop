@@ -8,5 +8,7 @@
 #ifndef socpowerbuddy_bridge_h
 #define socpowerbuddy_bridge_h
 
+#import "socpwrbud.h"
+
 
 #endif /* socpowerbuddy_bridge_h */

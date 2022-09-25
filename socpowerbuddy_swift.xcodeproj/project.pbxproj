@@ -7,7 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A238E8928D2FBD60033A580 /* sampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238E8828D2FBD60033A580 /* sampler.swift */; };
+		3A238EE728D5BED50033A580 /* SystemKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EE628D5BED50033A580 /* SystemKit.swift */; };
+		3A238EE928D5BF410033A580 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EE828D5BF410033A580 /* Logger.swift */; };
+		3A238EEB28D5BFC10033A580 /* helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EEA28D5BFC10033A580 /* helper.swift */; };
+		3A238EEF28D5C1F20033A580 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EEE28D5C1F20033A580 /* Types.swift */; };
+		3A238EF128D5C2AA0033A580 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EF028D5C2AA0033A580 /* extensions.swift */; };
+		3A238EF328D5C64D0033A580 /* smc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EF228D5C64D0033A580 /* smc.swift */; };
+		3A238EF528D5C6710033A580 /* readers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EF428D5C6710033A580 /* readers.swift */; };
+		3A238EF728D5C6910033A580 /* values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EF628D5C6910033A580 /* values.swift */; };
+		3A238EF928D5C8210033A580 /* reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EF828D5C8210033A580 /* reader.swift */; };
+		3A238EFB28D5C9360033A580 /* Sensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EFA28D5C9360033A580 /* Sensors.swift */; };
+		3A238EFD28D5C9B70033A580 /* Module.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EFC28D5C9B70033A580 /* Module.swift */; };
+		3A238F0128D5CCEF0033A580 /* Repeater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238F0028D5CCEF0033A580 /* Repeater.swift */; };
+		3A3DA87E28DC91C000BFEFAC /* render.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3DA87D28DC91C000BFEFAC /* render.swift */; };
+		3A3DA88128DC920A00BFEFAC /* SwiftShell in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA88028DC920A00BFEFAC /* SwiftShell */; };
+		3A3DA88428DC922000BFEFAC /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA88328DC922000BFEFAC /* PythonKit */; };
+		3A3DA88628DEDC5B00BFEFAC /* util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3DA88528DEDC5B00BFEFAC /* util.swift */; };
 		3A9A722C28D15EBB0021E6F1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A722B28D15EBB0021E6F1 /* main.swift */; };
+		3A9A723328D15F5C0021E6F1 /* static.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A723228D15F5C0021E6F1 /* static.swift */; };
+		3AF36E0C28D21A6B00DA3EB3 /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
+		3AF36E0E28D2ACCC00DA3EB3 /* head.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36E0D28D2ACCC00DA3EB3 /* head.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +43,29 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3A238E8828D2FBD60033A580 /* sampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sampler.swift; sourceTree = "<group>"; };
+		3A238EE628D5BED50033A580 /* SystemKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemKit.swift; sourceTree = "<group>"; };
+		3A238EE828D5BF410033A580 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		3A238EEA28D5BFC10033A580 /* helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helper.swift; sourceTree = "<group>"; };
+		3A238EEE28D5C1F20033A580 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
+		3A238EF028D5C2AA0033A580 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
+		3A238EF228D5C64D0033A580 /* smc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = smc.swift; sourceTree = "<group>"; };
+		3A238EF428D5C6710033A580 /* readers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = readers.swift; sourceTree = "<group>"; };
+		3A238EF628D5C6910033A580 /* values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = values.swift; sourceTree = "<group>"; };
+		3A238EF828D5C8210033A580 /* reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = reader.swift; sourceTree = "<group>"; };
+		3A238EFA28D5C9360033A580 /* Sensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sensors.swift; sourceTree = "<group>"; };
+		3A238EFC28D5C9B70033A580 /* Module.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Module.swift; sourceTree = "<group>"; };
+		3A238F0028D5CCEF0033A580 /* Repeater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repeater.swift; sourceTree = "<group>"; };
+		3A238F0228D5E32F0033A580 /* License */ = {isa = PBXFileReference; lastKnownFileType = text; path = License; sourceTree = "<group>"; };
+		3A3DA87D28DC91C000BFEFAC /* render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = render.swift; sourceTree = "<group>"; tabWidth = 5; };
+		3A3DA88528DEDC5B00BFEFAC /* util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = util.swift; sourceTree = "<group>"; };
 		3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = socpowerbuddy_swift; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A9A722B28D15EBB0021E6F1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		3A9A723228D15F5C0021E6F1 /* static.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = static.swift; sourceTree = "<group>"; };
+		3AF36E0728D216A800DA3EB3 /* socpwrbud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = socpwrbud.h; sourceTree = "<group>"; };
+		3AF36E0828D2174A00DA3EB3 /* socpowerbuddy_bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = socpowerbuddy_bridge.h; sourceTree = "<group>"; };
+		3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libIOReport.tbd; path = usr/lib/libIOReport.tbd; sourceTree = SDKROOT; };
+		3AF36E0D28D2ACCC00DA3EB3 /* head.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = head.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +73,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AF36E0C28D21A6B00DA3EB3 /* libIOReport.tbd in Frameworks */,
+				3A3DA88128DC920A00BFEFAC /* SwiftShell in Frameworks */,
+				3A3DA88428DC922000BFEFAC /* PythonKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,8 +85,10 @@
 		3A9A721F28D15EBB0021E6F1 = {
 			isa = PBXGroup;
 			children = (
+				3A238F0228D5E32F0033A580 /* License */,
 				3A9A722A28D15EBB0021E6F1 /* socpowerbuddy_swift */,
 				3A9A722928D15EBB0021E6F1 /* Products */,
+				3AF36E0928D21A3600DA3EB3 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,8 +104,35 @@
 			isa = PBXGroup;
 			children = (
 				3A9A722B28D15EBB0021E6F1 /* main.swift */,
+				3A9A723228D15F5C0021E6F1 /* static.swift */,
+				3AF36E0728D216A800DA3EB3 /* socpwrbud.h */,
+				3AF36E0828D2174A00DA3EB3 /* socpowerbuddy_bridge.h */,
+				3AF36E0D28D2ACCC00DA3EB3 /* head.swift */,
+				3A238E8828D2FBD60033A580 /* sampler.swift */,
+				3A238EE628D5BED50033A580 /* SystemKit.swift */,
+				3A238EE828D5BF410033A580 /* Logger.swift */,
+				3A238EEA28D5BFC10033A580 /* helper.swift */,
+				3A238EEE28D5C1F20033A580 /* Types.swift */,
+				3A238EF028D5C2AA0033A580 /* extensions.swift */,
+				3A238EF228D5C64D0033A580 /* smc.swift */,
+				3A238EF428D5C6710033A580 /* readers.swift */,
+				3A238EF628D5C6910033A580 /* values.swift */,
+				3A238EF828D5C8210033A580 /* reader.swift */,
+				3A238EFA28D5C9360033A580 /* Sensors.swift */,
+				3A238EFC28D5C9B70033A580 /* Module.swift */,
+				3A238F0028D5CCEF0033A580 /* Repeater.swift */,
+				3A3DA87D28DC91C000BFEFAC /* render.swift */,
+				3A3DA88528DEDC5B00BFEFAC /* util.swift */,
 			);
 			path = socpowerbuddy_swift;
+			sourceTree = "<group>";
+		};
+		3AF36E0928D21A3600DA3EB3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -78,6 +151,10 @@
 			dependencies = (
 			);
 			name = socpowerbuddy_swift;
+			packageProductDependencies = (
+				3A3DA88028DC920A00BFEFAC /* SwiftShell */,
+				3A3DA88328DC922000BFEFAC /* PythonKit */,
+			);
 			productName = socpowerbuddy_swift;
 			productReference = 3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */;
 			productType = "com.apple.product-type.tool";
@@ -106,6 +183,10 @@
 				Base,
 			);
 			mainGroup = 3A9A721F28D15EBB0021E6F1;
+			packageReferences = (
+				3A3DA87F28DC920A00BFEFAC /* XCRemoteSwiftPackageReference "SwiftShell" */,
+				3A3DA88228DC922000BFEFAC /* XCRemoteSwiftPackageReference "PythonKit" */,
+			);
 			productRefGroup = 3A9A722928D15EBB0021E6F1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -120,7 +201,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A238E8928D2FBD60033A580 /* sampler.swift in Sources */,
+				3A238F0128D5CCEF0033A580 /* Repeater.swift in Sources */,
+				3A238EE928D5BF410033A580 /* Logger.swift in Sources */,
+				3A3DA88628DEDC5B00BFEFAC /* util.swift in Sources */,
+				3A238EEB28D5BFC10033A580 /* helper.swift in Sources */,
+				3A238EF528D5C6710033A580 /* readers.swift in Sources */,
+				3A3DA87E28DC91C000BFEFAC /* render.swift in Sources */,
+				3A238EF328D5C64D0033A580 /* smc.swift in Sources */,
+				3A238EEF28D5C1F20033A580 /* Types.swift in Sources */,
+				3AF36E0E28D2ACCC00DA3EB3 /* head.swift in Sources */,
+				3A238EF128D5C2AA0033A580 /* extensions.swift in Sources */,
+				3A238EFD28D5C9B70033A580 /* Module.swift in Sources */,
+				3A238EE728D5BED50033A580 /* SystemKit.swift in Sources */,
 				3A9A722C28D15EBB0021E6F1 /* main.swift in Sources */,
+				3A238EF928D5C8210033A580 /* reader.swift in Sources */,
+				3A9A723328D15F5C0021E6F1 /* static.swift in Sources */,
+				3A238EF728D5C6910033A580 /* values.swift in Sources */,
+				3A238EFB28D5C9360033A580 /* Sensors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,6 +281,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = socpowerbuddy_bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -245,8 +344,9 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YWGL7275TN;
-				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = socpowerbuddy_swift/socpowerbuddy_bridge.h;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -256,8 +356,9 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YWGL7275TN;
-				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = socpowerbuddy_swift/socpowerbuddy_bridge.h;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -284,6 +385,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3A3DA87F28DC920A00BFEFAC /* XCRemoteSwiftPackageReference "SwiftShell" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kareman/SwiftShell.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		3A3DA88228DC922000BFEFAC /* XCRemoteSwiftPackageReference "PythonKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pvieito/PythonKit.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3A3DA88028DC920A00BFEFAC /* SwiftShell */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3A3DA87F28DC920A00BFEFAC /* XCRemoteSwiftPackageReference "SwiftShell" */;
+			productName = SwiftShell;
+		};
+		3A3DA88328DC922000BFEFAC /* PythonKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3A3DA88228DC922000BFEFAC /* XCRemoteSwiftPackageReference "PythonKit" */;
+			productName = PythonKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3A9A722028D15EBB0021E6F1 /* Project object */;
 }

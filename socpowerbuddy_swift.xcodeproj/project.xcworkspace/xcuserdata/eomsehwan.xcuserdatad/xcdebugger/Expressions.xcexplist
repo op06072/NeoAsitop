@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "generateCoreCounts(sd:):static.swift">
+      </ContextState>
+      <ContextState
+         contextName = "generateSiliconsIds(sd:):static.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "&amp;servicedict">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "generateDvfmTable(sd:):static.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "serviceDict[&quot;voltage-states1-sram&quot;]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in :main.swift">
+      </ContextState>
+      <ContextState
+         contextName = "generateProcessorName(sd:):static.swift">
+      </ContextState>
+      <ContextState
+         contextName = "main:main.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "ttmp">
+            </PersistentString>
+            <PersistentString
+               value = "vd">
+            </PersistentString>
+            <PersistentString
+               value = "tmp_report">
+            </PersistentString>
+            <PersistentString
+               value = "sd">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "generateMicroArchs(sd:):static.swift">
+      </ContextState>
+      <ContextState
+         contextName = "sample(iorep:sd:vd:cmd:):sampler.swift">
+      </ContextState>
+      <ContextState
+         contextName = "format(sd:vd:):sampler.swift">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
