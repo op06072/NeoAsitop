@@ -4,3 +4,7 @@ SMC/
 Kit/
 
 .idea/
+
+build/
+
+KitTests/
