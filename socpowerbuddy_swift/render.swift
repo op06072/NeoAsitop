@@ -72,14 +72,14 @@ class renderer {
                     self.dashing!.HSplit(
                         self.dashing!.VSplit(
                             self.dashing!.HGauge(
-                                title: "Fan Speed",
                                 val: 0,
                                 color: colr
                             ),
                             self.dashing!.HGauge(
                                 val: 0,
                                 color: colr
-                            )
+                            ),
+                            title: "Fan Speed"
                         ),
                         self.dashing!.VSplit(
                             self.dashing!.Text(
@@ -254,7 +254,7 @@ class renderer {
             let lfan_label = fan_label.items[0]
             let rfan_label = fan_label.items[1]
             
-            lfan_gauge.title = rvd.lfan.title
+            fan_gauge.title = rvd.lfan.title
             lfan_gauge.value = rvd.lfan.val
             rfan_gauge.value = rvd.rfan.val
             lfan_label.text = rvd.lf_label
