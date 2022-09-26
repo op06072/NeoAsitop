@@ -2,7 +2,7 @@
 
 Sudoless performance monitoring CLI tool for Apple Silicon
 
-![](images/neoasitop.png)
+![](image/neoasitop.png)
 
 ## What is `neoasitop`
 
