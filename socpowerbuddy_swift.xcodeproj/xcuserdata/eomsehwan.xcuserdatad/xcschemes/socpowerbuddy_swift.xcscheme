@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   version = "1.3">
+   <BuildAction>
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForRunning = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3A9A722728D15EBB0021E6F1"
+               BuildableName = "socpowerbuddy_swift"
+               BlueprintName = "socpowerbuddy_swift"
+               ReferencedContainer = "container:socpowerbuddy_swift.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <LaunchAction
+      useCustomWorkingDirectory = "NO"
+      buildConfiguration = "Debug"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "3A9A722728D15EBB0021E6F1"
+            BuildableName = "socpowerbuddy_swift"
+            BlueprintName = "socpowerbuddy_swift"
+            ReferencedContainer = "container:socpowerbuddy_swift.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </LaunchAction>
+</Scheme>
