@@ -51,13 +51,13 @@ struct static_data {
 }
 
 struct variating_data {
-    var cluster_residencies: Array<Array<Any>> = []
+    var cluster_residencies: Array<Array<Float>> = []
     var cluster_pwrs: Array<Any> = []
     var cluster_freqs: Array<Float> = []
     var cluster_use: Array<Float> = []
     var cluster_sums: Array<UInt64> = []
     var core_pwrs: Array<Array<Any>> = []
-    var core_residencies: Array<Array<Array<Any>>> = []
+    var core_residencies: Array<Array<Array<Float>>> = []
     var core_freqs: Array<Array<Float>> = []
     var core_use: Array<Array<Any>> = []
     var core_sums: Array<Array<UInt64>> = []
@@ -78,18 +78,8 @@ struct variating_data {
 }
 
 struct cmd_data {
-    var power_measure: Float = 0
-    var freq_measure: Float = 0
-    var power_measure_un: String = ""
-    var freq_measure_un: String = ""
-    
     var interval: Double = 0
     var samples: Int = 0
-    var metrics: Array<String?> = []
-    var hide_units: Array<String> = []
-    
-    var plist: Bool = false
-    var file_out: UnsafeMutablePointer<FILE>? = nil
 }
 
 struct core_data {
@@ -110,6 +100,11 @@ struct render_value {
     var val: PythonObject = PythonObject(0)
 }
 
+struct chart_render_value {
+    var title: PythonObject = PythonObject("")
+    var val: PythonObject = PythonObject([])
+}
+
 struct render_value_data {
     var ecpu = render_value()
     var pcpu = render_value()
@@ -126,8 +121,16 @@ struct render_value_data {
     var media_bw = render_value()
     var total_bw = PythonObject("")
     var system_pwr = PythonObject("")
-    var cpu_pwr = render_value()
-    var gpu_pwr = render_value()
+    var cpu_pwr = chart_render_value()
+    var gpu_pwr = chart_render_value()
+    
+    var sys_pwr_max: Double = 0
+    var cpu_pwr_max: Float = 0
+    var gpu_pwr_max: Float = 0
+    
+    var sys_pwr_avg = PythonObject([])
+    var cpu_pwr_avg = PythonObject([])
+    var gpu_pwr_avg = PythonObject([])
 }
 
 struct mem_info {

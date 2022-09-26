@@ -74,7 +74,7 @@ func sample(iorep: iorep_data,
                         if chann_name == sd.complex_freq_channels[ii] {
                             if idx_name!.contains(ptype_state) || idx_name!.contains(vtype_state) {
                                 vd.cluster_sums[ii] += residency
-                                vd.cluster_residencies[ii].append(residency)
+                                vd.cluster_residencies[ii].append(Float(residency))
                             } else if idx_name!.contains(idletype_state) || idx_name!.contains(offtype_state) {
                                 vd.cluster_use[ii] = Float(residency)
                             }
@@ -85,7 +85,7 @@ func sample(iorep: iorep_data,
                                 if chann_name == String(format: "%@%d", sd.core_freq_channels[ii], iii) {
                                     if idx_name!.contains(ptype_state) || idx_name!.contains(vtype_state) {
                                         vd.core_sums[ii][iii] += residency
-                                        vd.core_residencies[ii][iii].append(residency)
+                                        vd.core_residencies[ii][iii].append(Float(residency))
                                     } else if idx_name!.contains(idletype_state) || idx_name!.contains(offtype_state) {
                                         vd.core_use[ii][iii] = residency
                                     }
@@ -214,7 +214,7 @@ func getSensorVal(vd: inout variating_data, set_mode: Bool = false, sd: inout st
         } else if sns.type == SensorType.fan {
             vd.fan_speed[sns.name] = sns.value
             if sns.name != "Fastest Fan" {
-                var tmp = sns as! Fan
+                let tmp = sns as! Fan
                 if set_mode {
                     if sns.name == "Left fan" {
                         sd.fan_limit[0][0] = tmp.minSpeed
@@ -287,16 +287,16 @@ func format(sd: inout static_data, vd: inout variating_data) {
     
     for i in 0..<sd.complex_freq_channels.count {
         for ii in 0..<vd.cluster_residencies[i].count {
-            let res = vd.cluster_residencies[i][ii] as! UInt64
+            let res = vd.cluster_residencies[i][ii]
             if res != 0 {
-                let perc = Float(res)/Float(vd.cluster_sums[i])
+                let perc = res/Float(vd.cluster_sums[i])
                 vd.cluster_freqs[i] += Float(sd.dvfm_states[i][ii])*perc
                 vd.cluster_residencies[i][ii] = perc
             }
             
             if i <= sd.cluster_core_counts.count-1 {
                 for iii in 0..<Int(sd.cluster_core_counts[i]) {
-                    let core_res = vd.core_residencies[i][iii][ii] as! UInt64
+                    let core_res = vd.core_residencies[i][iii][ii]
                     if core_res != 0 {
                         let core_perc = Float(core_res) / Float(vd.core_sums[i][iii])
                         vd.core_freqs[i][iii] += Float(sd.dvfm_states[i][ii])*core_perc
@@ -336,7 +336,8 @@ func format(sd: inout static_data, vd: inout variating_data) {
     }
 }
 
-func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: inout render_value_data) {
+func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: inout render_value_data, opt: [Double]) {
+    let average = Int(opt[0])
     var cores = [0, 0]
     for key in vd.soc_temp.keys {
         if key.contains("efficiency core") {
@@ -402,11 +403,17 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             ane_value = vd.cluster_pwrs[i] as! Float / 1024
         }
     }
-    rvd.ane.title = PythonObject(String(format:"ANE Usage: %.1f%% @ %.1f W", (ane_value/sd.max_pwr[2]*100), (ane_value)))
-    rvd.ane.val = PythonObject(ane_value/sd.max_pwr[2]*100)
+    rvd.ane.title = PythonObject(
+        String(
+            format:"ANE Usage: %.1f%% @ %.1f W",
+            (ane_value/sd.max_pwr[2]*100),
+            (ane_value/Float(interval))
+        )
+    )
+    rvd.ane.val = PythonObject(ane_value/sd.max_pwr[2]/Float(interval)*100)
     
-    var left_ratio = (vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])
-    var right_ratio = (vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])
+    var left_ratio = (vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100
+    var right_ratio = (vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])*100
     
     if left_ratio < 0 {
         left_ratio = 0
@@ -415,9 +422,15 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         right_ratio = 0
     }
     
-    rvd.lfan.title = PythonObject(String(format:"Fan Usage: %.2f%% & %.2f%%", left_ratio, right_ratio))
-    rvd.lfan.val = PythonObject((vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0]))
-    rvd.rfan.val = PythonObject((vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0]))
+    rvd.lfan.title = PythonObject(
+        String(
+            format:"Fan Usage: %.2f%% & %.2f%%",
+            left_ratio,
+            right_ratio
+        )
+    )
+    rvd.lfan.val = PythonObject((vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100)
+    rvd.rfan.val = PythonObject((vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])*100)
     rvd.lf_label = PythonObject(
         String(
             format:"Left Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow left"]!
@@ -450,64 +463,74 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     }
     rvd.ram.val = PythonObject(Int(vd.mem_percent))
     
-    let ecpu_total_bw = vd.bandwidth_cnt["ecpu dcs"]![0]+vd.bandwidth_cnt["ecpu dcs"]![1]
+    let ecpu_total_bw = (vd.bandwidth_cnt["ecpu dcs"]![0]+vd.bandwidth_cnt["ecpu dcs"]![1])/interval
     rvd.ecpu_bw.title = PythonObject(
         String(
             format: "E-CPU: %.2f GB/s (R:%.2f GB/s W:%.2f GB/s)",
             ecpu_total_bw,
-            vd.bandwidth_cnt["ecpu dcs"]![0],
-            vd.bandwidth_cnt["ecpu dcs"]![1]
+            vd.bandwidth_cnt["ecpu dcs"]![0]/interval,
+            vd.bandwidth_cnt["ecpu dcs"]![1]/interval
         )
     )
-    rvd.ecpu_bw.val = PythonObject(ecpu_total_bw/Double(sd.max_bw[0])*100)
+    rvd.ecpu_bw.val = PythonObject(ecpu_total_bw/Double(sd.max_bw[0])/interval*100)
     
-    let pcpu_total_bw = vd.bandwidth_cnt["pcpu dcs"]![0]+vd.bandwidth_cnt["pcpu dcs"]![1]
+    let pcpu_total_bw = (vd.bandwidth_cnt["pcpu dcs"]![0]+vd.bandwidth_cnt["pcpu dcs"]![1])/interval
     rvd.pcpu_bw.title = PythonObject(
         String(
             format: "P-CPU: %.2f GB/s (R:%.2f GB/s W:%.2f GB/s)",
             pcpu_total_bw,
-            vd.bandwidth_cnt["pcpu dcs"]![0],
-            vd.bandwidth_cnt["pcpu dcs"]![1]
+            vd.bandwidth_cnt["pcpu dcs"]![0]/interval,
+            vd.bandwidth_cnt["pcpu dcs"]![1]/interval
         )
     )
-    rvd.pcpu_bw.val = PythonObject(pcpu_total_bw/Double(sd.max_bw[0])*100)
+    rvd.pcpu_bw.val = PythonObject(pcpu_total_bw/Double(sd.max_bw[0])/interval*100)
     
-    let gpu_total_bw = vd.bandwidth_cnt["gfx dcs"]![0]+vd.bandwidth_cnt["gfx dcs"]![1]
+    let gpu_total_bw = (vd.bandwidth_cnt["gfx dcs"]![0]+vd.bandwidth_cnt["gfx dcs"]![1])/interval
     rvd.gpu_bw.title = PythonObject(
         String(
             format: "GPU: %.3f GB/s (R:%.3f GB/s W:%.3f GB/s)",
             gpu_total_bw,
-            vd.bandwidth_cnt["gfx dcs"]![0],
-            vd.bandwidth_cnt["gfx dcs"]![1]
+            vd.bandwidth_cnt["gfx dcs"]![0]/interval,
+            vd.bandwidth_cnt["gfx dcs"]![1]/interval
         )
     )
-    rvd.gpu_bw.val = PythonObject(gpu_total_bw/Double(sd.max_bw[1])*100)
+    rvd.gpu_bw.val = PythonObject(gpu_total_bw/Double(sd.max_bw[1])/interval*100)
     
-    let media_total_bw = vd.bandwidth_cnt["media dcs"]![0]+vd.bandwidth_cnt["media dcs"]![1]
+    let media_total_bw = (vd.bandwidth_cnt["media dcs"]![0]+vd.bandwidth_cnt["media dcs"]![1])/interval
     rvd.media_bw.title = PythonObject(
         String(
             format: "Media: %.3f GB/s (R:%.3f GB/s W:%.3f GB/s)",
             media_total_bw,
-            vd.bandwidth_cnt["media dcs"]![0],
-            vd.bandwidth_cnt["media dcs"]![1]
+            vd.bandwidth_cnt["media dcs"]![0]/interval,
+            vd.bandwidth_cnt["media dcs"]![1]/interval
         )
     )
-    rvd.media_bw.val = PythonObject(media_total_bw/Double(sd.max_bw[2])*100)
+    rvd.media_bw.val = PythonObject(media_total_bw/Double(sd.max_bw[2])/interval*100)
     
-    let total_bw = vd.bandwidth_cnt["dcs"]![0]+vd.bandwidth_cnt["dcs"]![1]
+    let total_bw = (vd.bandwidth_cnt["dcs"]![0]+vd.bandwidth_cnt["dcs"]![1])/interval
     rvd.total_bw = PythonObject(
         String(
             format: "Memory Bandwidth: %.3f GB/s (R:%.3f GB/s W:%.3f GB/s)",
             total_bw,
-            vd.bandwidth_cnt["dcs"]![0],
-            vd.bandwidth_cnt["dcs"]![1]
+            vd.bandwidth_cnt["dcs"]![0]/interval,
+            vd.bandwidth_cnt["dcs"]![1]/interval
         )
     )
     
+    let sys_pwr_W = vd.soc_power["System Total"]!/interval
+    if rvd.sys_pwr_max < sys_pwr_W {
+        rvd.sys_pwr_max = sys_pwr_W
+    }
+    rvd.sys_pwr_avg.append(sys_pwr_W)
+    if rvd.sys_pwr_avg.count > average {
+        rvd.sys_pwr_avg = rvd.sys_pwr_avg[1..<average]
+    }
     rvd.system_pwr = PythonObject(
         String(
-            format: "System Power: %.2fW",
-            vd.soc_power["System Total"]!
+            format: "System Power: %.2fW (avg: %.2fW peak: %.2fW)",
+            sys_pwr_W,
+            Double(rvd.sys_pwr_avg.reduce(PythonObject(0), +))!/Double(rvd.sys_pwr_avg.count),
+            rvd.sys_pwr_max
         )
     )
     
@@ -517,9 +540,26 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             cpu_power += vd.cluster_pwrs[idx] as! Float
         }
     }
-    cpu_power /= 1000
-    rvd.cpu_pwr.title = PythonObject(String(format: "CPU: %.2fW", cpu_power))
-    rvd.cpu_pwr.val = PythonObject(cpu_power/sd.max_pwr[0])
+    cpu_power /= Float(interval)*1000
+    if rvd.cpu_pwr_max < cpu_power {
+        rvd.cpu_pwr_max = cpu_power
+    }
+    rvd.cpu_pwr_avg.append(cpu_power)
+    if rvd.cpu_pwr_avg.count > average {
+        rvd.cpu_pwr_avg = rvd.cpu_pwr_avg[1..<average]
+    }
+    rvd.cpu_pwr.title = PythonObject(
+        String(
+            format: "CPU: %.2fW (avd: %.2fW peak: %.2fW)",
+            cpu_power,
+            Float(rvd.cpu_pwr_avg.reduce(PythonObject(0), +))!/Float(rvd.cpu_pwr_avg.count),
+            rvd.cpu_pwr_max
+        )
+    )
+    rvd.cpu_pwr.val.append(PythonObject(cpu_power/sd.max_pwr[0]*100))
+    if rvd.cpu_pwr.val.count > 500 {
+        rvd.cpu_pwr.val = rvd.cpu_pwr.val[1..<500]
+    }
     
     var gpu_power: Float = 0
     for (idx, vl) in sd.complex_pwr_channels.enumerated() {
@@ -527,7 +567,24 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             gpu_power += vd.cluster_pwrs[idx] as! Float
         }
     }
-    gpu_power /= 1000
-    rvd.gpu_pwr.title = PythonObject(String(format: "GPU: %.2fW", gpu_power))
-    rvd.gpu_pwr.val = PythonObject(gpu_power/sd.max_pwr[0])
+    gpu_power /= Float(interval)*1000
+    if rvd.gpu_pwr_max < gpu_power {
+        rvd.gpu_pwr_max = gpu_power
+    }
+    rvd.gpu_pwr_avg.append(gpu_power)
+    if rvd.gpu_pwr_avg.count > average {
+        rvd.gpu_pwr_avg = rvd.gpu_pwr_avg[1..<average]
+    }
+    rvd.gpu_pwr.title = PythonObject(
+        String(
+            format: "GPU: %.2fW (avg: %.2fW peak: %.2fW)",
+            gpu_power,
+            Float(rvd.gpu_pwr_avg.reduce(PythonObject(0), +))!/Float(rvd.gpu_pwr_avg.count),
+            rvd.gpu_pwr_max
+        )
+    )
+    rvd.gpu_pwr.val.append(PythonObject(gpu_power/sd.max_pwr[1]*100))
+    if rvd.gpu_pwr.val.count > 500 {
+        rvd.gpu_pwr.val = rvd.gpu_pwr.val[1..<500]
+    }
 }

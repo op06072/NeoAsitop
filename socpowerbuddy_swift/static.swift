@@ -149,7 +149,7 @@ func generateCoreCounts(sd: inout static_data) {
     }
     
     size = 0
-    var getfan = "hw.model"
+    let getfan = "hw.model"
     sysctlbyname(getfan, nil, &size, nil, 0)
     var model = [CChar](repeating: 0,  count: size)
     sysctlbyname(getfan, &model, &size, nil, 0)

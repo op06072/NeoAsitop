@@ -130,15 +130,6 @@ public class SystemKit {
             }
         }
         
-        let (modelID, serialNumber) = self.modelAndSerialNumber()
-        if modelID != nil {
-            self.device.modelIdentifier = modelID
-        }
-        if serialNumber != nil {
-            self.device.serialNumber = serialNumber
-        }
-        self.device.bootDate = self.bootDate()
-        
         let procInfo = ProcessInfo()
         let systemVersion = procInfo.operatingSystemVersion
         
@@ -152,9 +143,6 @@ public class SystemKit {
         self.device.os = os_s(name: osDict[version] ?? localizedString("Unknown"), version: systemVersion, build: build)
         
         self.device.info.cpu = self.getCPUInfo()
-        self.device.info.ram = self.getRamInfo()
-        self.device.info.gpu = self.getGPUInfo()
-        self.device.info.disk = self.getDiskInfo()
         
         if let name = self.device.info.cpu?.name?.lowercased() {
             if name.contains("intel") {
@@ -190,37 +178,6 @@ public class SystemKit {
         }
         
         error("error call sysctl(): \(String(cString: mach_error_string(result), encoding: String.Encoding.ascii) ?? "unknown error")")
-        return nil
-    }
-    
-    func modelAndSerialNumber() -> (String?, String?) {
-        let service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
-        
-        var modelIdentifier: String?
-        if let property = IORegistryEntryCreateCFProperty(service, "model" as CFString, kCFAllocatorDefault, 0), let value = property.takeUnretainedValue() as? Data {
-            modelIdentifier = String(data: value, encoding: .utf8)?.trimmingCharacters(in: .controlCharacters)
-        }
-        
-        var serialNumber: String?
-        if let property = IORegistryEntryCreateCFProperty(service, kIOPlatformSerialNumberKey as CFString, kCFAllocatorDefault, 0), let value = property.takeUnretainedValue() as? String {
-            serialNumber = value.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        }
-        IOObjectRelease(service)
-        
-        return (modelIdentifier, serialNumber)
-    }
-    
-    func bootDate() -> Date? {
-        var mib = [CTL_KERN, KERN_BOOTTIME]
-        var bootTime = timeval()
-        var bootTimeSize = MemoryLayout<timeval>.size
-        
-        let result = sysctl(&mib, UInt32(mib.count), &bootTime, &bootTimeSize, nil, 0)
-        if result == KERN_SUCCESS {
-            return Date(timeIntervalSince1970: Double(bootTime.tv_sec) + Double(bootTime.tv_usec) / 1_000_000.0)
-        }
-        
-        error("error get boot time: \(String(cString: mach_error_string(result), encoding: String.Encoding.ascii) ?? "unknown error")")
         return nil
     }
     
@@ -339,133 +296,6 @@ public class SystemKit {
         IOObjectRelease(iterator)
         
         return (eCores, pCores, list)
-    }
-    
-    private func getGPUInfo() -> [gpu_s]? {
-        let res = try run(bash: "/usr/sbin/system_profiler SPDisplaysDataType -json").stdout
-        
-        var list: [gpu_s] = []
-        do {
-            if let json = try JSONSerialization.jsonObject(with: Data(res.utf8), options: []) as? [String: Any] {
-                if let arr = json["SPDisplaysDataType"] as? [[String: Any]] {
-                    for obj in arr {
-                        var gpu: gpu_s = gpu_s()
-                        
-                        gpu.name = obj["sppci_model"] as? String
-                        gpu.vendor = obj["spdisplays_vendor"] as? String
-                        gpu.cores = Int(obj["sppci_cores"] as? String ?? "")
-                        
-                        if let vram = obj["spdisplays_vram_shared"] as? String {
-                            gpu.vram = vram
-                        } else if let vram = obj["spdisplays_vram"] as? String {
-                            gpu.vram = vram
-                        }
-                        
-                        list.append(gpu)
-                    }
-                }
-            }
-        } catch let err as NSError {
-            error("error to parse system_profiler SPDisplaysDataType: \(err.localizedDescription)")
-            return nil
-        }
-        
-        return list
-    }
-    
-    private func getDiskInfo() -> disk_s? {
-        var disk: DADisk? = nil
-        
-        let keys: [URLResourceKey] = [.volumeNameKey]
-        let paths = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: keys)!
-        if let session = DASessionCreate(kCFAllocatorDefault) {
-            for url in paths where url.pathComponents.count == 1 {
-                disk = DADiskCreateFromVolumePath(kCFAllocatorDefault, session, url as CFURL)
-            }
-        }
-        
-        if disk == nil {
-            error("empty disk after fetching list")
-            return nil
-        }
-        
-        if let diskDescription = DADiskCopyDescription(disk!) {
-            if let dict = diskDescription as? [String: AnyObject] {
-                if let removable = dict[kDADiskDescriptionMediaRemovableKey as String] {
-                    if removable as! Bool {
-                        return nil
-                    }
-                }
-
-                var name: String = ""
-                var model: String = ""
-                var size: Int64 = 0
-                
-                if let mediaName = dict[kDADiskDescriptionMediaNameKey as String] {
-                    name = mediaName as! String
-                }
-                if let deviceModel = dict[kDADiskDescriptionDeviceModelKey as String] {
-                    model = (deviceModel as! String).trimmingCharacters(in: .whitespacesAndNewlines)
-                }
-                if let mediaSize = dict[kDADiskDescriptionMediaSizeKey as String] {
-                    size = Int64(truncating: mediaSize as! NSNumber)
-                }
-                
-                return disk_s(name: name, model: model, size: size)
-            }
-        }
-        
-        return nil
-    }
-    
-    public func getRamInfo() -> ram_s? {
-        guard let res = process(path: "/usr/sbin/system_profiler", arguments: ["SPMemoryDataType", "-json"]) else {
-            return nil
-        }
-        
-        do {
-            if let json = try JSONSerialization.jsonObject(with: Data(res.utf8), options: []) as? [String: Any] {
-                var ram: ram_s = ram_s()
-                
-                if let obj = json["SPMemoryDataType"] as? [[String: Any]], !obj.isEmpty {
-                    if let items = obj[0]["_items"] as? [[String: Any]] {
-                        for i in 0..<items.count {
-                            let item = items[i]
-                            
-                            if item["dimm_size"] as? String == "empty" {
-                                continue
-                            }
-                            
-                            var dimm: dimm_s = dimm_s()
-                            dimm.type = item["dimm_type"] as? String
-                            dimm.speed = item["dimm_speed"] as? String
-                            dimm.size = item["dimm_size"] as? String
-                            
-                            if let nameValue = item["_name"] as? String {
-                                let arr = nameValue.split(separator: "/")
-                                if arr.indices.contains(0) {
-                                    dimm.bank = Int(arr[0].filter("0123456789.".contains))
-                                }
-                                if arr.indices.contains(1) && arr[1].contains("Channel") {
-                                    dimm.channel = arr[1].split(separator: "-")[0].replacingOccurrences(of: "Channel", with: "")
-                                }
-                            }
-                            
-                            ram.dimms.append(dimm)
-                        }
-                    } else if let value = obj[0]["SPMemoryDataType"] as? String {
-                        ram.dimms.append(dimm_s(bank: nil, channel: nil, type: nil, size: value, speed: nil))
-                    }
-                }
-                
-                return ram
-            }
-        } catch let err as NSError {
-            error("error to parse system_profiler SPMemoryDataType: \(err.localizedDescription)")
-            return nil
-        }
-        
-        return nil
     }
 }
 

@@ -24,6 +24,7 @@
 		3A3DA88128DC920A00BFEFAC /* SwiftShell in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA88028DC920A00BFEFAC /* SwiftShell */; };
 		3A3DA88428DC922000BFEFAC /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA88328DC922000BFEFAC /* PythonKit */; };
 		3A3DA88628DEDC5B00BFEFAC /* util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3DA88528DEDC5B00BFEFAC /* util.swift */; };
+		3A3DA8AC28E0A76D00BFEFAC /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA8AB28E0A76D00BFEFAC /* ArgumentParser */; };
 		3A9A722C28D15EBB0021E6F1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A722B28D15EBB0021E6F1 /* main.swift */; };
 		3A9A723328D15F5C0021E6F1 /* static.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A723228D15F5C0021E6F1 /* static.swift */; };
 		3AF36E0C28D21A6B00DA3EB3 /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
@@ -75,6 +76,7 @@
 			files = (
 				3AF36E0C28D21A6B00DA3EB3 /* libIOReport.tbd in Frameworks */,
 				3A3DA88128DC920A00BFEFAC /* SwiftShell in Frameworks */,
+				3A3DA8AC28E0A76D00BFEFAC /* ArgumentParser in Frameworks */,
 				3A3DA88428DC922000BFEFAC /* PythonKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -154,6 +156,7 @@
 			packageProductDependencies = (
 				3A3DA88028DC920A00BFEFAC /* SwiftShell */,
 				3A3DA88328DC922000BFEFAC /* PythonKit */,
+				3A3DA8AB28E0A76D00BFEFAC /* ArgumentParser */,
 			);
 			productName = socpowerbuddy_swift;
 			productReference = 3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */;
@@ -186,6 +189,7 @@
 			packageReferences = (
 				3A3DA87F28DC920A00BFEFAC /* XCRemoteSwiftPackageReference "SwiftShell" */,
 				3A3DA88228DC922000BFEFAC /* XCRemoteSwiftPackageReference "PythonKit" */,
+				3A3DA8A628E09E4500BFEFAC /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
 			productRefGroup = 3A9A722928D15EBB0021E6F1 /* Products */;
 			projectDirPath = "";
@@ -403,6 +407,14 @@
 				kind = branch;
 			};
 		};
+		3A3DA8A628E09E4500BFEFAC /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -415,6 +427,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3A3DA88228DC922000BFEFAC /* XCRemoteSwiftPackageReference "PythonKit" */;
 			productName = PythonKit;
+		};
+		3A3DA8AB28E0A76D00BFEFAC /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3A3DA8A628E09E4500BFEFAC /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

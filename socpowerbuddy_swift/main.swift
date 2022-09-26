@@ -8,25 +8,39 @@
 import Foundation
 import IOKit.graphics
 import SwiftShell
+import ArgumentParser
+
+struct NeoasitopOptions: ParsableArguments {
+    @Option(name: .shortAndLong, help: "Display interval and sampling interval for info gathering (seconds)")
+    var interval = 1
+    
+    @Option(name: .shortAndLong, help: "Choose display color (0~8)")
+    var color: UInt8 = 2
+    
+    @Option(name: .long, help: "Interval for averaged values (seconds)")
+    var avg = 30
+}
+
+let options = NeoasitopOptions.parseOrExit()
 
 var iorep = iorep_data()
 var sd = static_data()
 var cmd = cmd_data()
-var rd = render_data()
 var rendering = renderer()
 var rvd = render_value_data()
 var fan_set = true
-let color = 2
 
-cmd.power_measure = 1
-cmd.freq_measure = 1
-cmd.power_measure_un = "mW"
-cmd.freq_measure_un = "mHz"
-cmd.file_out = stdout
+let color = options.color
+let avg = Double(options.avg)
+let interval = Double(options.interval)
+
+print("\nNeoAsitop - Sudoless performance monitoring CLI tool for Apple Silicon")
+print("Get help at `https://github.com/op06072/NeoAsitop")
+print("Thanks to all the projects that inspired and referenced.")
+print("\n [1/2] Loading NeoAsitop\n")
 
 cmd.interval = 175
 cmd.samples = 1
-cmd.metrics = ["%active", "freq", "dvfm", "intstrcts", "cores", nil]
 
 generateDvfmTable(sd: &sd)
 generateCoreCounts(sd: &sd)
@@ -46,9 +60,12 @@ generateSocMax(sd: &sd)
 sd.max_pwr.append(8)
 sd.max_bw.append(7)
 
-var cpu_peak_pwr = 0
-var gpu_peak_pwr = 0
-var soc_peak_pwr = 0
+var cpu_peak_pwr: Float = 0
+var gpu_peak_pwr: Float = 0
+var system_peak_pwr: Float = 0
+var cpu_avg_pwr_list: [Float] = []
+var gpu_avg_pwr_list: [Float] = []
+var system_avg_pwr_list: [Float] = []
 
 var tmp = sd.extra[0].lowercased()
 if tmp.contains("pro") || tmp.contains("max") {
@@ -78,33 +95,6 @@ if tmp.contains("pro") || tmp.contains("max") {
     
     let ttmp = sd.dvfm_states_holder
     sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[2]]
-}
-
-var vd = variating_data()
-for i in 0..<sd.cluster_core_counts.count+3 {
-    vd.cluster_residencies.append([])
-    vd.cluster_pwrs.append(0)
-    vd.cluster_freqs.append(0)
-    vd.cluster_use.append(0)
-    vd.cluster_sums.append(0)
-    
-    if i <= sd.cluster_core_counts.count-1 {
-        vd.core_pwrs.append([])
-        vd.core_residencies.append([])
-        vd.core_freqs.append([])
-        vd.core_sums.append([])
-        vd.core_use.append([])
-    }
-}
-
-for i in 0..<sd.cluster_core_counts.count {
-    for _ in 0..<sd.cluster_core_counts[i] {
-        vd.core_pwrs[i].append([])
-        vd.core_residencies[i].append([])
-        vd.core_use[i].append(0)
-        vd.core_freqs[i].append(0)
-        vd.core_sums[i].append(0)
-    }
 }
 
 iorep.cpusubchn = nil
@@ -146,25 +136,25 @@ iorep.bwsub = IOReportCreateSubscription(
     &iorep.bwsubchn, 0, nil
 )
 
-if cmd.samples <= 0 {
-    cmd.samples = -1
-}
-// var ttmp = appleSiliconSensors(page: 0xff00, usage: 0x0005, typ: kIOHIDEventTypeTemperature)
-if fan_set {
-    getSensorVal(vd: &vd, set_mode: fan_set, sd: &sd) // 센서값
-    fan_set = false
-} else {
-    getSensorVal(vd: &vd, sd: &sd) // 센서값
-}
-getMemUsage(vd: &vd)
-sd.ram_capacity = Int(vd.mem_stat.total)
+print("\n [2/2] Gathering System Info\n")
 
-// var ttmp = appleSiliconSensors(page: 0xff08, usage: 0x0003, typ: kIOHIDEventTypePower)
-for _ in stride(from:cmd.samples, to:0, by: -1) {
+while true {
+    var rd = render_data()
+    var vd = vd_init(sd: sd)
+    if fan_set {
+        getSensorVal(vd: &vd, set_mode: fan_set, sd: &sd) // 센서값
+        fan_set = false
+    } else {
+        getSensorVal(vd: &vd, sd: &sd) // 센서값
+    }
+    getMemUsage(vd: &vd)
+    sd.ram_capacity = Int(vd.mem_stat.total)
+    
     sample(iorep: iorep, sd: sd, vd: &vd, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
     format(sd: &sd, vd: &vd) // 포매팅
+    summary(sd: sd, vd: vd, rd: &rd, rvd: &rvd, opt: [avg, interval])
+    rendering.term_layout(sd: sd, colr: color) // 레이아웃 렌더링
+    eraseScreen()
+    rendering.term_rendering(sd: sd, vd: vd, rvd: rvd) // 정보 출력
+    Thread.sleep(forTimeInterval: interval-(cmd.interval*1e-3))
 }
-summary(sd: sd, vd: vd, rd: &rd, rvd: &rvd)
-rendering.term_layout(sd: sd) // 레이아웃 렌더링
-rendering.term_rendering(sd: sd, vd: vd, rvd: rvd) // 정보 출력
-print()

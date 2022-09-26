@@ -94,7 +94,6 @@ class renderer {
                         )
                     ),
                     title: "Processor Utilization",
-                    //color: colr
                     border_color: colr
                 ),
                 self.dashing!.VSplit(
@@ -127,7 +126,6 @@ class renderer {
                         title: "Memory Bandwidth"
                     ),
                     title: "Memory",
-                    //color: colr
                     border_color: colr
                 ),
                 self.dashing!.HSplit(
@@ -140,7 +138,6 @@ class renderer {
                         color: colr
                     ),
                     title: "Power Chart",
-                    //color: colr
                     border_color: colr
                 )
             )
@@ -172,7 +169,6 @@ class renderer {
                         )
                     ),
                     title: "Processor Utilization",
-                    //color: colr
                     border_color: colr
                 ),
                 self.dashing!.VSplit(
@@ -205,7 +201,6 @@ class renderer {
                         title: "Memory Bandwidth"
                     ),
                     title: "Memory",
-                    //color: colr
                     border_color: colr
                 ),
                 self.dashing!.HSplit(
@@ -218,7 +213,6 @@ class renderer {
                         color: colr
                     ),
                     title: "Power Chart",
-                    //color: colr
                     border_color: colr
                 )
             )
@@ -236,7 +230,6 @@ class renderer {
         }
         
         self.ui!.items[0].title = PythonObject(cpu_title)
-        // self.ui!.display()
     }
     
     func term_rendering(sd: static_data, vd: variating_data, rvd: render_value_data, colr: UInt8 = 2) {
@@ -276,8 +269,8 @@ class renderer {
         let gpu_bw_gauges = bw_gauges.items[2]
         let media_bw_gauges = bw_gauges.items[3]
         
-        var cpu_power_chart = power_charts.items[0]
-        var gpu_power_chart = power_charts.items[1]
+        let cpu_power_chart = power_charts.items[0]
+        let gpu_power_chart = power_charts.items[1]
         
         cpu1_gauge.title = rvd.ecpu.title
         cpu1_gauge.value = rvd.ecpu.val
@@ -300,9 +293,9 @@ class renderer {
         bw_gauges.title = rvd.total_bw
         power_charts.title = rvd.system_pwr
         cpu_power_chart.title = rvd.cpu_pwr.title
-        cpu_power_chart.append(rvd.cpu_pwr.val)
+        cpu_power_chart.datapoints = rvd.cpu_pwr.val
         gpu_power_chart.title = rvd.gpu_pwr.title
-        gpu_power_chart.append(rvd.gpu_pwr.val)
+        gpu_power_chart.datapoints = rvd.gpu_pwr.val
         
         self.ui!.display()
     }

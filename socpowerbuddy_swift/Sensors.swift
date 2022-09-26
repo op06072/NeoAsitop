@@ -24,20 +24,6 @@ public class Sensors: Module {
         self.addReader(self.sensorsReader)
     }
     
-    public override func willTerminate() {
-        if !SMCHelper.shared.checkRights() {
-            return
-        }
-        
-        self.sensorsReader.list.filter({ $0 is Fan }).forEach { (s: Sensor_p) in
-            if let f = s as? Fan, let mode = f.customMode {
-                if mode != .automatic {
-                    SMCHelper.shared.setFanMode(f.id, mode: FanMode.automatic.rawValue)
-                }
-            }
-        }
-    }
-    
     public override func isAvailable() -> Bool {
         return !self.sensorsReader.list.isEmpty
     }
