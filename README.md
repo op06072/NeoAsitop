@@ -1,6 +1,16 @@
-# neoasitop
-
-Sudoless performance monitoring CLI tool for Apple Silicon
+<h1 align="center" style="">neoasitop</h1>
+<p align="center">
+  A sudoless performance monitoring CLI tool for Apple Silicon
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/Swift-F05138?style=flat&logo=Swift&logoColor=white"/>
+  <a href="https://github.com/op06072/NeoAsitop">
+    <img src="https://img.shields.io/github/release/op06072/NeoAsitop.svg"/>
+  </a>
+  <a href="https://github.com/op06072/NeoAsitop/blob/main/License">
+    <img src="https://img.shields.io/github/license/op06072/NeoAsitop.svg"/>
+  </a>
+</p>
 
 ![](image/neoasitop.png)
 
