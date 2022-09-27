@@ -4,7 +4,7 @@
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/Swift-F05138?style=flat&logo=Swift&logoColor=white"/>
-  <a href="https://github.com/op06072/NeoAsitop">
+  <a href="https://github.com/op06072/NeoAsitop/releases">
     <img src="https://img.shields.io/github/release/op06072/NeoAsitop.svg"/>
   </a>
   <a href="https://github.com/op06072/NeoAsitop/blob/main/License">
