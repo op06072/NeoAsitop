@@ -127,10 +127,12 @@ struct render_value_data {
     var sys_pwr_max: Double = 0
     var cpu_pwr_max: Float = 0
     var gpu_pwr_max: Float = 0
+    var ram_pwr_max: Float = 0
     
     var sys_pwr_avg = PythonObject([])
     var cpu_pwr_avg = PythonObject([])
     var gpu_pwr_avg = PythonObject([])
+    var ram_pwr_avg = PythonObject([])
 }
 
 struct mem_info {

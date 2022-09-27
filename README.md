@@ -18,7 +18,7 @@ A Swift-based `asitop`-inspired command line tool for Apple Silicon (aka M1) Mac
   * Memory bandwidth (CPU/GPU/total)
   * Media engine bandwidth usage
 * Power info:
-  * System power, CPU power, GPU power
+  * System power, CPU power, GPU power, DRAM power
   * Chart for CPU/GPU power
   * Peak power, rolling average display
 
@@ -52,7 +52,7 @@ OPTIONS:
 
 * CPU/GPU utilization via active residency
 * CPU/GPU frequency
-* CPU/GPU/ANE energy consumption
+* CPU/GPU/ANE/DRAM energy consumption
 * CPU/GPU/Media Total memory bandwidth via the DCS (DRAM Command Scheduler)
 * CPU/GPU core count
 

@@ -442,6 +442,20 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         )
     )
     
+    var ram_power: Float = 0
+    for (idx, vl) in sd.complex_pwr_channels.enumerated() {
+        if vl.lowercased().contains("dram") {
+            ram_power += vd.cluster_pwrs[idx] as! Float
+        }
+    }
+    ram_power /= Float(interval)*1000
+    if rvd.ram_pwr_max < ram_power {
+        rvd.ram_pwr_max = ram_power
+    }
+    rvd.ram_pwr_avg.append(ram_power)
+    if rvd.ram_pwr_avg.count > average {
+        rvd.gpu_pwr_avg = rvd.gpu_pwr_avg[1..<average]
+    }
     if vd.swap_stat.total < 0.1 {
         rvd.ram.title = PythonObject(
             String(
@@ -461,6 +475,14 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             )
         )
     }
+    rvd.ram.title += PythonObject(
+        String(
+            format: " [RAM Power: %.2fW (avg: %.2fW peak: %.2fW)]",
+            ram_power,
+            Float(rvd.ram_pwr_avg.reduce(PythonObject(0), +))!/Float(rvd.ram_pwr_avg.count),
+            rvd.ram_pwr_max
+        )
+    )
     rvd.ram.val = PythonObject(Int(vd.mem_percent))
     
     let ecpu_total_bw = (vd.bandwidth_cnt["ecpu dcs"]![0]+vd.bandwidth_cnt["ecpu dcs"]![1])/interval
