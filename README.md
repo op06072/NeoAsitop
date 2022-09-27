@@ -83,3 +83,11 @@ Because I didn't find something like this online. Also, just curious about stuff
 ## Disclaimers
 
 I just get this from `asitop` don't blame me if it fried your new MacBook or something.
+
+## Credits
+
+Special thanks to:
+
+- [tlkh](https://github.com/tlkh) for the project [asitop](https://github.com/tlkh/asitop) that inspired me to start this project.
+- [BitesPotatoBacks](https://github.com/BitesPotatoBacks) for the project [SocPowerBuddy](https://github.com/BitesPotatoBacks/SocPowerBuddy) that gave me the way to replace powermetrics.
+- [exelban](https://github.com/exelban) for the project [stats](https://github.com/exelban/stats) that gave me the way to get sensor value.
