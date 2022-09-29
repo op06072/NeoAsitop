@@ -10,6 +10,13 @@ import IOKit.graphics
 import SwiftShell
 import ArgumentParser
 
+if run(bash: "which xcrun").stdout == "command not found" {
+    print("Please Install the Xcode Command Line Tools first.")
+    print("You can install this with:")
+    print("xcode-select --install")
+    exit(1)
+}
+
 struct NeoasitopOptions: ParsableArguments {
     @Option(name: .shortAndLong, help: "Display interval and sampling interval for info gathering (seconds)")
     var interval = 1
@@ -28,37 +35,18 @@ var sd = static_data()
 var cmd = cmd_data()
 var rendering = renderer()
 var rvd = render_value_data()
-var fan_set = true
 
 let color = options.color
 let avg = Double(options.avg)
 let interval = Double(options.interval)
 
 print("\nNeoAsitop - Sudoless performance monitoring CLI tool for Apple Silicon")
-print("Get help at `https://github.com/op06072/NeoAsitop")
+print("Get help at `https://github.com/op06072/NeoAsitop`")
 print("Thanks to all the projects that inspired and referenced.")
 print("\n [1/2] Loading NeoAsitop\n")
 
 cmd.interval = 175
 cmd.samples = 1
-
-generateDvfmTable(sd: &sd)
-generateCoreCounts(sd: &sd)
-generateProcessorName(sd: &sd)
-generateSiliconsIds(sd: &sd)
-generateMicroArchs(sd: &sd)
-
-if sd.extra[0].lowercased().contains("apple") {
-    if run(bash: "uname -m").stdout.lowercased() == "arm64" {
-        sd.extra.append("Apple")
-    } else {
-        sd.extra.append("Rosetta 2")
-    }
-}
-
-generateSocMax(sd: &sd)
-sd.max_pwr.append(8)
-sd.max_bw.append(7)
 
 var cpu_peak_pwr: Float = 0
 var gpu_peak_pwr: Float = 0
@@ -67,7 +55,22 @@ var cpu_avg_pwr_list: [Float] = []
 var gpu_avg_pwr_list: [Float] = []
 var system_avg_pwr_list: [Float] = []
 
+generateDvfmTable(sd: &sd)
+generateProcessorName(sd: &sd)
+
+if sd.extra[0].lowercased().contains("apple") {
+    if run(bash: "uname -m").stdout.lowercased() == "arm64" {
+        sd.extra.append("Apple")
+    } else {
+        sd.extra.append("Rosetta 2")
+    }
+}
+generateSocMax(sd: &sd)
+sd.max_pwr.append(8)
+sd.max_bw.append(7)
+
 var tmp = sd.extra[0].lowercased()
+//tmp = "m1 ultra"
 if tmp.contains("pro") || tmp.contains("max") {
     sd.complex_pwr_channels = ["EACC_CPU", "PACC0_CPU", "PACC1_CPU", "GPU0", "ANE0", "DRAM0"]
     sd.core_pwr_channels = ["EACC_CPU", "PACC0_CPU", "PACC1_CPU"]
@@ -78,14 +81,14 @@ if tmp.contains("pro") || tmp.contains("max") {
     let ttmp = sd.dvfm_states_holder
     sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[1], ttmp[2]]
 } else if tmp.contains("ultra") {
-    sd.complex_pwr_channels = ["EACC_CPU0", "EACC_CPU1", "PACC0_CPU", "PACC1_CPU", "PACC2_CPU", "PACC3_CPU", "GPU0", "ANE0", "DRAM0"]
-    sd.core_pwr_channels = ["EACC_CPU0", "EACC_CPU1", "PACC0_CPU", "PACC1_CPU", "PACC2_CPU", "PACC3_CPU"]
+    sd.complex_pwr_channels = ["DIE_0_EACC_CPU", "DIE_1_EACC_CPU", "DIE_0_PACC0_CPU", "DIE_0_PACC1_CPU", "DIE_1_PACC0_CPU", "DIE_1_PACC1_CPU", "GPU0_0", "ANE0_0", "ANE0_1", "DRAM0_0", "DRAM0_1"]
+    sd.core_pwr_channels = ["DIE_0_EACC_CPU", "DIE_1_EACC_CPU", "DIE_0_PACC0_CPU", "DIE_0_PACC1_CPU", "DIE_1_PACC0_CPU", "DIE_1_PACC1_CPU"]
     
-    sd.complex_freq_channels = ["ECPU", "ECPU1", "PCPU", "PCPU1", "PCPU2", "PCPU3", "GPUPH"]
-    sd.core_freq_channels = ["ECPU0", "ECPU1", "PCPU0", "PCPU1", "PCPU2", "PCPU3"]
+    sd.complex_freq_channels = ["DIE_0_ECPU", "DIE_1_ECPU", "DIE_0_PCPU", "DIE_0_PCPU1", "DIE_1_PCPU", "DIE_1_PCPU1", "GPUPH"]
+    sd.core_freq_channels = ["DIE_0_ECPU_CPU", "DIE_1_ECPU_CPU", "DIE_0_PCPU_CPU", "DIE_0_PCPU1_CPU", "DIE_1_PCPU_CPU", "DIE_1_PCPU1_CPU"]
     
     let ttmp = sd.dvfm_states_holder
-    sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[1], ttmp[1], ttmp[1], ttmp[2]]
+    sd.dvfm_states = [ttmp[0], ttmp[0], ttmp[1], ttmp[1], ttmp[1], ttmp[1], ttmp[2]]
 } else {
     sd.complex_pwr_channels = ["ECPU", "PCPU", "GPU", "ANE", "DRAM"]
     sd.core_pwr_channels = ["ECPU", "PCPU"]
@@ -96,6 +99,10 @@ if tmp.contains("pro") || tmp.contains("max") {
     let ttmp = sd.dvfm_states_holder
     sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[2]]
 }
+
+generateCoreCounts(sd: &sd)
+generateSiliconsIds(sd: &sd)
+generateMicroArchs(sd: &sd)
 
 iorep.cpusubchn = nil
 iorep.pwrsubchn = nil
@@ -137,6 +144,7 @@ iorep.bwsub = IOReportCreateSubscription(
 )
 
 print("\n [2/2] Gathering System Info\n")
+var fan_set = sd.fan_exist
 
 while true {
     var rd = render_data()

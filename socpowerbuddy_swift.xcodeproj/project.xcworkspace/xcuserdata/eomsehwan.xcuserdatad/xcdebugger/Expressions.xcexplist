@@ -22,16 +22,31 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "closure #1 in :main.swift">
+         contextName = "renderer.init():render.swift">
       </ContextState>
       <ContextState
          contextName = "generateProcessorName(sd:):static.swift">
       </ContextState>
       <ContextState
+         contextName = "closure #1 in :main.swift">
+      </ContextState>
+      <ContextState
+         contextName = "generateMicroArchs(sd:):static.swift">
+      </ContextState>
+      <ContextState
          contextName = "main:main.swift">
          <PersistentStrings>
             <PersistentString
+               value = "sd">
+            </PersistentString>
+            <PersistentString
+               value = "IOReportStateGetResidency(sample, i)">
+            </PersistentString>
+            <PersistentString
                value = "ttmp">
+            </PersistentString>
+            <PersistentString
+               value = "samples">
             </PersistentString>
             <PersistentString
                value = "vd">
@@ -40,12 +55,9 @@
                value = "tmp_report">
             </PersistentString>
             <PersistentString
-               value = "sd">
+               value = "subchndic">
             </PersistentString>
          </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "generateMicroArchs(sd:):static.swift">
       </ContextState>
       <ContextState
          contextName = "sample(iorep:sd:vd:cmd:):sampler.swift">

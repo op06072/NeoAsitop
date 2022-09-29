@@ -44,6 +44,9 @@ extern NSString* IOReportStateGetNameForIndex(CFDictionaryRef, int);
 
 extern void IOReportMergeChannels(CFMutableDictionaryRef, CFMutableDictionaryRef, CFTypeRef);
 extern NSString* IOReportChannelGetGroup(CFDictionaryRef);
+
+extern CFMutableDictionaryRef IOReportCopyAllChannels(uint64_t, uint64_t);
+extern int IOReportChannelGetFormat(CFDictionaryRef samples);
 /*
  * Typedefs
  */

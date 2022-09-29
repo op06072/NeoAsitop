@@ -73,48 +73,13 @@ func generateCoreCounts(sd: inout static_data) {
     var iter = io_iterator_t()
     var port = mach_port_t()
     
-    var servicedict: Unmanaged<CFMutableDictionary>? = nil
-    
-    if #available(macOS 12, *) {
-        port = kIOMainPortDefault
-    } else {
-        port = kIOMasterPortDefault
-    }
-    
-    var service = IOServiceMatching("AppleARMIODevice")
-    if service == nil {
-        print("Failed to find AppleARMIODevice service in IORegistry")
-        exit(1)
-    }
-    if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
-        print("Failed to access AppleARMIODevice service in IORegistry")
-        exit(1)
-    }
-    
-    while case let entry = IOIteratorNext(iter), entry != IO_OBJECT_NULL {
-        if IORegistryEntryCreateCFProperties(entry, &servicedict, kCFAllocatorDefault, 0) != kIOReturnSuccess {
-            print("Failed to create CFProperties for AppleARMIODevice service in IORegistry")
-            exit(1)
-        }
-        
-        guard let serviceDict = servicedict?.takeUnretainedValue() as? [String : AnyObject] else { continue }
-        
-        if case let data = serviceDict["clusters"], data != nil {
-            let databytes = data?.bytes?.assumingMemoryBound(to: UInt8.self)
-            for ii in stride(from:0, to:data!.length, by:4) {
-                sd.cluster_core_counts.append(UInt8(atoi(String(format: "%02x", databytes![ii]))))
-                IOObjectRelease(entry)
-            }
-        }
-    }
-    
     #if arch(arm64)
     var size = 0
     var getcpu = "hw.perflevel0.name"
     sysctlbyname(getcpu, nil, &size, nil, 0)
     var perflevel = [CChar](repeating: 0,  count: size)
     sysctlbyname(getcpu, &perflevel, &size, nil, 0)
-    
+
     if strcmp(perflevel, "") != 0 {
         var tmp = ""
         perflevel.withUnsafeBufferPointer {
@@ -147,25 +112,73 @@ func generateCoreCounts(sd: inout static_data) {
             sd.core_ep_counts[1] = cpucore[0]
         }
     }
-    
+
     size = 0
     let getfan = "hw.model"
     sysctlbyname(getfan, nil, &size, nil, 0)
     var model = [CChar](repeating: 0,  count: size)
     sysctlbyname(getfan, &model, &size, nil, 0)
-    
+
     if strcmp(model, "") != 0 {
         var ttmp = ""
         model.withUnsafeBufferPointer {
             ptr in ttmp += String(cString: ptr.baseAddress!)
         }
-        if ttmp.lowercased().contains("pro") == false {
+        if ttmp.lowercased().contains("air") {
             sd.fan_exist = false
         }
     } else {
         sd.fan_exist = false
     }
     #endif
+    
+    var servicedict: Unmanaged<CFMutableDictionary>? = nil
+    
+    if #available(macOS 12, *) {
+        port = kIOMainPortDefault
+    } else {
+        port = kIOMasterPortDefault
+    }
+    
+    var service = IOServiceMatching("AppleARMIODevice")
+    if service == nil {
+        print("Failed to find AppleARMIODevice service in IORegistry")
+        exit(1)
+    }
+    if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
+        print("Failed to access AppleARMIODevice service in IORegistry")
+        exit(1)
+    }
+    
+    while case let entry = IOIteratorNext(iter), entry != IO_OBJECT_NULL {
+        if IORegistryEntryCreateCFProperties(entry, &servicedict, kCFAllocatorDefault, 0) != kIOReturnSuccess {
+            print("Failed to create CFProperties for AppleARMIODevice service in IORegistry")
+            exit(1)
+        }
+        
+        guard let serviceDict = servicedict?.takeUnretainedValue() as? [String : AnyObject] else { continue }
+        
+        if case let data = serviceDict["clusters"], data != nil {
+            let databytes = data?.bytes?.assumingMemoryBound(to: UInt8.self)
+            for ii in stride(from:0, to:data!.length, by:4) {
+                let cores = UInt8(atoi(String(format: "%02x", databytes![ii])))
+                sd.cluster_core_counts.append(cores)
+                var die_num = 1
+                var exist = 1
+                while exist != 0 {
+                    exist = 0
+                    for i in sd.core_freq_channels {
+                        if i == "DIE_\(die_num)_ECPU_CPU" {
+                            sd.cluster_core_counts.append(cores)
+                            die_num += 1
+                            exist = 1
+                        }
+                    }
+                }
+                IOObjectRelease(entry)
+            }
+        }
+    }
     
     service = IOServiceMatching("AGXAccelerator")
     if (service == nil) {

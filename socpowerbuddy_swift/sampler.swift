@@ -8,6 +8,7 @@
 import Foundation
 import PythonKit
 import Darwin
+import SwiftShell
 
 func sample(iorep: iorep_data,
             sd: static_data,
@@ -136,7 +137,6 @@ func sample(iorep: iorep_data,
                 }
             }
         }
-        // print(Float(package)/Float(cmd.interval/1e+3))
         
         for sample in clpc_delta {
             let chann_name = IOReportChannelGetChannelName(sample)
@@ -284,7 +284,6 @@ func getMemUsage(vd: inout variating_data) {
 }
 
 func format(sd: inout static_data, vd: inout variating_data) {
-    
     for i in 0..<sd.complex_freq_channels.count {
         for ii in 0..<vd.cluster_residencies[i].count {
             let res = vd.cluster_residencies[i][ii]
@@ -400,47 +399,63 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     var ane_value: Float = 0
     for (i, v) in sd.complex_pwr_channels.enumerated() {
         if v.contains("ANE") {
-            ane_value = vd.cluster_pwrs[i] as! Float / 1024
+            ane_value += vd.cluster_pwrs[i] as! Float / 1024
         }
     }
     rvd.ane.title = PythonObject(
         String(
             format:"ANE Usage: %.1f%% @ %.1f W",
-            (ane_value/sd.max_pwr[2]*100),
+            (ane_value/sd.max_pwr[2]/Float(interval)*100),
             (ane_value/Float(interval))
         )
     )
     rvd.ane.val = PythonObject(ane_value/sd.max_pwr[2]/Float(interval)*100)
     
-    var left_ratio = (vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100
-    var right_ratio = (vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])*100
-    
-    if left_ratio < 0 {
-        left_ratio = 0
+    if sd.fan_exist {
+        var left_ratio = (vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100
+        var right_ratio = (vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])*100
+        
+        if left_ratio < 0 {
+            left_ratio = 0
+        }
+        if right_ratio < 0 {
+            right_ratio = 0
+        }
+        
+        rvd.lfan.title = PythonObject(
+            String(
+                format:"Fan Usage: %.2f%% & %.2f%%",
+                left_ratio,
+                right_ratio
+            )
+        )
+        rvd.lfan.val = PythonObject((vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100)
+        rvd.rfan.val = PythonObject((vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])*100)
+        
+        if vd.soc_temp["Airflow left"] != nil {
+            rvd.lf_label = PythonObject(
+                String(
+                    format:"Left Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow left"]!
+                )
+            )
+            rvd.rf_label = PythonObject(
+                String(
+                    format:"Right Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow right"]!
+                )
+            )
+        } else if vd.soc_temp["Airflow front left"] != nil {
+            rvd.lf_label = PythonObject(
+                String(
+                    format:"Left Fan: %.1f RPM (%.1f°C, %.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow front left"]!, vd.soc_temp["Airflow rear left"]!
+                )
+            )
+            rvd.rf_label = PythonObject(
+                String(
+                    format:"Right Fan: %.1f RPM (%.1f°C, %.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow front right"]!, vd.soc_temp["Airflow rear right"]!
+                )
+            )
+        }
     }
-    if right_ratio < 0 {
-        right_ratio = 0
-    }
-    
-    rvd.lfan.title = PythonObject(
-        String(
-            format:"Fan Usage: %.2f%% & %.2f%%",
-            left_ratio,
-            right_ratio
-        )
-    )
-    rvd.lfan.val = PythonObject((vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100)
-    rvd.rfan.val = PythonObject((vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])*100)
-    rvd.lf_label = PythonObject(
-        String(
-            format:"Left Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow left"]!
-        )
-    )
-    rvd.rf_label = PythonObject(
-        String(
-            format:"Right Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow right"]!
-        )
-    )
     
     var ram_power: Float = 0
     for (idx, vl) in sd.complex_pwr_channels.enumerated() {
@@ -484,11 +499,18 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         )
     )
     rvd.ram.val = PythonObject(Int(vd.mem_percent))
+    var w = winsize()
+    var LongShort = 0
+    if ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 {
+        if w.ws_col >= 177 {
+            LongShort = 1
+        }
+    }
     
     let ecpu_total_bw = (vd.bandwidth_cnt["ecpu dcs"]![0]+vd.bandwidth_cnt["ecpu dcs"]![1])/interval
     rvd.ecpu_bw.title = PythonObject(
         String(
-            format: "E-CPU: %.2f GB/s (R:%.2f GB/s W:%.2f GB/s)",
+            format: "E-CPU: %.\(1+LongShort)f GB/s (R:%.\(1+LongShort)f GB/s W:%.\(1+LongShort)f GB/s)",
             ecpu_total_bw,
             vd.bandwidth_cnt["ecpu dcs"]![0]/interval,
             vd.bandwidth_cnt["ecpu dcs"]![1]/interval
@@ -499,7 +521,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     let pcpu_total_bw = (vd.bandwidth_cnt["pcpu dcs"]![0]+vd.bandwidth_cnt["pcpu dcs"]![1])/interval
     rvd.pcpu_bw.title = PythonObject(
         String(
-            format: "P-CPU: %.2f GB/s (R:%.2f GB/s W:%.2f GB/s)",
+            format: "P-CPU: %.\(1+LongShort)f GB/s (R:%.\(1+LongShort)f GB/s W:%.\(1+LongShort)f GB/s)",
             pcpu_total_bw,
             vd.bandwidth_cnt["pcpu dcs"]![0]/interval,
             vd.bandwidth_cnt["pcpu dcs"]![1]/interval
@@ -510,7 +532,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     let gpu_total_bw = (vd.bandwidth_cnt["gfx dcs"]![0]+vd.bandwidth_cnt["gfx dcs"]![1])/interval
     rvd.gpu_bw.title = PythonObject(
         String(
-            format: "GPU: %.3f GB/s (R:%.3f GB/s W:%.3f GB/s)",
+            format: "GPU: %.\(2+LongShort)f GB/s (R:%.\(2+LongShort)f GB/s W:%.\(2+LongShort)f GB/s)",
             gpu_total_bw,
             vd.bandwidth_cnt["gfx dcs"]![0]/interval,
             vd.bandwidth_cnt["gfx dcs"]![1]/interval
@@ -521,7 +543,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     let media_total_bw = (vd.bandwidth_cnt["media dcs"]![0]+vd.bandwidth_cnt["media dcs"]![1])/interval
     rvd.media_bw.title = PythonObject(
         String(
-            format: "Media: %.3f GB/s (R:%.3f GB/s W:%.3f GB/s)",
+            format: "Media: %.\(2+LongShort)f GB/s (R:%.\(2+LongShort)f GB/s W:%.\(2+LongShort)f GB/s)",
             media_total_bw,
             vd.bandwidth_cnt["media dcs"]![0]/interval,
             vd.bandwidth_cnt["media dcs"]![1]/interval

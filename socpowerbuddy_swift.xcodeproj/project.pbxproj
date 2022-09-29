@@ -25,6 +25,8 @@
 		3A3DA88428DC922000BFEFAC /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA88328DC922000BFEFAC /* PythonKit */; };
 		3A3DA88628DEDC5B00BFEFAC /* util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3DA88528DEDC5B00BFEFAC /* util.swift */; };
 		3A3DA8AC28E0A76D00BFEFAC /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA8AB28E0A76D00BFEFAC /* ArgumentParser */; };
+		3A8A035528E3F0800027B16E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A035428E3F0800027B16E /* main.swift */; };
+		3A8A035A28E3F6EE0027B16E /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
 		3A9A722C28D15EBB0021E6F1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A722B28D15EBB0021E6F1 /* main.swift */; };
 		3A9A723328D15F5C0021E6F1 /* static.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A723228D15F5C0021E6F1 /* static.swift */; };
 		3AF36E0C28D21A6B00DA3EB3 /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
@@ -32,6 +34,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		3A8A035028E3F0800027B16E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		3A9A722628D15EBB0021E6F1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -60,6 +71,8 @@
 		3A238F0228D5E32F0033A580 /* License */ = {isa = PBXFileReference; lastKnownFileType = text; path = License; sourceTree = "<group>"; };
 		3A3DA87D28DC91C000BFEFAC /* render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = render.swift; sourceTree = "<group>"; tabWidth = 5; };
 		3A3DA88528DEDC5B00BFEFAC /* util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = util.swift; sourceTree = "<group>"; };
+		3A8A035228E3F0800027B16E /* IOReportDump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IOReportDump; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A8A035428E3F0800027B16E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = socpowerbuddy_swift; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A9A722B28D15EBB0021E6F1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3A9A723228D15F5C0021E6F1 /* static.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = static.swift; sourceTree = "<group>"; };
@@ -70,6 +83,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3A8A034F28E3F0800027B16E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3A8A035A28E3F6EE0027B16E /* libIOReport.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3A9A722528D15EBB0021E6F1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -84,11 +105,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3A8A035328E3F0800027B16E /* IOReportDump */ = {
+			isa = PBXGroup;
+			children = (
+				3A8A035428E3F0800027B16E /* main.swift */,
+			);
+			path = IOReportDump;
+			sourceTree = "<group>";
+		};
 		3A9A721F28D15EBB0021E6F1 = {
 			isa = PBXGroup;
 			children = (
 				3A238F0228D5E32F0033A580 /* License */,
 				3A9A722A28D15EBB0021E6F1 /* socpowerbuddy_swift */,
+				3A8A035328E3F0800027B16E /* IOReportDump */,
 				3A9A722928D15EBB0021E6F1 /* Products */,
 				3AF36E0928D21A3600DA3EB3 /* Frameworks */,
 			);
@@ -98,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */,
+				3A8A035228E3F0800027B16E /* IOReportDump */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -140,6 +171,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3A8A035128E3F0800027B16E /* IOReportDump */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3A8A035828E3F0800027B16E /* Build configuration list for PBXNativeTarget "IOReportDump" */;
+			buildPhases = (
+				3A8A034E28E3F0800027B16E /* Sources */,
+				3A8A034F28E3F0800027B16E /* Frameworks */,
+				3A8A035028E3F0800027B16E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IOReportDump;
+			productName = IOReportDump;
+			productReference = 3A8A035228E3F0800027B16E /* IOReportDump */;
+			productType = "com.apple.product-type.tool";
+		};
 		3A9A722728D15EBB0021E6F1 /* socpowerbuddy_swift */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3A9A722F28D15EBB0021E6F1 /* Build configuration list for PBXNativeTarget "socpowerbuddy_swift" */;
@@ -172,6 +220,9 @@
 				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1400;
 				TargetAttributes = {
+					3A8A035128E3F0800027B16E = {
+						CreatedOnToolsVersion = 14.0;
+					};
 					3A9A722728D15EBB0021E6F1 = {
 						CreatedOnToolsVersion = 14.0;
 					};
@@ -196,11 +247,20 @@
 			projectRoot = "";
 			targets = (
 				3A9A722728D15EBB0021E6F1 /* socpowerbuddy_swift */,
+				3A8A035128E3F0800027B16E /* IOReportDump */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3A8A034E28E3F0800027B16E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3A8A035528E3F0800027B16E /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3A9A722428D15EBB0021E6F1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -229,6 +289,32 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		3A8A035628E3F0800027B16E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YWGL7275TN;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = ./socpowerbuddy_swift/socpowerbuddy_bridge.h;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		3A8A035728E3F0800027B16E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YWGL7275TN;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = ./socpowerbuddy_swift/socpowerbuddy_bridge.h;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		3A9A722D28D15EBB0021E6F1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -285,7 +371,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = socpowerbuddy_bridge.h;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = ./socpowerbuddy_swift/socpowerbuddy_bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -339,6 +425,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = ./socpowerbuddy_swift/socpowerbuddy_bridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
@@ -370,6 +457,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3A8A035828E3F0800027B16E /* Build configuration list for PBXNativeTarget "IOReportDump" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3A8A035628E3F0800027B16E /* Debug */,
+				3A8A035728E3F0800027B16E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3A9A722328D15EBB0021E6F1 /* Build configuration list for PBXProject "socpowerbuddy_swift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -21,14 +21,16 @@ func eraseScreen() {
 
 func vd_init(sd: static_data) -> variating_data {
     var vd = variating_data()
-    for i in 0..<sd.cluster_core_counts.count+3 {
+    let cores = sd.cluster_core_counts
+    // let cores = [2, 2, 4, 4, 4, 4]
+    for i in 0..<sd.complex_pwr_channels.count {
         vd.cluster_residencies.append([])
         vd.cluster_pwrs.append(0)
         vd.cluster_freqs.append(0)
         vd.cluster_use.append(0)
         vd.cluster_sums.append(0)
         
-        if i <= sd.cluster_core_counts.count-1 {
+        if i <= cores.count-1 {
             vd.core_pwrs.append([])
             vd.core_residencies.append([])
             vd.core_freqs.append([])
@@ -37,8 +39,8 @@ func vd_init(sd: static_data) -> variating_data {
         }
     }
 
-    for i in 0..<sd.cluster_core_counts.count {
-        for _ in 0..<sd.cluster_core_counts[i] {
+    for i in 0..<cores.count {
+        for _ in 0..<cores[i] {
             vd.core_pwrs[i].append([])
             vd.core_residencies[i].append([])
             vd.core_use[i].append(0)

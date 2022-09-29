@@ -14,29 +14,27 @@ class renderer {
     private var ui: PythonObject?
     
     init() {
-        let fm = FileManager()
-        let ver = "/Library/Frameworks/Python.framework/Versions/Current"
-        let pylib = ver + "/Python"
+        var pyframework = "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework"
+        if case let findpy = run(bash: "find /Library/Developer/CommandLineTools -name '*Python3.framework' -type d").stdout, findpy != "" {
+            pyframework = String(findpy.split(separator: "\n")[0])
+        }
+        
+        let ver = pyframework + "/Versions/Current"
+        let pylib = ver + "/Python3"
         PythonLibrary.useLibrary(at: pylib)
         let tui = "dashing"
-        
         do {
             try Python.attemptImport(tui)
         } catch {
             print("No module named \(tui)")
             print("Installing \(tui)...")
             module_install: while true {
-                run(bash: "\(ver)/bin/pip3 install \(tui)")
-                var pysite = try? Python.attemptImport("site")
-                pysite = pysite?.getsitepackages()[0]
-                let modules = try? fm.contentsOfDirectory(atPath: String(pysite!) ?? "")
-                for module in modules! {
-                    if module.contains("dashing") {
-                        break module_install
-                    }
+                run(bash: "\(ver)/bin/python3 -m pip install \(tui)")
+                if run(bash: "\(ver)/bin/python3 -m pip list").stdout.contains(tui) {
+                    break module_install
                 }
             }
-            run(bash: "clear")
+            print("Successfully installed!")
         }
         self.dashing = try? Python.attemptImport(tui)
     }

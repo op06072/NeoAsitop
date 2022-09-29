@@ -23,6 +23,16 @@ internal class SensorsReader: Reader<[Sensor_p]> {
         super.init()
         
         var available: [String] = SMC.shared.getAllKeys()
+        for i in available {
+            if i.starts(with: "Ta") {
+                switch i {
+                case "Ta00", "Ta01", "Ta02", "Ta03", "Ta04", "Ta05", "Ta06", "TaLP", "TaLT", "TaLW", "TaRF", "TaRT", "TaRW", "TaTP":
+                    break
+                default:
+                    print(i)
+                }
+            }
+        }
         var list: [Sensor] = []
         var sensorsList = SensorsList
         

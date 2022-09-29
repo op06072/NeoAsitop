@@ -259,6 +259,10 @@ internal let SensorsList: [Sensor] = [
     
     Sensor(key: "TaLP", name: "Airflow left", group: .sensor, type: .temperature, platforms: Platform.apple),
     Sensor(key: "TaRF", name: "Airflow right", group: .sensor, type: .temperature, platforms: Platform.apple),
+    Sensor(key: "TaFL", name: "Airflow front left", group: .sensor, type: .temperature, platforms: Platform.apple),
+    Sensor(key: "TaFR", name: "Airflow front right", group: .sensor, type: .temperature, platforms: Platform.apple),
+    Sensor(key: "TaRL", name: "Airflow rear left", group: .sensor, type: .temperature, platforms: Platform.apple),
+    Sensor(key: "TaRR", name: "Airflow rear right", group: .sensor, type: .temperature, platforms: Platform.apple),
     
     Sensor(key: "TH0x", name: "NAND", group: .system, type: .temperature, platforms: Platform.apple),
     Sensor(key: "TB1T", name: "Battery 1", group: .system, type: .temperature, platforms: Platform.apple),
