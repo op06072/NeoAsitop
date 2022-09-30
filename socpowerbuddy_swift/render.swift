@@ -40,181 +40,135 @@ class renderer {
     }
     
     func term_layout(sd: static_data, colr: UInt8 = 2) {
+        var usage_gauges = self.dashing!.VSplit(
+            self.dashing!.HSplit(
+                self.dashing!.HGauge(
+                    title: "E-CPU Usage",
+                    val: 0,
+                    color: colr
+                ),
+                self.dashing!.HGauge(
+                    title: "P-CPU Usage",
+                    val: 0,
+                    color: colr
+                )
+            ),
+            self.dashing!.HSplit(
+                self.dashing!.HGauge(
+                    title: "GPU Usage",
+                    val: 0,
+                    color: colr
+                ),
+                self.dashing!.HGauge(
+                    title: "ANE",
+                    val: 0,
+                    color: colr
+                )
+            ),
+            title: "Processor Utilization",
+            border_color: colr
+        )
         if sd.fan_exist {
-            self.ui = self.dashing!.VSplit(
-                self.dashing!.VSplit(
-                    self.dashing!.HSplit(
-                        self.dashing!.HGauge(
-                            title: "E-CPU Usage",
-                            val: 0,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "P-CPU Usage",
-                            val: 0,
-                            color: colr
-                        )
-                    ),
-                    self.dashing!.HSplit(
-                        self.dashing!.HGauge(
-                            title: "GPU Usage",
-                            val: 0,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "ANE",
-                            val: 0,
-                            color: colr
-                        )
-                    ),
-                    self.dashing!.HSplit(
-                        self.dashing!.VSplit(
-                            self.dashing!.HGauge(
-                                val: 0,
-                                color: colr
-                            ),
-                            self.dashing!.HGauge(
-                                val: 0,
-                                color: colr
-                            ),
-                            title: "Fan Speed"
-                        ),
-                        self.dashing!.VSplit(
-                            self.dashing!.Text(
-                                text: "Left Fan",
-                                color: colr
-                            ),
-                            self.dashing!.Text(
-                                text: "Right Fan",
-                                color: colr
-                            ),
-                            title: " "
-                        )
-                    ),
-                    title: "Processor Utilization",
-                    border_color: colr
-                ),
-                self.dashing!.VSplit(
+            usage_gauges = self.dashing!.VSplit(
+                self.dashing!.HSplit(
                     self.dashing!.HGauge(
-                        title: "RAM Usage",
+                        title: "E-CPU Usage",
                         val: 0,
                         color: colr
                     ),
-                    self.dashing!.HSplit(
-                        self.dashing!.HGauge(
-                            title: "E-CPU B/W",
-                            val: 50,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "P-CPU B/W",
-                            val: 50,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "GPU B/W",
-                            val: 50,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "Media B/W",
-                            val: 50,
-                            color: colr
-                        ),
-                        title: "Memory Bandwidth"
-                    ),
-                    title: "Memory",
-                    border_color: colr
+                    self.dashing!.HGauge(
+                        title: "P-CPU Usage",
+                        val: 0,
+                        color: colr
+                    )
                 ),
                 self.dashing!.HSplit(
-                    self.dashing!.HChart(
-                        title: "CPU Power",
-                        color: colr
-                    ),
-                    self.dashing!.HChart(
-                        title: "GPU Power",
-                        color: colr
-                    ),
-                    title: "Power Chart",
-                    border_color: colr
-                )
-            )
-        } else {
-            self.ui = self.dashing!.VSplit(
-                self.dashing!.VSplit(
-                    self.dashing!.HSplit(
-                        self.dashing!.HGauge(
-                            title: "E-CPU Usage",
-                            val: 0,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "P-CPU Usage",
-                            val: 0,
-                            color: colr
-                        )
-                    ),
-                    self.dashing!.HSplit(
-                        self.dashing!.HGauge(
-                            title: "GPU Usage",
-                            val: 0,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "ANE",
-                            val: 0,
-                            color: colr
-                        )
-                    ),
-                    title: "Processor Utilization",
-                    border_color: colr
-                ),
-                self.dashing!.VSplit(
                     self.dashing!.HGauge(
-                        title: "RAM Usage",
+                        title: "GPU Usage",
                         val: 0,
                         color: colr
                     ),
-                    self.dashing!.HSplit(
-                        self.dashing!.HGauge(
-                            title: "E-CPU B/W",
-                            val: 50,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "P-CPU B/W",
-                            val: 50,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "GPU B/W",
-                            val: 50,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            title: "Media B/W",
-                            val: 50,
-                            color: colr
-                        ),
-                        title: "Memory Bandwidth"
-                    ),
-                    title: "Memory",
-                    border_color: colr
+                    self.dashing!.HGauge(
+                        title: "ANE",
+                        val: 0,
+                        color: colr
+                    )
                 ),
                 self.dashing!.HSplit(
-                    self.dashing!.HChart(
-                        title: "CPU Power",
-                        color: colr
+                    self.dashing!.VSplit(
+                        self.dashing!.HGauge(
+                            val: 0,
+                            color: colr
+                        ),
+                        self.dashing!.HGauge(
+                            val: 0,
+                            color: colr
+                        ),
+                        title: "Fan Speed"
                     ),
-                    self.dashing!.HChart(
-                        title: "GPU Power",
-                        color: colr
-                    ),
-                    title: "Power Chart",
-                    border_color: colr
-                )
+                    self.dashing!.VSplit(
+                        self.dashing!.Text(
+                            text: "Left Fan",
+                            color: colr
+                        ),
+                        self.dashing!.Text(
+                            text: "Right Fan",
+                            color: colr
+                        ),
+                        title: " "
+                    )
+                ),
+                title: "Processor Utilization",
+                border_color: colr
             )
         }
+        self.ui = self.dashing!.VSplit(
+            usage_gauges,
+            self.dashing!.VSplit(
+                self.dashing!.HGauge(
+                    title: "RAM Usage",
+                    val: 0,
+                    color: colr
+                ),
+                self.dashing!.HSplit(
+                    self.dashing!.HGauge(
+                        title: "E-CPU B/W",
+                        val: 50,
+                        color: colr
+                    ),
+                    self.dashing!.HGauge(
+                        title: "P-CPU B/W",
+                        val: 50,
+                        color: colr
+                    ),
+                    self.dashing!.HGauge(
+                        title: "GPU B/W",
+                        val: 50,
+                        color: colr
+                    ),
+                    self.dashing!.HGauge(
+                        title: "Media B/W",
+                        val: 50,
+                        color: colr
+                    ),
+                    title: "Memory Bandwidth"
+                ),
+                title: "Memory",
+                border_color: colr
+            ),
+            self.dashing!.HSplit(
+                self.dashing!.HChart(
+                    title: "CPU Power",
+                    color: colr
+                ),
+                self.dashing!.HChart(
+                    title: "GPU Power",
+                    color: colr
+                ),
+                title: "Power Chart",
+                border_color: colr
+            )
+        )
         
         
         var cpu_title = sd.extra[0]
@@ -294,7 +248,7 @@ class renderer {
         cpu_power_chart.datapoints = rvd.cpu_pwr.val
         gpu_power_chart.title = rvd.gpu_pwr.title
         gpu_power_chart.datapoints = rvd.gpu_pwr.val
-        
+        print(self.ui!.items[0].items[0].items)
         self.ui!.display()
     }
 }

@@ -446,12 +446,12 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         } else if vd.soc_temp["Airflow front left"] != nil {
             rvd.lf_label = PythonObject(
                 String(
-                    format:"Left Fan: %.1f RPM (%.1f°C, %.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow front left"]!, vd.soc_temp["Airflow rear left"]!
+                    format:"Left Fan: %.1f RPM (Front: %.1f°C Rear: %.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow front left"]!, vd.soc_temp["Airflow rear left"]!
                 )
             )
             rvd.rf_label = PythonObject(
                 String(
-                    format:"Right Fan: %.1f RPM (%.1f°C, %.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow front right"]!, vd.soc_temp["Airflow rear right"]!
+                    format:"Right Fan: %.1f RPM (Front: %.1f°C Rear: %.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow front right"]!, vd.soc_temp["Airflow rear right"]!
                 )
             )
         }
