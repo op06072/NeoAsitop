@@ -127,9 +127,3 @@ public extension OperatingSystemVersion {
         return "\(majorVersion)\(separator)\(minorVersion)\(separator)\(patchVersion)"
     }
 }
-
-extension URL {
-    func checkFileExist() -> Bool {
-        return FileManager.default.fileExists(atPath: self.path)
-    }
-}

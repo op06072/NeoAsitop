@@ -34,7 +34,7 @@ A Swift-based `asitop`-inspired command line tool for Apple Silicon (aka M1) Mac
 
 `neoasitop` uses the custom [`socpowerbuddy`](https://github.com/BitesPotatoBacks/SocPowerBuddy)-inspired logic, which allows access to a variety of hardware performance counters without sudo permission. `neoasitop` is lightweight and has minimal performance impact.
 
-**`neoasitop` only tested on Apple Silicon Macs on macOS Monterey!**
+**`neoasitop` only tested on Apple Silicon Macs (M1 Pro, M1 Ultra) on macOS Ventura!**
 
 ## Installation and Usage
 
@@ -71,6 +71,7 @@ OPTIONS:
 * CPU/GPU/Airflow temperature
 * Fan speed
 * System energy consumption
+* OS Version
 
 [`sysctl`](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/sysctl.3.html) is used to measure the following:
 

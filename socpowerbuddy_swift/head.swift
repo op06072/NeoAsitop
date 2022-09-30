@@ -48,6 +48,7 @@ struct static_data {
     var max_bw: Array<Float> = []
     var fan_exist = true
     var fan_limit: [[Double]] = [[0, 0], [0, 0]]
+    var os_ver: String = "macOS"
 }
 
 struct variating_data {

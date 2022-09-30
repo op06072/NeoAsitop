@@ -180,6 +180,7 @@ class renderer {
             }
             cpu_title += "\(sd.gpu_core_count)GPU+\(sd.ram_capacity)GB)"
         }
+        cpu_title += " \(sd.os_ver)"
         
         self.ui!.items[0].title = PythonObject(cpu_title)
     }

@@ -55,19 +55,12 @@ var cpu_avg_pwr_list: [Float] = []
 var gpu_avg_pwr_list: [Float] = []
 var system_avg_pwr_list: [Float] = []
 
+let procInfo = ProcessInfo()
+let systemVersion = procInfo.operatingSystemVersion
+sd.os_ver = "macOS \(systemVersion.majorVersion).\(systemVersion.minorVersion)"
+
 generateDvfmTable(sd: &sd)
 generateProcessorName(sd: &sd)
-
-if sd.extra[0].lowercased().contains("apple") {
-    if run(bash: "uname -m").stdout.lowercased() == "arm64" {
-        sd.extra.append("Apple")
-    } else {
-        sd.extra.append("Rosetta 2")
-    }
-}
-generateSocMax(sd: &sd)
-sd.max_pwr.append(8)
-sd.max_bw.append(7)
 
 var tmp = sd.extra[0].lowercased()
 //tmp = "m1 ultra"
@@ -99,10 +92,21 @@ if tmp.contains("pro") || tmp.contains("max") {
     let ttmp = sd.dvfm_states_holder
     sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[2]]
 }
-
 generateCoreCounts(sd: &sd)
 generateSiliconsIds(sd: &sd)
 generateMicroArchs(sd: &sd)
+
+if sd.extra[0].lowercased().contains("apple") {
+    if run(bash: "uname -m").stdout.lowercased() == "arm64" {
+        sd.extra.append("Apple")
+    } else {
+        sd.extra.append("Rosetta 2")
+    }
+}
+
+generateSocMax(sd: &sd)
+sd.max_pwr.append(8)
+sd.max_bw.append(7)
 
 iorep.cpusubchn = nil
 iorep.pwrsubchn = nil
