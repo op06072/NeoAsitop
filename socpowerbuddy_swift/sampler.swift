@@ -164,11 +164,11 @@ func sample(iorep: iorep_data,
                 let raw = Double(IOReportSimpleGetIntegerValue(sample, 0))
                 
                 if chann_name == last_name+" wr" {
-                    vd.bandwidth_cnt[last_name]!.append(raw/1e9)
+                    vd.bandwidth_cnt[last_name]!.append(raw/Double(cmd.interval/1e+3)/1e9)
                 } else if chann_name.contains(" rd") {
                     let last_tmp = chann_name.split(separator: " ")
                     last_name = last_tmp[0..<last_tmp.count-1].joined(separator: " ")
-                    vd.bandwidth_cnt[last_name] = [raw/1e9]
+                    vd.bandwidth_cnt[last_name] = [raw/Double(cmd.interval/1e+3)/1e9]
                 }
             }
         }
@@ -335,8 +335,8 @@ func format(sd: inout static_data, vd: inout variating_data) {
     }
 }
 
-func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: inout render_value_data, opt: [Double]) {
-    let average = Int(opt[0])
+func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: inout render_value_data, opt: Double) {
+    let average = Int(opt)
     var cores = [0, 0]
     for key in vd.soc_temp.keys {
         if key.contains("efficiency core") {
@@ -405,11 +405,11 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     rvd.ane.title = PythonObject(
         String(
             format:"ANE Usage: %.1f%% @ %.1f W",
-            (ane_value/sd.max_pwr[2]/Float(interval)*100),
-            (ane_value/Float(interval))
+            (ane_value/sd.max_pwr[2]*100),
+            (ane_value)
         )
     )
-    rvd.ane.val = PythonObject(ane_value/sd.max_pwr[2]/Float(interval)*100)
+    rvd.ane.val = PythonObject(ane_value/sd.max_pwr[2]*100)
     
     if sd.fan_exist {
         var left_ratio = (vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100
@@ -518,7 +518,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     }
     var form = ""
     
-    let ecpu_total_bw = (vd.bandwidth_cnt["ecpu dcs"]![0]+vd.bandwidth_cnt["ecpu dcs"]![1])/interval
+    let ecpu_total_bw = (vd.bandwidth_cnt["ecpu dcs"]![0]+vd.bandwidth_cnt["ecpu dcs"]![1])
     form = "E-CPU: %.\(LongShort)f GB/s"
     if rw_disp {
         form += " (R:%.\(LongShort)f GB/s W:%.\(LongShort)f GB/s)"
@@ -527,13 +527,13 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         String(
             format: form,
             ecpu_total_bw,
-            vd.bandwidth_cnt["ecpu dcs"]![0]/interval,
-            vd.bandwidth_cnt["ecpu dcs"]![1]/interval
+            vd.bandwidth_cnt["ecpu dcs"]![0],
+            vd.bandwidth_cnt["ecpu dcs"]![1]
         )
     )
-    rvd.ecpu_bw.val = PythonObject(ecpu_total_bw/Double(sd.max_bw[0])/interval*100)
+    rvd.ecpu_bw.val = PythonObject(ecpu_total_bw/Double(sd.max_bw[0])*100)
     
-    let pcpu_total_bw = (vd.bandwidth_cnt["pcpu dcs"]![0]+vd.bandwidth_cnt["pcpu dcs"]![1])/interval
+    let pcpu_total_bw = (vd.bandwidth_cnt["pcpu dcs"]![0]+vd.bandwidth_cnt["pcpu dcs"]![1])
     form = "P-CPU: %.\(LongShort)f GB/s"
     if rw_disp {
         form += " (R:%.\(LongShort)f GB/s W:%.\(LongShort)f GB/s)"
@@ -542,13 +542,13 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         String(
             format: form,
             pcpu_total_bw,
-            vd.bandwidth_cnt["pcpu dcs"]![0]/interval,
-            vd.bandwidth_cnt["pcpu dcs"]![1]/interval
+            vd.bandwidth_cnt["pcpu dcs"]![0],
+            vd.bandwidth_cnt["pcpu dcs"]![1]
         )
     )
-    rvd.pcpu_bw.val = PythonObject(pcpu_total_bw/Double(sd.max_bw[0])/interval*100)
+    rvd.pcpu_bw.val = PythonObject(pcpu_total_bw/Double(sd.max_bw[0])*100)
     
-    let gpu_total_bw = (vd.bandwidth_cnt["gfx dcs"]![0]+vd.bandwidth_cnt["gfx dcs"]![1])/interval
+    let gpu_total_bw = (vd.bandwidth_cnt["gfx dcs"]![0]+vd.bandwidth_cnt["gfx dcs"]![1])
     form = "GPU: %.\(baseLen+LongShort)f GB/s"
     if rw_disp {
         form += " (R:%.\(baseLen+LongShort)f GB/s W:%.\(baseLen+LongShort)f GB/s)"
@@ -557,13 +557,13 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         String(
             format: form,
             gpu_total_bw,
-            vd.bandwidth_cnt["gfx dcs"]![0]/interval,
-            vd.bandwidth_cnt["gfx dcs"]![1]/interval
+            vd.bandwidth_cnt["gfx dcs"]![0],
+            vd.bandwidth_cnt["gfx dcs"]![1]
         )
     )
-    rvd.gpu_bw.val = PythonObject(gpu_total_bw/Double(sd.max_bw[1])/interval*100)
+    rvd.gpu_bw.val = PythonObject(gpu_total_bw/Double(sd.max_bw[1])*100)
     
-    let media_total_bw = (vd.bandwidth_cnt["media dcs"]![0]+vd.bandwidth_cnt["media dcs"]![1])/interval
+    let media_total_bw = (vd.bandwidth_cnt["media dcs"]![0]+vd.bandwidth_cnt["media dcs"]![1])
     form = "Media: %.\(baseLen+LongShort)f GB/s"
     if rw_disp {
         form += " (R:%.\(baseLen+LongShort)f GB/s W:%.\(baseLen+LongShort)f GB/s)"
@@ -572,19 +572,19 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         String(
             format: form,
             media_total_bw,
-            vd.bandwidth_cnt["media dcs"]![0]/interval,
-            vd.bandwidth_cnt["media dcs"]![1]/interval
+            vd.bandwidth_cnt["media dcs"]![0],
+            vd.bandwidth_cnt["media dcs"]![1]
         )
     )
-    rvd.media_bw.val = PythonObject(media_total_bw/Double(sd.max_bw[2])/interval*100)
+    rvd.media_bw.val = PythonObject(media_total_bw/Double(sd.max_bw[2])*100)
     
-    let total_bw = (vd.bandwidth_cnt["dcs"]![0]+vd.bandwidth_cnt["dcs"]![1])/interval
+    let total_bw = (vd.bandwidth_cnt["dcs"]![0]+vd.bandwidth_cnt["dcs"]![1])
     rvd.total_bw = PythonObject(
         String(
             format: "Memory Bandwidth: %.3f GB/s (R:%.3f GB/s W:%.3f GB/s)",
             total_bw,
-            vd.bandwidth_cnt["dcs"]![0]/interval,
-            vd.bandwidth_cnt["dcs"]![1]/interval
+            vd.bandwidth_cnt["dcs"]![0],
+            vd.bandwidth_cnt["dcs"]![1]
         )
     )
     

@@ -36,10 +36,6 @@ var cmd = cmd_data()
 var rendering = renderer()
 var rvd = render_value_data()
 
-let color = options.color
-let avg = options.avg
-let interval = options.interval
-
 print("\nNeoAsitop - Sudoless performance monitoring CLI tool for Apple Silicon")
 print("Get help at `https://github.com/op06072/NeoAsitop`")
 print("Thanks to all the projects that inspired and referenced.")
@@ -48,7 +44,7 @@ print("\n [1/2] Loading NeoAsitop\n")
 cmd.interval = 175
 cmd.samples = 1
 
-while cmd.interval/1000 >= interval {
+while cmd.interval/1000 >= options.interval {
     cmd.interval /= 2
 }
 
@@ -168,9 +164,9 @@ while true {
     
     sample(iorep: iorep, sd: sd, vd: &vd, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
     format(sd: &sd, vd: &vd) // 포매팅
-    summary(sd: sd, vd: vd, rd: &rd, rvd: &rvd, opt: [avg, interval])
-    rendering.term_layout(sd: sd, colr: color) // 레이아웃 렌더링
+    summary(sd: sd, vd: vd, rd: &rd, rvd: &rvd, opt: options.avg)
+    rendering.term_layout(sd: sd, colr: options.color) // 레이아웃 렌더링
     eraseScreen()
     rendering.term_rendering(sd: sd, vd: vd, rvd: rvd) // 정보 출력
-    Thread.sleep(forTimeInterval: interval-(cmd.interval*1e-3))
+    Thread.sleep(forTimeInterval: options.interval-(cmd.interval*1e-3))
 }

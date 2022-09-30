@@ -31,6 +31,13 @@ var sub = IOReportCreateSubscription(nil, chn?.takeUnretainedValue(), &subchn, 0
 
 var samples = Array((IOReportCreateSamples(sub, subchn?.takeUnretainedValue(), nil).takeUnretainedValue() as Dictionary).values)[0] as! Array<CFDictionary>
 
+/*func IOReportGetInt(_ data: CFDictionary, _ mode: UInt8) {
+    var data2 = (data as! Dictionary<String, AnyObject>)["RawElements"] as! NSData
+    var arr = Array<UInt32>(repeating: 0, count: data2.count/MemoryLayout<UInt32>.stride)
+    arr.withUnsafeMutableBytes { data2.copyBytes(to: $0) }
+    print(arr)
+}*/
+
 for sample in samples {
     let group = IOReportChannelGetGroup(sample)
     var subgroup = IOReportChannelGetSubGroup(sample)
@@ -39,18 +46,21 @@ for sample in samples {
     if names.contains(group!) {
         switch IOReportChannelGetFormat(sample) {
         case kIORep.kIOReportFormatSimple.rawValue:
+            // IOReportGetInt(sample, 0)
             if subgroup == nil {
                 subgroup = ""
             }
             print("Grp: \(group!) Subgrp: \(subgroup!) Chn: \(chann_name!) "+String(format: "Value: %ld\n", IOReportSimpleGetIntegerValue(sample, 0)))
             break
         case kIORep.kIOReportFormatState.rawValue:
+            // IOReportGetInt(sample, 1)
             for i in 0..<IOReportStateGetCount(sample) {
                 let tmp = IOReportStateGetResidency(sample, i)
                 print("Grp: \(group!) Subgrp: \(subgroup!) Chn: \(chann_name!) "+String(format: "State: \(IOReportStateGetNameForIndex(sample, i)!) Res: %lld\n", tmp))
             }
             break
         case kIORep.kIOReportFormatSimpleArray.rawValue:
+            IOReportGetInt(sample, 2)
             for i in stride(from: 2, to: -1, by: -1) {
                 print("Grp: \(group!) Subgrp: \(subgroup!) Chn: \(chann_name!) "+String(format: "Arr: %llu\n", IOReportArrayGetValueAtIndex(sample, Int32(2-i))))
             }
