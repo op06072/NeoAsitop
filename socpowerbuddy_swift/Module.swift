@@ -71,8 +71,6 @@ open class Module: Module_p {
         } else if self.pauseState {
             self.disable()
         }
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(listenForModuleToggle), name: .toggleModule, object: nil)
     }
     
     deinit {

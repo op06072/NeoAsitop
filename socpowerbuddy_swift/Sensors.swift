@@ -28,12 +28,6 @@ public class Sensors: Module {
         return !self.sensorsReader.list.isEmpty
     }
     
-    private func checkIfNoSensorsEnabled() {
-        if self.sensorsReader.list.filter({ $0.state }).isEmpty {
-            NotificationCenter.default.post(name: .toggleModule, object: nil, userInfo: ["module": self.config.name, "state": false])
-        }
-    }
-    
     private func usageCallback(_ raw: [Sensor_p]?) {
         guard let value = raw, self.enabled else {
             return

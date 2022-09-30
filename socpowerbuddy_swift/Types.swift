@@ -94,53 +94,6 @@ public struct Color: KeyValue_p, Equatable {
 
 public typealias colorZones = (orange: Double, red: Double)
 
-public extension Notification.Name {
-    static let toggleSettings = Notification.Name("toggleSettings")
-    static let toggleModule = Notification.Name("toggleModule")
-    static let togglePopup = Notification.Name("togglePopup")
-    static let toggleWidget = Notification.Name("toggleWidget")
-    static let openModuleSettings = Notification.Name("openModuleSettings")
-    static let clickInSettings = Notification.Name("clickInSettings")
-    static let refreshPublicIP = Notification.Name("refreshPublicIP")
-    static let resetTotalNetworkUsage = Notification.Name("resetTotalNetworkUsage")
-    static let syncFansControl = Notification.Name("syncFansControl")
-    static let toggleOneView = Notification.Name("toggleOneView")
-    static let widgetRearrange = Notification.Name("widgetRearrange")
-    static let pause = Notification.Name("pause")
-}
-
-public var isARM: Bool {
-    get {
-        var value = false
-        #if arch(arm64)
-        value = true
-        #endif
-        return value
-    }
-}
-
-public let notificationLevels: [KeyValue_t] = [
-    KeyValue_t(key: "Disabled", value: "Disabled"),
-    KeyValue_t(key: "10%", value: "10%"),
-    KeyValue_t(key: "15%", value: "15%"),
-    KeyValue_t(key: "20%", value: "20%"),
-    KeyValue_t(key: "25%", value: "25%"),
-    KeyValue_t(key: "30%", value: "30%"),
-    KeyValue_t(key: "40%", value: "40%"),
-    KeyValue_t(key: "50%", value: "50%"),
-    KeyValue_t(key: "55%", value: "55%"),
-    KeyValue_t(key: "60%", value: "60%"),
-    KeyValue_t(key: "65%", value: "65%"),
-    KeyValue_t(key: "70%", value: "70%"),
-    KeyValue_t(key: "75%", value: "75%"),
-    KeyValue_t(key: "80%", value: "80%"),
-    KeyValue_t(key: "85%", value: "85%"),
-    KeyValue_t(key: "90%", value: "90%"),
-    KeyValue_t(key: "95%", value: "95%"),
-    KeyValue_t(key: "97%", value: "97%"),
-    KeyValue_t(key: "100%", value: "100%")
-]
-
 public struct Scale: KeyValue_p, Equatable {
     public let key: String
     public let value: String

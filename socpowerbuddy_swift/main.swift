@@ -19,13 +19,13 @@ if run(bash: "which xcrun").stdout == "command not found" {
 
 struct NeoasitopOptions: ParsableArguments {
     @Option(name: .shortAndLong, help: "Display interval and sampling interval for info gathering (seconds)")
-    var interval = 1
+    var interval: Double = 1
     
     @Option(name: .shortAndLong, help: "Choose display color (0~8)")
     var color: UInt8 = 2
     
     @Option(name: .long, help: "Interval for averaged values (seconds)")
-    var avg = 30
+    var avg: Double = 30
 }
 
 let options = NeoasitopOptions.parseOrExit()
@@ -37,8 +37,8 @@ var rendering = renderer()
 var rvd = render_value_data()
 
 let color = options.color
-let avg = Double(options.avg)
-let interval = Double(options.interval)
+let avg = options.avg
+let interval = options.interval
 
 print("\nNeoAsitop - Sudoless performance monitoring CLI tool for Apple Silicon")
 print("Get help at `https://github.com/op06072/NeoAsitop`")
@@ -47,6 +47,10 @@ print("\n [1/2] Loading NeoAsitop\n")
 
 cmd.interval = 175
 cmd.samples = 1
+
+while cmd.interval/1000 >= interval {
+    cmd.interval /= 2
+}
 
 var cpu_peak_pwr: Float = 0
 var gpu_peak_pwr: Float = 0

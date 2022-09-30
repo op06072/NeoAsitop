@@ -429,8 +429,8 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
                 right_ratio
             )
         )
-        rvd.lfan.val = PythonObject((vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100)
-        rvd.rfan.val = PythonObject((vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])*100)
+        rvd.lfan.val = PythonObject(left_ratio)
+        rvd.rfan.val = PythonObject(right_ratio)
         
         if vd.soc_temp["Airflow left"] != nil {
             rvd.lf_label = PythonObject(
@@ -463,7 +463,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             ram_power += vd.cluster_pwrs[idx] as! Float
         }
     }
-    ram_power /= Float(interval)*1000
+    ram_power /= 1000
     if rvd.ram_pwr_max < ram_power {
         rvd.ram_pwr_max = ram_power
     }
@@ -588,7 +588,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         )
     )
     
-    let sys_pwr_W = vd.soc_power["System Total"]!/interval
+    let sys_pwr_W = vd.soc_power["System Total"]!
     if rvd.sys_pwr_max < sys_pwr_W {
         rvd.sys_pwr_max = sys_pwr_W
     }
@@ -611,7 +611,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             cpu_power += vd.cluster_pwrs[idx] as! Float
         }
     }
-    cpu_power /= Float(interval)*1000
+    cpu_power /= 1000
     if rvd.cpu_pwr_max < cpu_power {
         rvd.cpu_pwr_max = cpu_power
     }
@@ -638,7 +638,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             gpu_power += vd.cluster_pwrs[idx] as! Float
         }
     }
-    gpu_power /= Float(interval)*1000
+    gpu_power /= 1000
     if rvd.gpu_pwr_max < gpu_power {
         rvd.gpu_pwr_max = gpu_power
     }
