@@ -248,7 +248,6 @@ class renderer {
         cpu_power_chart.datapoints = rvd.cpu_pwr.val
         gpu_power_chart.title = rvd.gpu_pwr.title
         gpu_power_chart.datapoints = rvd.gpu_pwr.val
-        print(self.ui!.items[0].items[0].items)
         self.ui!.display()
     }
 }
