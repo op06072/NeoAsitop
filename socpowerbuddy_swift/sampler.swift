@@ -500,17 +500,32 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     )
     rvd.ram.val = PythonObject(Int(vd.mem_percent))
     var w = winsize()
+    var baseLen = 0
     var LongShort = 0
+    var rw_disp = false
     if ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 {
         if w.ws_col >= 177 {
+            LongShort = 2
+        } else if w.ws_col >= 164 {
             LongShort = 1
         }
+        if w.ws_col >= 152 {
+            baseLen = 1
+        }
+        if w.ws_col >= 136 {
+            rw_disp = true
+        }
     }
+    var form = ""
     
     let ecpu_total_bw = (vd.bandwidth_cnt["ecpu dcs"]![0]+vd.bandwidth_cnt["ecpu dcs"]![1])/interval
+    form = "E-CPU: %.\(LongShort)f GB/s"
+    if rw_disp {
+        form += " (R:%.\(LongShort)f GB/s W:%.\(LongShort)f GB/s)"
+    }
     rvd.ecpu_bw.title = PythonObject(
         String(
-            format: "E-CPU: %.\(1+LongShort)f GB/s (R:%.\(1+LongShort)f GB/s W:%.\(1+LongShort)f GB/s)",
+            format: form,
             ecpu_total_bw,
             vd.bandwidth_cnt["ecpu dcs"]![0]/interval,
             vd.bandwidth_cnt["ecpu dcs"]![1]/interval
@@ -519,9 +534,13 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     rvd.ecpu_bw.val = PythonObject(ecpu_total_bw/Double(sd.max_bw[0])/interval*100)
     
     let pcpu_total_bw = (vd.bandwidth_cnt["pcpu dcs"]![0]+vd.bandwidth_cnt["pcpu dcs"]![1])/interval
+    form = "P-CPU: %.\(LongShort)f GB/s"
+    if rw_disp {
+        form += " (R:%.\(LongShort)f GB/s W:%.\(LongShort)f GB/s)"
+    }
     rvd.pcpu_bw.title = PythonObject(
         String(
-            format: "P-CPU: %.\(1+LongShort)f GB/s (R:%.\(1+LongShort)f GB/s W:%.\(1+LongShort)f GB/s)",
+            format: form,
             pcpu_total_bw,
             vd.bandwidth_cnt["pcpu dcs"]![0]/interval,
             vd.bandwidth_cnt["pcpu dcs"]![1]/interval
@@ -530,9 +549,13 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     rvd.pcpu_bw.val = PythonObject(pcpu_total_bw/Double(sd.max_bw[0])/interval*100)
     
     let gpu_total_bw = (vd.bandwidth_cnt["gfx dcs"]![0]+vd.bandwidth_cnt["gfx dcs"]![1])/interval
+    form = "GPU: %.\(baseLen+LongShort)f GB/s"
+    if rw_disp {
+        form += " (R:%.\(baseLen+LongShort)f GB/s W:%.\(baseLen+LongShort)f GB/s)"
+    }
     rvd.gpu_bw.title = PythonObject(
         String(
-            format: "GPU: %.\(2+LongShort)f GB/s (R:%.\(2+LongShort)f GB/s W:%.\(2+LongShort)f GB/s)",
+            format: form,
             gpu_total_bw,
             vd.bandwidth_cnt["gfx dcs"]![0]/interval,
             vd.bandwidth_cnt["gfx dcs"]![1]/interval
@@ -541,9 +564,13 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     rvd.gpu_bw.val = PythonObject(gpu_total_bw/Double(sd.max_bw[1])/interval*100)
     
     let media_total_bw = (vd.bandwidth_cnt["media dcs"]![0]+vd.bandwidth_cnt["media dcs"]![1])/interval
+    form = "Media: %.\(baseLen+LongShort)f GB/s"
+    if rw_disp {
+        form += " (R:%.\(baseLen+LongShort)f GB/s W:%.\(baseLen+LongShort)f GB/s)"
+    }
     rvd.media_bw.title = PythonObject(
         String(
-            format: "Media: %.\(2+LongShort)f GB/s (R:%.\(2+LongShort)f GB/s W:%.\(2+LongShort)f GB/s)",
+            format: form,
             media_total_bw,
             vd.bandwidth_cnt["media dcs"]![0]/interval,
             vd.bandwidth_cnt["media dcs"]![1]/interval
