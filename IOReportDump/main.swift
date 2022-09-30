@@ -60,7 +60,7 @@ for sample in samples {
             }
             break
         case kIORep.kIOReportFormatSimpleArray.rawValue:
-            IOReportGetInt(sample, 2)
+            // IOReportGetInt(sample, 2)
             for i in stride(from: 2, to: -1, by: -1) {
                 print("Grp: \(group!) Subgrp: \(subgroup!) Chn: \(chann_name!) "+String(format: "Arr: %llu\n", IOReportArrayGetValueAtIndex(sample, Int32(2-i))))
             }
