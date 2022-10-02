@@ -36,6 +36,10 @@ A Swift-based `asitop`-inspired command line tool for Apple Silicon (aka M1) Mac
 
 **`neoasitop` only tested on Apple Silicon Macs (M1 Pro, M1 Ultra) on macOS Ventura!**
 
+* Test list
+  * 2021 MacBook Pro[MacBookPro18,1] (M1 Pro, Ventura)
+  * 2022 Mac Studio[Mac13,2] (M1 Ultra, Ventura)
+
 ## Installation and Usage
 
 1. Download the .zip file from [latest release](https://github.com/op06072/NeoAsitop/releases).
