@@ -856,7 +856,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "F3BD51E5-A5CF-4FBA-8CE9-E4AE9BC0C9AC"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "socpowerbuddy_swift/readers.swift"
@@ -880,7 +880,7 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "84"
                   endingLineNumber = "84"
-                  offsetFromSymbolStart = "2176">
+                  offsetFromSymbolStart = "2224">
                </Location>
                <Location
                   uuid = "F3BD51E5-A5CF-4FBA-8CE9-E4AE9BC0C9AC - 24403db58b6421c6"
@@ -1025,6 +1025,38 @@
             endingLineNumber = "347"
             landmarkName = "initHIDSensors()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "69C9F710-E5B9-4D43-944F-7CA921469970 - 4dc0cd2ce2def283"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.String, Swift.Double) -&gt; () in socpowerbuddy_swift.SensorsReader.initHIDSensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "347"
+                  endingLineNumber = "347"
+                  offsetFromSymbolStart = "136">
+               </Location>
+               <Location
+                  uuid = "69C9F710-E5B9-4D43-944F-7CA921469970 - 4dc0cd2ce2def283"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.String, Swift.Double) -&gt; () in socpowerbuddy_swift.SensorsReader.initHIDSensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "347"
+                  endingLineNumber = "347"
+                  offsetFromSymbolStart = "168">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1041,6 +1073,38 @@
             endingLineNumber = "346"
             landmarkName = "initHIDSensors()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F56B3753-B152-4A99-A66D-5E95A1E490AE - f9f8d86cd5a6d910"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "socpowerbuddy_swift.SensorsReader.initHIDSensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "346"
+                  endingLineNumber = "346"
+                  offsetFromSymbolStart = "396">
+               </Location>
+               <Location
+                  uuid = "F56B3753-B152-4A99-A66D-5E95A1E490AE - 4dc0cd2ce2def283"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.String, Swift.Double) -&gt; () in socpowerbuddy_swift.SensorsReader.initHIDSensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "347"
+                  endingLineNumber = "347"
+                  offsetFromSymbolStart = "136">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1057,13 +1121,45 @@
             endingLineNumber = "345"
             landmarkName = "initHIDSensors()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "779A5E5F-FDA6-4C55-853D-0CDAF67A61CD - f9f8d86cd5a6d973"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "socpowerbuddy_swift.SensorsReader.initHIDSensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "345"
+                  endingLineNumber = "345"
+                  offsetFromSymbolStart = "336">
+               </Location>
+               <Location
+                  uuid = "779A5E5F-FDA6-4C55-853D-0CDAF67A61CD - f9f8d86cd5a6d973"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "socpowerbuddy_swift.SensorsReader.initHIDSensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "345"
+                  endingLineNumber = "345"
+                  offsetFromSymbolStart = "372">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "DE65950B-3191-4EE8-9605-43856B5D6B6E"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "socpowerbuddy_swift/readers.swift"
@@ -1730,7 +1826,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "1A44B96C-585C-4CBB-8E90-97E50D695562"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "socpowerbuddy_swift/readers.swift"
@@ -2519,8 +2615,8 @@
             filePath = "socpowerbuddy_swift/sampler.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "647"
-            endingLineNumber = "647"
+            startingLineNumber = "659"
+            endingLineNumber = "659"
             landmarkName = "summary(sd:vd:rd:rvd:opt:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2713,7 +2809,7 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "118"
                   endingLineNumber = "118"
-                  offsetFromSymbolStart = "2728">
+                  offsetFromSymbolStart = "2904">
                </Location>
                <Location
                   uuid = "DA23B847-7116-4A39-B28B-E4CC5EC977BE - 4a1aa8ea73e16527"
@@ -2737,7 +2833,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "67542465-DA0F-4FD2-8F51-379B9D6F7DF0"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "socpowerbuddy_swift/readers.swift"
@@ -2761,7 +2857,7 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "197"
                   endingLineNumber = "197"
-                  offsetFromSymbolStart = "760">
+                  offsetFromSymbolStart = "936">
                </Location>
                <Location
                   uuid = "67542465-DA0F-4FD2-8F51-379B9D6F7DF0 - 1de1d72f204f72d6"
@@ -2800,7 +2896,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "092A152F-3624-4E6B-AE72-87810D9D4CFB"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "socpowerbuddy_swift/readers.swift"
@@ -2816,7 +2912,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "A8665DCB-6FC7-42F5-A4AE-535EB3BBD58D"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "socpowerbuddy_swift/readers.swift"
@@ -2840,7 +2936,7 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "40"
                   endingLineNumber = "40"
-                  offsetFromSymbolStart = "736">
+                  offsetFromSymbolStart = "784">
                </Location>
                <Location
                   uuid = "A8665DCB-6FC7-42F5-A4AE-535EB3BBD58D - 4b4eb42723b31a35"
@@ -2858,6 +2954,22 @@
                   offsetFromSymbolStart = "40">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A4E916D5-EFA2-4B02-AC72-90EECA36E362"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/sampler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "633"
+            endingLineNumber = "633"
+            landmarkName = "summary(sd:vd:rd:rvd:opt:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

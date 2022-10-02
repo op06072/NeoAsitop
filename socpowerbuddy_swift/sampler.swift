@@ -629,12 +629,24 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     if rvd.sys_pwr_avg.count > average {
         rvd.sys_pwr_avg = rvd.sys_pwr_avg[1..<average]
     }
+    var throttle = ""
+    switch ProcessInfo.processInfo.thermalState.rawValue {
+    case 0:
+        throttle = " throttle: no"
+        break
+    case 1, 2, 3:
+        throttle = " throttle: yes"
+        break
+    default:
+        break
+    }
     rvd.system_pwr = PythonObject(
         String(
-            format: "System Power: %.2fW (avg: %.2fW peak: %.2fW)",
+            format: "System Power: %.2fW (avg: %.2fW peak: %.2fW)%@",
             sys_pwr_W,
             Double(rvd.sys_pwr_avg.reduce(PythonObject(0), +))!/Double(rvd.sys_pwr_avg.count),
-            rvd.sys_pwr_max
+            rvd.sys_pwr_max,
+            throttle
         )
     )
     
