@@ -70,6 +70,7 @@ struct variating_data {
     var bandwidth_cnt: Dictionary<String, Array<Double>> = [:]
     
     var soc_temp: Dictionary<String, Double> = [:]
+    var thermal_pressure: Int = 0
     var fan_speed: Dictionary<String, Double> = [:]
     var soc_power: Dictionary<String, Double> = [:]
     var soc_energy: Double = 0
