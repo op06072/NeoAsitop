@@ -164,8 +164,11 @@ while true {
     
     sample(iorep: iorep, sd: sd, vd: &vd, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
     format(sd: &sd, vd: &vd) // 포매팅
+    //print("formatting finish")
     summary(sd: sd, vd: vd, rd: &rd, rvd: &rvd, opt: options.avg)
+    //print("summarize finish")
     rendering.term_layout(sd: sd, colr: options.color) // 레이아웃 렌더링
+    //print("layout render finish")
     eraseScreen()
     rendering.term_rendering(sd: sd, vd: vd, rvd: rvd) // 정보 출력
     Thread.sleep(forTimeInterval: options.interval-(cmd.interval*1e-3))

@@ -108,7 +108,6 @@ func sample(iorep: iorep_data,
                     package += value
                 }
             }*/
-            
             for ii in 0..<sd.complex_pwr_channels.count {
                 /*if group == "PMP" {
                     if chann_name!.contains("RD") && (chann_name!.contains("BW") == false) && (value > 0) {
@@ -131,8 +130,14 @@ func sample(iorep: iorep_data,
                 }
                 
                 if sd.extra[0].lowercased() == "apple m1" || sd.extra[0].lowercased() == "apple m2" {
-                    if group?.uppercased() == "PMP" && chann_name?.uppercased() == "GPU" {
-                        vd.cluster_pwrs[-1] = Float(value)/Float(cmd.interval/1e+3)
+                    if group?.uppercased() == "PMP" {
+                        if chann_name?.uppercased() == "GPU" {
+                            vd.cluster_pwrs[2] = Float(value)/Float(cmd.interval/1e+3)
+                        } else if chann_name?.uppercased() == "ANE" {
+                            vd.cluster_pwrs[3] = Float(value)/Float(cmd.interval/1e+3)
+                        } else if chann_name?.uppercased() == "DRAM" {
+                            vd.cluster_pwrs[4] = Float(value)/Float(cmd.interval/1e+3)
+                        }
                     }
                 }
             }
@@ -216,13 +221,19 @@ func getSensorVal(vd: inout variating_data, set_mode: Bool = false, sd: inout st
             if sns.name != "Fastest Fan" {
                 let tmp = sns as! Fan
                 if set_mode {
-                    if sns.name == "Left fan" {
+                    if sd.fan_mode == 2{
+                        if sns.name == "Left fan" {
+                            sd.fan_limit[0][0] = tmp.minSpeed
+                            sd.fan_limit[0][1] = tmp.maxSpeed
+                        } else {
+                            sd.fan_limit[1][0] = tmp.minSpeed
+                            sd.fan_limit[1][1] = tmp.maxSpeed
+                        }
+                    } else if sd.fan_mode == 1 {
                         sd.fan_limit[0][0] = tmp.minSpeed
                         sd.fan_limit[0][1] = tmp.maxSpeed
-                    } else {
-                        sd.fan_limit[1][0] = tmp.minSpeed
-                        sd.fan_limit[1][1] = tmp.maxSpeed
                     }
+                    
                 }
             }
         } else if sns.type == SensorType.power {
@@ -352,9 +363,9 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     rd.ecpu.temp /= Double(cores[0])
     rd.pcpu.temp /= Double(cores[1])
     
-    var ecpu = 0
-    var pcpu = 0
-    var gpu = 0
+    var ecpu: Float = 0
+    var pcpu: Float = 0
+    var gpu: Float = 0
     var ecpu_use: Float = 0
     var pcpu_use: Float = 0
     for (idx, cluster) in sd.complex_freq_channels.enumerated() {
@@ -380,14 +391,14 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             gpu += 1
         }
     }
-    rd.ecpu.usage = 100 - rd.ecpu.usage/Float(ecpu)
+    rd.ecpu.usage = 100 - rd.ecpu.usage/ecpu
     // rd.ecpu.freq /= Float(ecpu)
     rd.ecpu.freq /= ecpu_use
-    rd.pcpu.usage = 100 - rd.pcpu.usage/Float(pcpu)
+    rd.pcpu.usage = 100 - rd.pcpu.usage/pcpu
     // rd.pcpu.freq /= Float(pcpu)
     rd.pcpu.freq /= pcpu_use
-    rd.gpu.usage = 100 - rd.gpu.usage/Float(gpu)
-    rd.gpu.freq /= Float(gpu)
+    rd.gpu.usage = 100 - rd.gpu.usage/gpu
+    rd.gpu.freq /= gpu
     
     rvd.ecpu.title = PythonObject(String(format:"E-CPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.ecpu.usage, rd.ecpu.freq, rd.ecpu.temp))
     rvd.ecpu.val = PythonObject(rd.ecpu.usage)
@@ -411,47 +422,69 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     )
     rvd.ane.val = PythonObject(ane_value/sd.max_pwr[2]*100)
     
-    if sd.fan_exist {
-        var left_ratio = (vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100
-        var right_ratio = (vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])*100
-        
-        if left_ratio < 0 {
-            left_ratio = 0
-        }
-        if right_ratio < 0 {
-            right_ratio = 0
-        }
-        
-        rvd.lfan.title = PythonObject(
-            String(
-                format:"Fan Usage: %.2f%% & %.2f%%",
-                left_ratio,
-                right_ratio
+    if sd.fan_mode > 0 {
+        if sd.fan_mode == 2 {
+            var left_ratio = (vd.fan_speed["Left fan"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100
+            var right_ratio = (vd.fan_speed["Right fan"]!-sd.fan_limit[1][0])/(sd.fan_limit[1][1]-sd.fan_limit[1][0])*100
+            
+            if left_ratio < 0 {
+                left_ratio = 0
+            }
+            if right_ratio < 0 {
+                right_ratio = 0
+            }
+            
+            rvd.lfan.title = PythonObject(
+                String(
+                    format:"Fan Usage: %.2f%% & %.2f%%",
+                    left_ratio,
+                    right_ratio
+                )
             )
-        )
-        rvd.lfan.val = PythonObject(left_ratio)
-        rvd.rfan.val = PythonObject(right_ratio)
-        
-        if vd.soc_temp["Airflow left"] != nil {
+            rvd.lfan.val = PythonObject(left_ratio)
+            rvd.rfan.val = PythonObject(right_ratio)
+            
+            if vd.soc_temp["Airflow left"] != nil {
+                rvd.lf_label = PythonObject(
+                    String(
+                        format:"Left Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow left"]!
+                    )
+                )
+                rvd.rf_label = PythonObject(
+                    String(
+                        format:"Right Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow right"]!
+                    )
+                )
+            } else if vd.soc_temp["Airflow front left"] != nil {
+                rvd.lf_label = PythonObject(
+                    String(
+                        format:"Left Fan: %.1f RPM (Front: %.1f°C Rear: %.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow front left"]!, vd.soc_temp["Airflow rear left"]!
+                    )
+                )
+                rvd.rf_label = PythonObject(
+                    String(
+                        format:"Right Fan: %.1f RPM (Front: %.1f°C Rear: %.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow front right"]!, vd.soc_temp["Airflow rear right"]!
+                    )
+                )
+            }
+        } else if sd.fan_mode == 1 {
+            var ratio = (vd.fan_speed["Fan #0"]!-sd.fan_limit[0][0])/(sd.fan_limit[0][1]-sd.fan_limit[0][0])*100
+            if ratio < 0 {
+                ratio = 0
+            }
+            
+            rvd.lfan.title = PythonObject(
+                String(
+                    format: "Fan Usage: %2.f%%",
+                    ratio
+                )
+            )
+            rvd.lfan.val = PythonObject(ratio)
+            
             rvd.lf_label = PythonObject(
                 String(
-                    format:"Left Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow left"]!
-                )
-            )
-            rvd.rf_label = PythonObject(
-                String(
-                    format:"Right Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow right"]!
-                )
-            )
-        } else if vd.soc_temp["Airflow front left"] != nil {
-            rvd.lf_label = PythonObject(
-                String(
-                    format:"Left Fan: %.1f RPM (Front: %.1f°C Rear: %.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow front left"]!, vd.soc_temp["Airflow rear left"]!
-                )
-            )
-            rvd.rf_label = PythonObject(
-                String(
-                    format:"Right Fan: %.1f RPM (Front: %.1f°C Rear: %.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow front right"]!, vd.soc_temp["Airflow rear right"]!
+                    format: "Fan: %.1f RPM",
+                    vd.fan_speed["Fan #0"]!
                 )
             )
         }

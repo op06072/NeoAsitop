@@ -168,14 +168,6 @@ public func debug(_ message: String, log: NextLog = NextLog.shared, file: String
     log.log(level: .debug, message: message, file: file, line: line)
 }
 
-public func info(_ message: String, log: NextLog = NextLog.shared, file: String = #file, line: UInt = #line) {
-    log.log(level: .info, message: message, file: file, line: line)
-}
-
 public func error(_ message: String, log: NextLog = NextLog.shared, file: String = #file, line: UInt = #line) {
-    log.log(level: .error, message: message, file: file, line: line)
-}
-
-public func error_msg(_ message: String, log: NextLog = NextLog.shared, file: String = #file, line: UInt = #line) {
     log.log(level: .error, message: message, file: file, line: line)
 }

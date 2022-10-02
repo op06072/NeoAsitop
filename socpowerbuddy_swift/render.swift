@@ -40,34 +40,51 @@ class renderer {
     }
     
     func term_layout(sd: static_data, colr: UInt8 = 2) {
-        var usage_gauges = self.dashing!.VSplit(
-            self.dashing!.HSplit(
-                self.dashing!.HGauge(
-                    title: "E-CPU Usage",
-                    val: 0,
-                    color: colr
+        var fan_gauges = PythonObject("")
+        if sd.fan_mode == 2 {
+            fan_gauges = self.dashing!.HSplit(
+                self.dashing!.VSplit(
+                    self.dashing!.HGauge(
+                        val: 0,
+                        color: colr
+                    ),
+                    self.dashing!.HGauge(
+                        val: 0,
+                        color: colr
+                    ),
+                    title: "Fan Speed"
                 ),
-                self.dashing!.HGauge(
-                    title: "P-CPU Usage",
-                    val: 0,
-                    color: colr
+                self.dashing!.VSplit(
+                    self.dashing!.Text(
+                        text: "Left Fan",
+                        color: colr
+                    ),
+                    self.dashing!.Text(
+                        text: "Right Fan",
+                        color: colr
+                    ),
+                    title: " "
                 )
-            ),
-            self.dashing!.HSplit(
-                self.dashing!.HGauge(
-                    title: "GPU Usage",
-                    val: 0,
-                    color: colr
+            )
+        } else if sd.fan_mode == 1 {
+            fan_gauges = self.dashing!.HSplit(
+                self.dashing!.VSplit(
+                    self.dashing!.HGauge(
+                        val: 0,
+                        color: colr
+                    ),
+                    title: "Fan Speed"
                 ),
-                self.dashing!.HGauge(
-                    title: "ANE",
-                    val: 0,
-                    color: colr
+                self.dashing!.VSplit(
+                    self.dashing!.Text(
+                        text: "Fan",
+                        color: colr
+                    ),
+                    title: " "
                 )
-            ),
-            title: "Processor Utilization",
-            border_color: colr
-        )
+            )
+        }
+        var usage_gauges = PythonObject("")
         if sd.fan_exist {
             usage_gauges = self.dashing!.VSplit(
                 self.dashing!.HSplit(
@@ -93,29 +110,34 @@ class renderer {
                         val: 0,
                         color: colr
                     )
+                ), fan_gauges,
+                title: "Processor Utilization",
+                border_color: colr
+            )
+        } else {
+            usage_gauges = self.dashing!.VSplit(
+                self.dashing!.HSplit(
+                    self.dashing!.HGauge(
+                        title: "E-CPU Usage",
+                        val: 0,
+                        color: colr
+                    ),
+                    self.dashing!.HGauge(
+                        title: "P-CPU Usage",
+                        val: 0,
+                        color: colr
+                    )
                 ),
                 self.dashing!.HSplit(
-                    self.dashing!.VSplit(
-                        self.dashing!.HGauge(
-                            val: 0,
-                            color: colr
-                        ),
-                        self.dashing!.HGauge(
-                            val: 0,
-                            color: colr
-                        ),
-                        title: "Fan Speed"
+                    self.dashing!.HGauge(
+                        title: "GPU Usage",
+                        val: 0,
+                        color: colr
                     ),
-                    self.dashing!.VSplit(
-                        self.dashing!.Text(
-                            text: "Left Fan",
-                            color: colr
-                        ),
-                        self.dashing!.Text(
-                            text: "Right Fan",
-                            color: colr
-                        ),
-                        title: " "
+                    self.dashing!.HGauge(
+                        title: "ANE",
+                        val: 0,
+                        color: colr
                     )
                 ),
                 title: "Processor Utilization",
@@ -203,15 +225,17 @@ class renderer {
             let fan_gauge = fan_gauges.items[0]
             let fan_label = fan_gauges.items[1]
             let lfan_gauge = fan_gauge.items[0]
-            let rfan_gauge = fan_gauge.items[1]
             let lfan_label = fan_label.items[0]
-            let rfan_label = fan_label.items[1]
             
             fan_gauge.title = rvd.lfan.title
             lfan_gauge.value = rvd.lfan.val
-            rfan_gauge.value = rvd.rfan.val
             lfan_label.text = rvd.lf_label
-            rfan_label.text = rvd.rf_label
+            if sd.fan_mode == 2 {
+                let rfan_gauge = fan_gauge.items[1]
+                let rfan_label = fan_label.items[1]
+                rfan_gauge.value = rvd.rfan.val
+                rfan_label.text = rvd.rf_label
+            }
         }
         
         let ram_gauges = memory_gauges.items[0]

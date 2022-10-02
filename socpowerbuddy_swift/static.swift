@@ -126,6 +126,10 @@ func generateCoreCounts(sd: inout static_data) {
         }
         if ttmp.lowercased().contains("air") {
             sd.fan_exist = false
+        } else if ttmp.lowercased().contains("mini") {
+            sd.fan_mode = 1
+        } else {
+            sd.fan_mode = 2
         }
     } else {
         sd.fan_exist = false
@@ -355,10 +359,17 @@ func generateSocMax(sd: inout static_data) {
             } else if tmp.contains("ultra") {
                 sd.max_pwr = [60, 120]
                 sd.max_bw = [500, 800]
+            } else {
+                sd.max_pwr = [20, 20]
+                sd.max_bw = [70, 70]
             }
         } else if tmp.contains("m2") {
-            sd.max_pwr = [25, 15]
-            sd.max_bw = [100, 100]
+            if tmp.contains("m2 ") {
+                
+            } else {
+                sd.max_pwr = [25, 15]
+                sd.max_bw = [100, 100]
+            }
         } else {
             sd.max_pwr = [20, 20]
             sd.max_bw = [70, 70]

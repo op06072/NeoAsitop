@@ -39,6 +39,7 @@ A Swift-based `asitop`-inspired command line tool for Apple Silicon (aka M1) Mac
 * Test list
   * 2021 MacBook Pro[MacBookPro18,1] (M1 Pro, Ventura)
   * 2022 Mac Studio[Mac13,2] (M1 Ultra, Ventura)
+  * 2020 Mac mini[Macmini9,1] (M1, Monterey)
 
 ## Installation and Usage
 

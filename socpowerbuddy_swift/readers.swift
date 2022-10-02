@@ -23,7 +23,7 @@ internal class SensorsReader: Reader<[Sensor_p]> {
         super.init()
         
         var available: [String] = SMC.shared.getAllKeys()
-        for i in available {
+        /*for i in available {
             if i.starts(with: "Ta") {
                 switch i {
                 case "Ta00", "Ta01", "Ta02", "Ta03", "Ta04", "Ta05", "Ta06", "TaLP", "TaLT", "TaLW", "TaRF", "TaRT", "TaRW", "TaTP":
@@ -32,7 +32,7 @@ internal class SensorsReader: Reader<[Sensor_p]> {
                     print(i)
                 }
             }
-        }
+        }*/
         var list: [Sensor] = []
         var sensorsList = SensorsList
         
@@ -91,7 +91,7 @@ internal class SensorsReader: Reader<[Sensor_p]> {
         })
         
         #if arch(arm64)
-        if self.HIDState {
+        if self.HIDState || SystemKit.shared.device.platform?.rawValue == "m1" {
             self.list += self.initHIDSensors()
         }
         #endif
@@ -112,7 +112,7 @@ internal class SensorsReader: Reader<[Sensor_p]> {
         let fanSensors = self.list.filter({ $0.type == .fan && !$0.isComputed }).map{ $0.value }
         
         #if arch(arm64)
-        if self.HIDState {
+        if self.HIDState || SystemKit.shared.device.platform?.rawValue == "m1" {
             for typ in SensorsReader.HIDtypes {
                 let (page, usage, type) = self.m1Preset(type: typ)
                 appleSiliconSensors(page: page, usage: usage, typ: type)?.forEach { (key, value) in
@@ -193,7 +193,7 @@ internal class SensorsReader: Reader<[Sensor_p]> {
         var gpuSensors = self.list.filter({ $0.group == .GPU && $0.type == .temperature && $0.average }).map{ $0.value }
         
         #if arch(arm64)
-        if self.HIDState {
+        if self.HIDState || SystemKit.shared.device.platform?.rawValue == "m1" {
             cpuSensors += self.list.filter({ $0.key.hasPrefix("pACC MTR Temp") || $0.key.hasPrefix("eACC MTR Temp") }).map{ $0.value }
             gpuSensors += self.list.filter({ $0.key.hasPrefix("GPU MTR Temp") }).map{ $0.value }
         }
@@ -395,13 +395,5 @@ extension SensorsReader {
             default: return true
             }
         }).sorted { $0.key.lowercased() < $1.key.lowercased() }
-    }
-    
-    public func HIDCallback() {
-        if self.HIDState {
-            self.list += self.initHIDSensors()
-        } else {
-            self.list = self.list.filter({ $0.group != .hid })
-        }
     }
 }

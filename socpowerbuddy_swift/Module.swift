@@ -9,9 +9,6 @@ public protocol Module_p {
     var available: Bool { get }
     var enabled: Bool { get }
     
-    func mount()
-    func unmount()
-    
     func terminate()
 }
 
@@ -77,24 +74,6 @@ open class Module: Module_p {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // load function which call when app start
-    public func mount() {
-        guard self.enabled else {
-            return
-        }
-        
-        self.readers.forEach { (reader: Reader_p) in
-            reader.initStoreValues(title: self.config.name ?? "")
-            reader.start()
-        }
-    }
-    
-    // disable module
-    public func unmount() {
-        self.enabled = false
-        self.available = false
-    }
-    
     // terminate function which call before app termination
     public func terminate() {
         self.willTerminate()
@@ -133,15 +112,6 @@ open class Module: Module_p {
         // debug("Module disabled", log: self.log)
     }
     
-    // toggle module state
-    private func toggleEnabled() {
-        if self.enabled {
-            self.disable()
-        } else {
-            self.enable()
-        }
-    }
-    
     // add reader to module. If module is enabled will fire a read function and start a reader
     public func addReader(_ reader: Reader_p) {
         self.readers.append(reader)
@@ -155,32 +125,5 @@ open class Module: Module_p {
     
     // determine if module is available (can be overrided in module)
     open func isAvailable() -> Bool { return true }
-    
-    // call when popup appear/disappear
-    private func visibilityCallback(_ state: Bool) {
-        self.readers.filter{ $0.popup }.forEach { (reader: Reader_p) in
-            if state {
-                reader.unlock()
-                reader.start()
-            } else {
-                reader.pause()
-                reader.lock()
-            }
-        }
-    }
-    
-    @objc private func listenForModuleToggle(_ notification: Notification) {
-        if let name = notification.userInfo?["module"] as? String {
-            if name == self.config.name {
-                if let state = notification.userInfo?["state"] as? Bool {
-                    if state && !self.enabled {
-                        self.enable()
-                    } else if !state && self.enabled {
-                        self.disable()
-                    }
-                }
-            }
-        }
-    }
 }
 
