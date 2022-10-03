@@ -23,6 +23,7 @@ A Swift-based `asitop`-inspired command line tool for Apple Silicon (aka M1) Mac
   * Frequency and utilization, temperature
   * ANE utilization (measured by power)
   * Fan speed (if fan exists)
+  * SOC throttling
 * Memory info:
   * RAM and swap, size and usage
   * Memory bandwidth (CPU/GPU/total)
@@ -93,6 +94,10 @@ Some information is guesstimate and hardcoded as there doesn't seem to be a offi
 * ANE max power
 * Media engine max bandwidth
 
+[`Hot`](https://github.com/macmade/Hot)
+
+* SOC Throttling
+
 ## Why
 
 Because I didn't find something like this online. Also, just curious about stuff.
@@ -108,3 +113,4 @@ Special thanks to:
 - [tlkh](https://github.com/tlkh) for the project [asitop](https://github.com/tlkh/asitop) that inspired me to start this project.
 - [BitesPotatoBacks](https://github.com/BitesPotatoBacks) for the project [SocPowerBuddy](https://github.com/BitesPotatoBacks/SocPowerBuddy) that gave me the way to replace powermetrics.
 - [exelban](https://github.com/exelban) for the project [stats](https://github.com/exelban/stats) that gave me the way to get sensor value.
+- [macmade](https://github.com/macmade) for the project [Hot](https://github.com/macmade/Hot) that gave me the way to get soc throttle status.
