@@ -34,12 +34,13 @@ A Swift-based `asitop`-inspired command line tool for Apple Silicon (aka M1) Mac
 
 `neoasitop` uses the custom [`socpowerbuddy`](https://github.com/BitesPotatoBacks/SocPowerBuddy)-inspired logic, which allows access to a variety of hardware performance counters without sudo permission. `neoasitop` is lightweight and has minimal performance impact.
 
-**`neoasitop` only tested on Apple Silicon Macs (M1 Pro, M1 Ultra) on macOS Ventura!**
+**`neoasitop` only tested on following Apple Silicon Macs!**
 
 * Test list
   * 2021 MacBook Pro[MacBookPro18,1] (M1 Pro, Ventura)
   * 2022 Mac Studio[Mac13,2] (M1 Ultra, Ventura)
   * 2020 Mac mini[Macmini9,1] (M1, Monterey)
+  * 2020 MacBook Air[MacBookAir10,1] (M1, Monterey)
 
 ## Installation and Usage
 
