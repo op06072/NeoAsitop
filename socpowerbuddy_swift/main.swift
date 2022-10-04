@@ -10,7 +10,7 @@ import IOKit.graphics
 import SwiftShell
 import ArgumentParser
 
-if run(bash: "xcode-select -p 1>/dev/null;echo $?").stdout == "2" {
+if run(bash: "xcode-select -p 1>/dev/null;echo $?").stdout != "0" {
     print("Please Install the Xcode Command Line Tools first.")
     print("You can install this with:")
     print("xcode-select --install")

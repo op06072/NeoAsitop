@@ -20,9 +20,21 @@ class renderer {
         }
         
         let ver = pyframework + "/Versions/Current"
+        let tui = "dashing"
+        if run(bash: "\(ver)/bin/python3 -m pip list").stdout.contains(tui) == false {
+            print("No module named \(tui)")
+            print("Installing \(tui)...")
+            module_install: while true {
+                run(bash: "\(ver)/bin/python3 -m pip install \(tui)")
+                if run(bash: "\(ver)/bin/python3 -m pip list").stdout.contains(tui) {
+                    break module_install
+                }
+            }
+            print("Successfully installed!")
+        }
+        
         let pylib = ver + "/Python3"
         PythonLibrary.useLibrary(at: pylib)
-        let tui = "dashing"
         do {
             try Python.attemptImport(tui)
         } catch {

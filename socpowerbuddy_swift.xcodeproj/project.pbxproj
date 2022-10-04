@@ -71,6 +71,7 @@
 		3A238F0228D5E32F0033A580 /* License */ = {isa = PBXFileReference; lastKnownFileType = text; path = License; sourceTree = "<group>"; };
 		3A3DA87D28DC91C000BFEFAC /* render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = render.swift; sourceTree = "<group>"; tabWidth = 5; };
 		3A3DA88528DEDC5B00BFEFAC /* util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = util.swift; sourceTree = "<group>"; };
+		3A720EC828EC1CBC006E8F9B /* Python3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python3.framework; path = Library/Frameworks/Python3.framework; sourceTree = DEVELOPER_DIR; };
 		3A8A035228E3F0800027B16E /* IOReportDump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IOReportDump; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A8A035428E3F0800027B16E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = socpowerbuddy_swift; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -163,6 +164,7 @@
 		3AF36E0928D21A3600DA3EB3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3A720EC828EC1CBC006E8F9B /* Python3.framework */,
 				3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */,
 			);
 			name = Frameworks;
@@ -295,7 +297,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YWGL7275TN;
 				ENABLE_HARDENED_RUNTIME = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = ./socpowerbuddy_swift/socpowerbuddy_bridge.h;
 				SWIFT_VERSION = 5.0;
@@ -308,7 +310,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YWGL7275TN;
 				ENABLE_HARDENED_RUNTIME = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = ./socpowerbuddy_swift/socpowerbuddy_bridge.h;
 				SWIFT_VERSION = 5.0;
