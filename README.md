@@ -113,3 +113,4 @@ Special thanks to:
 - [BitesPotatoBacks](https://github.com/BitesPotatoBacks) for the project [SocPowerBuddy](https://github.com/BitesPotatoBacks/SocPowerBuddy) that gave me the way to replace powermetrics.
 - [exelban](https://github.com/exelban) for the project [stats](https://github.com/exelban/stats) that gave me the way to get sensor value.
 - [macmade](https://github.com/macmade) for the project [Hot](https://github.com/macmade/Hot) that gave me the way to get soc throttle status.
+- [rderik](https://github.com/rderik) for the project [clock](https://github.com/rderik/clock) that gave me the way to use ncurses in swift.
