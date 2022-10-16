@@ -45,11 +45,10 @@ A Swift-based `asitop`-inspired command line tool for Apple Silicon (aka M1) Mac
 
 ## Installation and Usage
 
-1. Download the .zip file from [latest release](https://github.com/op06072/NeoAsitop/releases).
-2. Unzip the downloaded file (via Finder or Terminal)
-3. Resolve the binary limitation from external source with `xattr -cr neoasitop`
-4. Move the binary from the unzipped folder into your desired location (such as `/usr/bin`)
-5. You may now run the tool using the `neoasitop` binary
+1. Install the [Homebrew](https://brew.sh/index_ko)
+2. Run `brew tap op06072/neoasitop`
+3. Run `brew install neoasitop`
+4. Run `neoasitop`
 
 ```shell
 # advanced options

@@ -6,9 +6,7 @@
 //
 
 import Foundation
-import PythonKit
 import Darwin
-import SwiftShell
 
 func sample(iorep: iorep_data,
             sd: static_data,
@@ -346,7 +344,7 @@ func format(sd: inout static_data, vd: inout variating_data) {
     }
 }
 
-func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: inout render_value_data, opt: Double) {
+func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: inout dispInfo, opt: Double) {
     let average = Int(opt)
     var cores = [0, 0]
     for key in vd.soc_temp.keys {
@@ -391,6 +389,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             gpu += 1
         }
     }
+    //print("cluster calc finish")
     rd.ecpu.usage = 100 - rd.ecpu.usage/ecpu
     // rd.ecpu.freq /= Float(ecpu)
     rd.ecpu.freq /= ecpu_use
@@ -400,12 +399,12 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     rd.gpu.usage = 100 - rd.gpu.usage/gpu
     rd.gpu.freq /= gpu
     
-    rvd.ecpu.title = PythonObject(String(format:"E-CPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.ecpu.usage, rd.ecpu.freq, rd.ecpu.temp))
-    rvd.ecpu.val = PythonObject(rd.ecpu.usage)
-    rvd.pcpu.title = PythonObject(String(format:"P-CPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.pcpu.usage, rd.pcpu.freq, rd.pcpu.temp))
-    rvd.pcpu.val = PythonObject(rd.pcpu.usage)
-    rvd.gpu.title = PythonObject(String(format:"GPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.gpu.usage, rd.gpu.freq, rd.gpu.temp))
-    rvd.gpu.val = PythonObject(rd.gpu.usage)
+    rvd.ecpu_usg.title = String(format:"E-CPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.ecpu.usage, rd.ecpu.freq, rd.ecpu.temp)
+    rvd.ecpu_usg.val = rd.ecpu.usage
+    rvd.pcpu_usg.title = String(format:"P-CPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.pcpu.usage, rd.pcpu.freq, rd.pcpu.temp)
+    rvd.pcpu_usg.val = rd.pcpu.usage
+    rvd.gpu_usg.title = String(format:"GPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.gpu.usage, rd.gpu.freq, rd.gpu.temp)
+    rvd.gpu_usg.val = rd.gpu.usage
     
     var ane_value: Float = 0
     for (i, v) in sd.complex_pwr_channels.enumerated() {
@@ -413,14 +412,12 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             ane_value += vd.cluster_pwrs[i] as! Float / 1024
         }
     }
-    rvd.ane.title = PythonObject(
-        String(
-            format:"ANE Usage: %.1f%% @ %.1f W",
-            (ane_value/sd.max_pwr[2]*100),
-            (ane_value)
-        )
+    rvd.ane_usg.title = String(
+        format:"ANE Usage: %.1f%% @ %.1f W",
+        (ane_value/sd.max_pwr[2]*100),
+        (ane_value)
     )
-    rvd.ane.val = PythonObject(ane_value/sd.max_pwr[2]*100)
+    rvd.ane_usg.val = ane_value/sd.max_pwr[2]*100
     
     if sd.fan_mode > 0 {
         if sd.fan_mode == 2 {
@@ -434,34 +431,34 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
                 right_ratio = 0
             }
             
-            rvd.lfan.title = PythonObject(
-                String(
-                    format:"Fan Usage: %.2f%% & %.2f%%",
-                    left_ratio,
-                    right_ratio
-                )
+            rvd.fan_usg.title = String(
+                format:"Fan Usage: %.2f%% & %.2f%%",
+                left_ratio,
+                right_ratio
             )
-            rvd.lfan.val = PythonObject(left_ratio)
-            rvd.rfan.val = PythonObject(right_ratio)
+            rvd.fan_usg.val[0] = Float(left_ratio)
+            rvd.fan_usg.val[1] = Float(right_ratio)
             
             if vd.soc_temp["Airflow left"] != nil {
-                rvd.lf_label = PythonObject(
-                    String(
-                        format:"Left Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow left"]!
-                    )
+                rvd.airflow_info[0] = String(
+                    format:"Left Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow left"]!
                 )
-                rvd.rf_label = PythonObject(
-                    String(
+                if rvd.airflow_info.count == 1 {
+                    rvd.airflow_info.append(
+                        String(
+                            format:"Right Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow right"]!
+                        )
+                    )
+                } else {
+                    rvd.airflow_info[1] = String(
                         format:"Right Fan: %.1f RPM (%.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow right"]!
                     )
-                )
+                }
             } else if vd.soc_temp["Airflow front left"] != nil {
-                rvd.lf_label = PythonObject(
-                    String(
-                        format:"Left Fan: %.1f RPM (Front: %.1f°C Rear: %.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow front left"]!, vd.soc_temp["Airflow rear left"]!
-                    )
+                rvd.airflow_info[0] = String(
+                    format:"Left Fan: %.1f RPM (Front: %.1f°C Rear: %.1f°C)", vd.fan_speed["Left fan"]!, vd.soc_temp["Airflow front left"]!, vd.soc_temp["Airflow rear left"]!
                 )
-                rvd.rf_label = PythonObject(
+                rvd.airflow_info.append(
                     String(
                         format:"Right Fan: %.1f RPM (Front: %.1f°C Rear: %.1f°C)", vd.fan_speed["Right fan"]!, vd.soc_temp["Airflow front right"]!, vd.soc_temp["Airflow rear right"]!
                     )
@@ -473,19 +470,15 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
                 ratio = 0
             }
             
-            rvd.lfan.title = PythonObject(
-                String(
-                    format: "Fan Usage: %2.f%%",
-                    ratio
-                )
+            rvd.fan_usg.title = String(
+                format: "Fan Usage: %2.f%%",
+                ratio
             )
-            rvd.lfan.val = PythonObject(ratio)
+            rvd.fan_usg.val[0] = Float(ratio)
             
-            rvd.lf_label = PythonObject(
-                String(
-                    format: "Fan: %.1f RPM",
-                    vd.fan_speed["Fan #0"]!
-                )
+            rvd.airflow_info[0] = String(
+                format: "Fan: %.1f RPM",
+                vd.fan_speed["Fan #0"]!
             )
         }
     }
@@ -502,51 +495,56 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     }
     rvd.ram_pwr_avg.append(ram_power)
     if rvd.ram_pwr_avg.count > average {
-        rvd.gpu_pwr_avg = rvd.gpu_pwr_avg[1..<average]
+        rvd.gpu_pwr_avg = Array(rvd.gpu_pwr_avg[1..<average])
     }
     if vd.swap_stat.total < 0.1 {
-        rvd.ram.title = PythonObject(
-            String(
-                format: "RAM Usage: %.1f/%.1fGB - swap inactive",
-                vd.mem_stat.used,
-                vd.mem_stat.total
-            )
+        rvd.ram_usg.title = String(
+            format: "RAM Usage: %.1f/%.1fGB - swap inactive",
+            vd.mem_stat.used,
+            vd.mem_stat.total
         )
     } else {
-        rvd.ram.title = PythonObject(
-            String(
-                format: "RAM Usage: %.1f/%.1fGB - swap: %.1f/%.1fGB",
-                vd.mem_stat.used,
-                vd.mem_stat.total,
-                vd.swap_stat.used,
-                vd.swap_stat.total
-            )
+        rvd.ram_usg.title = String(
+            format: "RAM Usage: %.1f/%.1fGB - swap: %.1f/%.1fGB",
+            vd.mem_stat.used,
+            vd.mem_stat.total,
+            vd.swap_stat.used,
+            vd.swap_stat.total
         )
     }
-    rvd.ram.title += PythonObject(
-        String(
-            format: " [RAM Power: %.2fW (avg: %.2fW peak: %.2fW)]",
-            ram_power,
-            Float(rvd.ram_pwr_avg.reduce(PythonObject(0), +))!/Float(rvd.ram_pwr_avg.count),
-            rvd.ram_pwr_max
-        )
-    )
-    rvd.ram.val = PythonObject(Int(vd.mem_percent))
+    rvd.ram_usg.val = Float(vd.mem_percent)
     var w = winsize()
     var baseLen = 0
     var LongShort = 0
     var rw_disp = false
     if ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 {
-        if w.ws_col >= 177 {
-            LongShort = 2
-        } else if w.ws_col >= 164 {
-            LongShort = 1
-        }
         if w.ws_col >= 152 {
-            baseLen = 1
-        }
-        if w.ws_col >= 136 {
             rw_disp = true
+             if w.ws_col >= 191 {
+                 LongShort = 2
+             } else if w.ws_col >= 175 {
+                 LongShort = 1
+             }
+             if w.ws_col >= 167 {
+                 baseLen = 1
+             }
+        } else {
+            if w.ws_col >= 79 {
+                LongShort = 2
+            } else if w.ws_col >= 71 {
+                LongShort = 1
+            }
+            if w.ws_col >= 71 {
+                baseLen = 1
+            }
+        }
+        if w.ws_col >= 88 {
+            rvd.ram_usg.title = String(
+                format: "\(rvd.ram_usg.title) [RAM Power: %.2fW (avg: %.2fW peak: %.2fW)]",
+                ram_power,
+                rvd.ram_pwr_avg.reduce(0, +)/Float(rvd.ram_pwr_avg.count),
+                rvd.ram_pwr_max
+            )
         }
     }
     var form = ""
@@ -556,69 +554,59 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     if rw_disp {
         form += " (R:%.\(LongShort)f GB/s W:%.\(LongShort)f GB/s)"
     }
-    rvd.ecpu_bw.title = PythonObject(
-        String(
-            format: form,
-            ecpu_total_bw,
-            vd.bandwidth_cnt["ecpu dcs"]![0],
-            vd.bandwidth_cnt["ecpu dcs"]![1]
-        )
+    rvd.ecpu_bw.title = String(
+        format: form,
+        ecpu_total_bw,
+        vd.bandwidth_cnt["ecpu dcs"]![0],
+        vd.bandwidth_cnt["ecpu dcs"]![1]
     )
-    rvd.ecpu_bw.val = PythonObject(ecpu_total_bw/Double(sd.max_bw[0])*100)
+    rvd.ecpu_bw.val = Float(ecpu_total_bw/Double(sd.max_bw[0])*100)
     
     let pcpu_total_bw = (vd.bandwidth_cnt["pcpu dcs"]![0]+vd.bandwidth_cnt["pcpu dcs"]![1])
     form = "P-CPU: %.\(LongShort)f GB/s"
     if rw_disp {
         form += " (R:%.\(LongShort)f GB/s W:%.\(LongShort)f GB/s)"
     }
-    rvd.pcpu_bw.title = PythonObject(
-        String(
-            format: form,
-            pcpu_total_bw,
-            vd.bandwidth_cnt["pcpu dcs"]![0],
-            vd.bandwidth_cnt["pcpu dcs"]![1]
-        )
+    rvd.pcpu_bw.title = String(
+        format: form,
+        pcpu_total_bw,
+        vd.bandwidth_cnt["pcpu dcs"]![0],
+        vd.bandwidth_cnt["pcpu dcs"]![1]
     )
-    rvd.pcpu_bw.val = PythonObject(pcpu_total_bw/Double(sd.max_bw[0])*100)
+    rvd.pcpu_bw.val = Float(pcpu_total_bw/Double(sd.max_bw[0])*100)
     
     let gpu_total_bw = (vd.bandwidth_cnt["gfx dcs"]![0]+vd.bandwidth_cnt["gfx dcs"]![1])
     form = "GPU: %.\(baseLen+LongShort)f GB/s"
     if rw_disp {
         form += " (R:%.\(baseLen+LongShort)f GB/s W:%.\(baseLen+LongShort)f GB/s)"
     }
-    rvd.gpu_bw.title = PythonObject(
-        String(
-            format: form,
-            gpu_total_bw,
-            vd.bandwidth_cnt["gfx dcs"]![0],
-            vd.bandwidth_cnt["gfx dcs"]![1]
-        )
+    rvd.gpu_bw.title = String(
+        format: form,
+        gpu_total_bw,
+        vd.bandwidth_cnt["gfx dcs"]![0],
+        vd.bandwidth_cnt["gfx dcs"]![1]
     )
-    rvd.gpu_bw.val = PythonObject(gpu_total_bw/Double(sd.max_bw[1])*100)
+    rvd.gpu_bw.val = Float(gpu_total_bw/Double(sd.max_bw[1])*100)
     
     let media_total_bw = (vd.bandwidth_cnt["media dcs"]![0]+vd.bandwidth_cnt["media dcs"]![1])
     form = "Media: %.\(baseLen+LongShort)f GB/s"
     if rw_disp {
         form += " (R:%.\(baseLen+LongShort)f GB/s W:%.\(baseLen+LongShort)f GB/s)"
     }
-    rvd.media_bw.title = PythonObject(
-        String(
-            format: form,
-            media_total_bw,
-            vd.bandwidth_cnt["media dcs"]![0],
-            vd.bandwidth_cnt["media dcs"]![1]
-        )
+    rvd.media_bw.title = String(
+        format: form,
+        media_total_bw,
+        vd.bandwidth_cnt["media dcs"]![0],
+        vd.bandwidth_cnt["media dcs"]![1]
     )
-    rvd.media_bw.val = PythonObject(media_total_bw/Double(sd.max_bw[2])*100)
+    rvd.media_bw.val = Float(media_total_bw/Double(sd.max_bw[2])*100)
     
     let total_bw = (vd.bandwidth_cnt["dcs"]![0]+vd.bandwidth_cnt["dcs"]![1])
-    rvd.total_bw = PythonObject(
-        String(
-            format: "Memory Bandwidth: %.3f GB/s (R:%.3f GB/s W:%.3f GB/s)",
-            total_bw,
-            vd.bandwidth_cnt["dcs"]![0],
-            vd.bandwidth_cnt["dcs"]![1]
-        )
+    rvd.bw_grp = String(
+        format: "Memory Bandwidth: %.3f GB/s (R:%.3f GB/s W:%.3f GB/s)",
+        total_bw,
+        vd.bandwidth_cnt["dcs"]![0],
+        vd.bandwidth_cnt["dcs"]![1]
     )
     
     let sys_pwr_W = vd.soc_power["System Total"]!
@@ -627,7 +615,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     }
     rvd.sys_pwr_avg.append(sys_pwr_W)
     if rvd.sys_pwr_avg.count > average {
-        rvd.sys_pwr_avg = rvd.sys_pwr_avg[1..<average]
+        rvd.sys_pwr_avg = Array(rvd.sys_pwr_avg[1..<average])
     }
     var throttle = ""
     switch ProcessInfo.processInfo.thermalState.rawValue {
@@ -640,14 +628,12 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     default:
         break
     }
-    rvd.system_pwr = PythonObject(
-        String(
-            format: "System Power: %.2fW (avg: %.2fW peak: %.2fW)%@",
-            sys_pwr_W,
-            Double(rvd.sys_pwr_avg.reduce(PythonObject(0), +))!/Double(rvd.sys_pwr_avg.count),
-            rvd.sys_pwr_max,
-            throttle
-        )
+    rvd.pwr_grp = String(
+        format: "System Power: %.2fW (avg: %.2fW peak: %.2fW)%@",
+        sys_pwr_W,
+        rvd.sys_pwr_avg.reduce(0, +)/Double(rvd.sys_pwr_avg.count),
+        rvd.sys_pwr_max,
+        throttle
     )
     
     var cpu_power: Float = 0
@@ -662,19 +648,17 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     }
     rvd.cpu_pwr_avg.append(cpu_power)
     if rvd.cpu_pwr_avg.count > average {
-        rvd.cpu_pwr_avg = rvd.cpu_pwr_avg[1..<average]
+        rvd.cpu_pwr_avg = Array(rvd.cpu_pwr_avg[1..<average])
     }
-    rvd.cpu_pwr.title = PythonObject(
-        String(
-            format: "CPU: %.2fW (avd: %.2fW peak: %.2fW)",
-            cpu_power,
-            Float(rvd.cpu_pwr_avg.reduce(PythonObject(0), +))!/Float(rvd.cpu_pwr_avg.count),
-            rvd.cpu_pwr_max
-        )
+    rvd.cpu_pwr.title = String(
+        format: "CPU: %.2fW (avd: %.2fW peak: %.2fW)",
+        cpu_power,
+        rvd.cpu_pwr_avg.reduce(0, +)/Float(rvd.cpu_pwr_avg.count),
+        rvd.cpu_pwr_max
     )
-    rvd.cpu_pwr.val.append(PythonObject(cpu_power/sd.max_pwr[0]*100))
+    rvd.cpu_pwr.val.append(cpu_power/sd.max_pwr[0]*100)
     if rvd.cpu_pwr.val.count > 500 {
-        rvd.cpu_pwr.val = rvd.cpu_pwr.val[1..<500]
+        rvd.cpu_pwr.val = Array(rvd.cpu_pwr.val[1..<500])
     }
     
     var gpu_power: Float = 0
@@ -689,18 +673,16 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
     }
     rvd.gpu_pwr_avg.append(gpu_power)
     if rvd.gpu_pwr_avg.count > average {
-        rvd.gpu_pwr_avg = rvd.gpu_pwr_avg[1..<average]
+        rvd.gpu_pwr_avg = Array(rvd.gpu_pwr_avg[1..<average])
     }
-    rvd.gpu_pwr.title = PythonObject(
-        String(
-            format: "GPU: %.2fW (avg: %.2fW peak: %.2fW)",
-            gpu_power,
-            Float(rvd.gpu_pwr_avg.reduce(PythonObject(0), +))!/Float(rvd.gpu_pwr_avg.count),
-            rvd.gpu_pwr_max
-        )
+    rvd.gpu_pwr.title = String(
+        format: "GPU: %.2fW (avg: %.2fW peak: %.2fW)",
+        gpu_power,
+        rvd.gpu_pwr_avg.reduce(0, +)/Float(rvd.gpu_pwr_avg.count),
+        rvd.gpu_pwr_max
     )
-    rvd.gpu_pwr.val.append(PythonObject(gpu_power/sd.max_pwr[1]*100))
+    rvd.gpu_pwr.val.append(gpu_power/sd.max_pwr[1]*100)
     if rvd.gpu_pwr.val.count > 500 {
-        rvd.gpu_pwr.val = rvd.gpu_pwr.val[1..<500]
+        rvd.gpu_pwr.val = Array(rvd.gpu_pwr.val[1..<500])
     }
 }

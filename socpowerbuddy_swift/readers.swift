@@ -245,7 +245,6 @@ internal class SensorsReader: Reader<[Sensor_p]> {
 
 extension SensorsReader {
     private func loadFans(_ count: Int) {
-        // debug("Found \(Int(count)) fans", log: self.log)
         
         for i in 0..<Int(count) {
             var name = SMC.shared.getStringValue("F\(i)ID")

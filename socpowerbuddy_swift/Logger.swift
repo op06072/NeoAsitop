@@ -54,10 +54,6 @@ public class NextLog {
         return logger
     }
     
-    public func log(level: LogLevel, options: [LogOption] = LogOption.new(), message: String, file: String = #file, line: UInt = #line) {
-        self.writer.write(self.prefix(level, options, file, line) + " " + message + "\n")
-    }
-    
     public func setWriter(_ writer: LogWriter) {
         switch writer {
         case .stdout:
@@ -162,12 +158,4 @@ extension NextLog {
             }
         }
     }
-}
-
-public func debug(_ message: String, log: NextLog = NextLog.shared, file: String = #file, line: UInt = #line) {
-    log.log(level: .debug, message: message, file: file, line: line)
-}
-
-public func error(_ message: String, log: NextLog = NextLog.shared, file: String = #file, line: UInt = #line) {
-    log.log(level: .error, message: message, file: file, line: line)
 }

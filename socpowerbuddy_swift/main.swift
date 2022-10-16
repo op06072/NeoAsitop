@@ -10,13 +10,6 @@ import IOKit.graphics
 import SwiftShell
 import ArgumentParser
 
-if run(bash: "xcode-select -p 1>/dev/null;echo $?").stdout != "0" {
-    print("Please Install the Xcode Command Line Tools first.")
-    print("You can install this with:")
-    print("xcode-select --install")
-    exit(1)
-}
-
 struct NeoasitopOptions: ParsableArguments {
     @Option(name: .shortAndLong, help: "Display interval and sampling interval for info gathering (seconds)")
     var interval: Double = 1
@@ -33,8 +26,6 @@ let options = NeoasitopOptions.parseOrExit()
 var iorep = iorep_data()
 var sd = static_data()
 var cmd = cmd_data()
-var rendering = renderer()
-var rvd = render_value_data()
 
 print("\nNeoAsitop - Sudoless performance monitoring CLI tool for Apple Silicon")
 print("Get help at `https://github.com/op06072/NeoAsitop`")
@@ -97,9 +88,14 @@ generateSiliconsIds(sd: &sd)
 generateMicroArchs(sd: &sd)
 
 if sd.extra[0].lowercased().contains("apple") {
-    if run(bash: "uname -m").stdout.lowercased() == "arm64" {
+    var size = 0
+    let getarch = "sysctl.proc_translated"
+    sysctlbyname(getarch, nil, &size, nil, 0)
+    var mode = 0
+    sysctlbyname(getarch, &mode, &size, nil, 0)
+    if mode == 0 {
         sd.extra.append("Apple")
-    } else {
+    } else if mode == 1 {
         sd.extra.append("Rosetta 2")
     }
 }
@@ -149,6 +145,14 @@ iorep.bwsub = IOReportCreateSubscription(
 
 print("\n [2/2] Gathering System Info\n")
 var fan_set = sd.fan_exist
+gen_screen()
+var monInfo = dispInfo(sd: sd)
+var cpu_pwr = monInfo.cpu_pwr.val
+var gpu_pwr = monInfo.gpu_pwr.val
+var xy: [Int32] = [0, 0]
+var scrin = display(monInfo, true, nil, xy, options.color) // 레이아웃 렌더링
+var scr = scrin.tbx
+xy = scrin.xy
 
 while true {
     var rd = render_data()
@@ -161,15 +165,30 @@ while true {
     }
     getMemUsage(vd: &vd)
     sd.ram_capacity = Int(vd.mem_stat.total)
+    monInfo = dispInfo(sd: sd)
+    monInfo.cpu_pwr.val = cpu_pwr
+    monInfo.gpu_pwr.val = gpu_pwr
     
     sample(iorep: iorep, sd: sd, vd: &vd, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
     format(sd: &sd, vd: &vd) // 포매팅
     //print("formatting finish")
-    summary(sd: sd, vd: vd, rd: &rd, rvd: &rvd, opt: options.avg)
+    summary(sd: sd, vd: vd, rd: &rd, rvd: &monInfo, opt: options.avg)
+    cpu_pwr = monInfo.cpu_pwr.val
+    gpu_pwr = monInfo.gpu_pwr.val
     //print("summarize finish")
-    rendering.term_layout(sd: sd, colr: options.color) // 레이아웃 렌더링
-    //print("layout render finish")
-    eraseScreen()
-    rendering.term_rendering(sd: sd, vd: vd, rvd: rvd) // 정보 출력
+    
+    switch getch() {
+    // Wait for user input
+    // Exit on 'q'
+    case Int32(UnicodeScalar("q").value):
+        endwin()
+        exit(EX_OK)
+    default:
+        scrin = display(monInfo, false, scr, xy, options.color) // 정보 출력
+        scr = scrin.tbx
+        xy = scrin.xy
+        wclear(scr.t.win)
+        //print("render finish")
+    }
     Thread.sleep(forTimeInterval: options.interval-(cmd.interval*1e-3))
 }

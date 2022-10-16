@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftShell
 
 public enum Platform: String {
     case intel
@@ -72,36 +71,9 @@ public struct cpu_s {
     public var cores: [core_s]? = nil
 }
 
-public struct dimm_s {
-    public var bank: Int? = nil
-    public var channel: String? = nil
-    public var type: String? = nil
-    public var size: String? = nil
-    public var speed: String? = nil
-}
-
-public struct ram_s {
-    public var dimms: [dimm_s] = []
-}
-
-public struct gpu_s {
-    public var name: String? = nil
-    public var vendor: String? = nil
-    public var vram: String? = nil
-    public var cores: Int? = nil
-}
-
-public struct disk_s {
-    public let name: String
-    public let model: String
-    public let size: Int64
-}
 
 public struct info_s {
     public var cpu: cpu_s? = nil
-    public var ram: ram_s? = nil
-    public var gpu: [gpu_s]? = nil
-    public var disk: disk_s? = nil
 }
 
 public struct device_s {
@@ -126,7 +98,7 @@ public class SystemKit {
             if let modelInfo = deviceDict[modelName] {
                 self.device.model = modelInfo
             } else {
-                error("unknown device \(modelName)")
+                print("unknown device \(modelName)")
             }
         }
         
@@ -177,7 +149,7 @@ public class SystemKit {
             return String(cString: UnsafeRawPointer(pointer).assumingMemoryBound(to: CChar.self))
         }
         
-        error("error call sysctl(): \(String(cString: mach_error_string(result), encoding: String.Encoding.ascii) ?? "unknown error")")
+        print("error call sysctl(): \(String(cString: mach_error_string(result), encoding: String.Encoding.ascii) ?? "unknown error")")
         return nil
     }
     
@@ -209,7 +181,7 @@ public class SystemKit {
         }
         
         if result != KERN_SUCCESS {
-            error("read cores number: \(String(cString: mach_error_string(result), encoding: String.Encoding.ascii) ?? "unknown error")")
+            print("read cores number: \(String(cString: mach_error_string(result), encoding: String.Encoding.ascii) ?? "unknown error")")
             return nil
         }
         

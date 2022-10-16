@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import PythonKit
 
 struct iorep_data {
     /* data for Energy Model*/
@@ -96,46 +95,6 @@ struct render_data {
     var pcpu = core_data()
     var gpu = core_data()
     var ane: [Any] = []
-}
-
-struct render_value {
-    var title: PythonObject = PythonObject("")
-    var val: PythonObject = PythonObject(0)
-}
-
-struct chart_render_value {
-    var title: PythonObject = PythonObject("")
-    var val: PythonObject = PythonObject([])
-}
-
-struct render_value_data {
-    var ecpu = render_value()
-    var pcpu = render_value()
-    var gpu = render_value()
-    var ane = render_value()
-    var lfan = render_value()
-    var rfan = render_value()
-    var lf_label = PythonObject("")
-    var rf_label = PythonObject("")
-    var ram = render_value()
-    var ecpu_bw = render_value()
-    var pcpu_bw = render_value()
-    var gpu_bw = render_value()
-    var media_bw = render_value()
-    var total_bw = PythonObject("")
-    var system_pwr = PythonObject("")
-    var cpu_pwr = chart_render_value()
-    var gpu_pwr = chart_render_value()
-    
-    var sys_pwr_max: Double = 0
-    var cpu_pwr_max: Float = 0
-    var gpu_pwr_max: Float = 0
-    var ram_pwr_max: Float = 0
-    
-    var sys_pwr_avg = PythonObject([])
-    var cpu_pwr_avg = PythonObject([])
-    var gpu_pwr_avg = PythonObject([])
-    var ram_pwr_avg = PythonObject([])
 }
 
 struct mem_info {

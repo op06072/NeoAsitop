@@ -65,8 +65,6 @@ open class Reader<T>: NSObject, ReaderInternal_p {
         
         super.init()
         self.setup()
-        
-        // debug("Successfully initialize reader", log: self.log)
     }
     
     public func initStoreValues(title: String) {
@@ -85,14 +83,12 @@ open class Reader<T>: NSObject, ReaderInternal_p {
             if self.value == nil && value != nil {
                 self.ready = true
                 self.readyCallback()
-                // debug("Reader is ready", log: self.log)
             } else if self.value == nil && value != nil {
                 if self.nilCallbackCounter > 5 {
-                    error("Callback receive nil value more than 5 times. Please check this reader!", log: self.log)
+                    print("Callback receive nil value more than 5 times. Please check this reader!")
                     self.stop()
                     return
                 } else {
-                    // debug("Restarting initial read", log: self.log)
                     self.nilCallbackCounter += 1
                     self.read()
                     return
@@ -156,7 +152,6 @@ open class Reader<T>: NSObject, ReaderInternal_p {
     }
     
     public func setInterval(_ value: Int) {
-        // debug("Set update interval: \(Int(value)) sec", log: self.log)
         self.interval = Double(value)
         self.repeatTask?.reset(seconds: value, restart: true)
     }

@@ -21,14 +21,13 @@
 		3A238EFD28D5C9B70033A580 /* Module.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238EFC28D5C9B70033A580 /* Module.swift */; };
 		3A238F0128D5CCEF0033A580 /* Repeater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A238F0028D5CCEF0033A580 /* Repeater.swift */; };
 		3A3DA87E28DC91C000BFEFAC /* render.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3DA87D28DC91C000BFEFAC /* render.swift */; };
-		3A3DA88128DC920A00BFEFAC /* SwiftShell in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA88028DC920A00BFEFAC /* SwiftShell */; };
-		3A3DA88428DC922000BFEFAC /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA88328DC922000BFEFAC /* PythonKit */; };
 		3A3DA88628DEDC5B00BFEFAC /* util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3DA88528DEDC5B00BFEFAC /* util.swift */; };
 		3A3DA8AC28E0A76D00BFEFAC /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA8AB28E0A76D00BFEFAC /* ArgumentParser */; };
 		3A8A035528E3F0800027B16E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A035428E3F0800027B16E /* main.swift */; };
 		3A8A035A28E3F6EE0027B16E /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
 		3A9A722C28D15EBB0021E6F1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A722B28D15EBB0021E6F1 /* main.swift */; };
 		3A9A723328D15F5C0021E6F1 /* static.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A723228D15F5C0021E6F1 /* static.swift */; };
+		3AC9F1EA28F02E7B008C5D5C /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9F1E928F02E6F008C5D5C /* libncurses.tbd */; };
 		3AF36E0C28D21A6B00DA3EB3 /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
 		3AF36E0E28D2ACCC00DA3EB3 /* head.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36E0D28D2ACCC00DA3EB3 /* head.swift */; };
 /* End PBXBuildFile section */
@@ -71,12 +70,12 @@
 		3A238F0228D5E32F0033A580 /* License */ = {isa = PBXFileReference; lastKnownFileType = text; path = License; sourceTree = "<group>"; };
 		3A3DA87D28DC91C000BFEFAC /* render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = render.swift; sourceTree = "<group>"; tabWidth = 5; };
 		3A3DA88528DEDC5B00BFEFAC /* util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = util.swift; sourceTree = "<group>"; };
-		3A720EC828EC1CBC006E8F9B /* Python3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python3.framework; path = Library/Frameworks/Python3.framework; sourceTree = DEVELOPER_DIR; };
 		3A8A035228E3F0800027B16E /* IOReportDump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IOReportDump; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A8A035428E3F0800027B16E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = socpowerbuddy_swift; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A9A722B28D15EBB0021E6F1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3A9A723228D15F5C0021E6F1 /* static.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = static.swift; sourceTree = "<group>"; };
+		3AC9F1E928F02E6F008C5D5C /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
 		3AF36E0728D216A800DA3EB3 /* socpwrbud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = socpwrbud.h; sourceTree = "<group>"; };
 		3AF36E0828D2174A00DA3EB3 /* socpowerbuddy_bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = socpowerbuddy_bridge.h; sourceTree = "<group>"; };
 		3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libIOReport.tbd; path = usr/lib/libIOReport.tbd; sourceTree = SDKROOT; };
@@ -97,9 +96,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AF36E0C28D21A6B00DA3EB3 /* libIOReport.tbd in Frameworks */,
-				3A3DA88128DC920A00BFEFAC /* SwiftShell in Frameworks */,
 				3A3DA8AC28E0A76D00BFEFAC /* ArgumentParser in Frameworks */,
-				3A3DA88428DC922000BFEFAC /* PythonKit in Frameworks */,
+				3AC9F1EA28F02E7B008C5D5C /* libncurses.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,7 +162,7 @@
 		3AF36E0928D21A3600DA3EB3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3A720EC828EC1CBC006E8F9B /* Python3.framework */,
+				3AC9F1E928F02E6F008C5D5C /* libncurses.tbd */,
 				3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */,
 			);
 			name = Frameworks;
@@ -204,8 +202,6 @@
 			);
 			name = socpowerbuddy_swift;
 			packageProductDependencies = (
-				3A3DA88028DC920A00BFEFAC /* SwiftShell */,
-				3A3DA88328DC922000BFEFAC /* PythonKit */,
 				3A3DA8AB28E0A76D00BFEFAC /* ArgumentParser */,
 			);
 			productName = socpowerbuddy_swift;
@@ -220,7 +216,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1400;
-				LastUpgradeCheck = 1400;
+				LastUpgradeCheck = 1410;
 				TargetAttributes = {
 					3A8A035128E3F0800027B16E = {
 						CreatedOnToolsVersion = 14.0;
@@ -240,8 +236,6 @@
 			);
 			mainGroup = 3A9A721F28D15EBB0021E6F1;
 			packageReferences = (
-				3A3DA87F28DC920A00BFEFAC /* XCRemoteSwiftPackageReference "SwiftShell" */,
-				3A3DA88228DC922000BFEFAC /* XCRemoteSwiftPackageReference "PythonKit" */,
 				3A3DA8A628E09E4500BFEFAC /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
 			productRefGroup = 3A9A722928D15EBB0021E6F1 /* Products */;
@@ -294,7 +288,9 @@
 		3A8A035628E3F0800027B16E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YWGL7275TN;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
@@ -307,7 +303,9 @@
 		3A8A035728E3F0800027B16E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YWGL7275TN;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
@@ -350,6 +348,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -411,6 +410,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -435,7 +435,10 @@
 		3A9A723028D15EBB0021E6F1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YWGL7275TN;
 				ENABLE_HARDENED_RUNTIME = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -447,7 +450,10 @@
 		3A9A723128D15EBB0021E6F1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YWGL7275TN;
 				ENABLE_HARDENED_RUNTIME = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -489,22 +495,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		3A3DA87F28DC920A00BFEFAC /* XCRemoteSwiftPackageReference "SwiftShell" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kareman/SwiftShell.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-		3A3DA88228DC922000BFEFAC /* XCRemoteSwiftPackageReference "PythonKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pvieito/PythonKit.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		3A3DA8A628E09E4500BFEFAC /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
@@ -516,16 +506,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3A3DA88028DC920A00BFEFAC /* SwiftShell */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3A3DA87F28DC920A00BFEFAC /* XCRemoteSwiftPackageReference "SwiftShell" */;
-			productName = SwiftShell;
-		};
-		3A3DA88328DC922000BFEFAC /* PythonKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3A3DA88228DC922000BFEFAC /* XCRemoteSwiftPackageReference "PythonKit" */;
-			productName = PythonKit;
-		};
 		3A3DA8AB28E0A76D00BFEFAC /* ArgumentParser */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3A3DA8A628E09E4500BFEFAC /* XCRemoteSwiftPackageReference "swift-argument-parser" */;

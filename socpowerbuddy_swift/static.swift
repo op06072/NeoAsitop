@@ -73,46 +73,61 @@ func generateCoreCounts(sd: inout static_data) {
     var iter = io_iterator_t()
     var port = mach_port_t()
     
-    #if arch(arm64)
     var size = 0
-    var getcpu = "hw.perflevel0.name"
-    sysctlbyname(getcpu, nil, &size, nil, 0)
-    var perflevel = [CChar](repeating: 0,  count: size)
-    sysctlbyname(getcpu, &perflevel, &size, nil, 0)
-
-    if strcmp(perflevel, "") != 0 {
-        var tmp = ""
-        perflevel.withUnsafeBufferPointer {
-            ptr in tmp += String(cString: ptr.baseAddress!)
-        }
+    let getarch = "sysctl.proc_translated"
+    sysctlbyname(getarch, nil, &size, nil, 0)
+    var mode = 0
+    sysctlbyname(getarch, &mode, &size, nil, 0)
+    
+    if mode == 0 {
         size = 0
-        getcpu = "hw.perflevel0.logicalcpu"
+        var getcpu = "hw.perflevel0.name"
+        sysctlbyname(getcpu, nil, &size, nil, 0)
+        var perflevel = [CChar](repeating: 0,  count: size)
+        sysctlbyname(getcpu, &perflevel, &size, nil, 0)
+
+        if strcmp(perflevel, "") != 0 {
+            var tmp = ""
+            perflevel.withUnsafeBufferPointer {
+                ptr in tmp += String(cString: ptr.baseAddress!)
+            }
+            size = 0
+            getcpu = "hw.perflevel0.logicalcpu"
+            sysctlbyname(getcpu, nil, &size, nil, 0)
+            var cpucore = [UInt8](repeating: 0,  count: size)
+            sysctlbyname(getcpu, &cpucore, &size, nil, 0)
+            if tmp.lowercased() == "performance" {
+                sd.core_ep_counts[1] = cpucore[0]
+                
+                size = 0
+                getcpu = "hw.perflevel1.logicalcpu"
+                sysctlbyname(getcpu, nil, &size, nil, 0)
+                cpucore = [UInt8](repeating: 0,  count: size)
+                sysctlbyname(getcpu, &cpucore, &size, nil, 0)
+                
+                sd.core_ep_counts[0] = cpucore[0]
+            } else {
+                sd.core_ep_counts[0] = cpucore[0]
+                
+                size = 0
+                getcpu = "hw.perflevel1.logicalcpu"
+                sysctlbyname(getcpu, nil, &size, nil, 0)
+                cpucore = [UInt8](repeating: 0,  count: size)
+                sysctlbyname(getcpu, &cpucore, &size, nil, 0)
+                
+                sd.core_ep_counts[1] = cpucore[0]
+            }
+        }
+    } else if mode == 1 {
+        size = 0
+        let getcpu = "hw.logicalcpu"
         sysctlbyname(getcpu, nil, &size, nil, 0)
         var cpucore = [UInt8](repeating: 0,  count: size)
         sysctlbyname(getcpu, &cpucore, &size, nil, 0)
-        if tmp.lowercased() == "performance" {
-            sd.core_ep_counts[1] = cpucore[0]
-            
-            size = 0
-            getcpu = "hw.perflevel1.logicalcpu"
-            sysctlbyname(getcpu, nil, &size, nil, 0)
-            cpucore = [UInt8](repeating: 0,  count: size)
-            sysctlbyname(getcpu, &cpucore, &size, nil, 0)
-            
-            sd.core_ep_counts[0] = cpucore[0]
-        } else {
-            sd.core_ep_counts[0] = cpucore[0]
-            
-            size = 0
-            getcpu = "hw.perflevel1.logicalcpu"
-            sysctlbyname(getcpu, nil, &size, nil, 0)
-            cpucore = [UInt8](repeating: 0,  count: size)
-            sysctlbyname(getcpu, &cpucore, &size, nil, 0)
-            
-            sd.core_ep_counts[1] = cpucore[0]
-        }
+        
+        sd.core_ep_counts[0] = cpucore[0]
     }
-
+    
     size = 0
     let getfan = "hw.model"
     sysctlbyname(getfan, nil, &size, nil, 0)
@@ -134,7 +149,6 @@ func generateCoreCounts(sd: inout static_data) {
     } else {
         sd.fan_exist = false
     }
-    #endif
     
     var servicedict: Unmanaged<CFMutableDictionary>? = nil
     
@@ -347,7 +361,7 @@ func archError(sd: inout static_data) {
 }
 
 func generateSocMax(sd: inout static_data) {
-    if sd.extra[sd.extra.count-1].lowercased() == "apple" {
+    if ["apple", "rosetta 2"].contains(sd.extra[sd.extra.count-1].lowercased()) {
         let tmp = sd.extra[0].lowercased()
         if tmp.contains("m1") {
             if tmp.contains("pro") {

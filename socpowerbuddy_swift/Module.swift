@@ -57,7 +57,6 @@ open class Module: Module_p {
         self.enabled = Store.shared.bool(key: "\(self.config.name)_state", defaultValue: self.config.defaultState)
         
         if !self.available {
-            // debug("Module is not available", log: self.log)
             
             if self.enabled {
                 self.enabled = false
@@ -81,7 +80,6 @@ open class Module: Module_p {
             $0.stop()
             $0.terminate()
         }
-        // debug("Module terminated", log: self.log)
     }
     
     // function to call before module terminate
@@ -97,7 +95,6 @@ open class Module: Module_p {
             reader.initStoreValues(title: self.config.name ?? "")
             reader.start()
         }
-        // debug("Module enabled", log: self.log)
     }
     
     // set module state to disabled
@@ -109,18 +106,15 @@ open class Module: Module_p {
             Store.shared.set(key: "\(self.config.name)_state", value: false)
         }
         self.readers.forEach{ $0.stop() }
-        // debug("Module disabled", log: self.log)
     }
     
     // add reader to module. If module is enabled will fire a read function and start a reader
     public func addReader(_ reader: Reader_p) {
         self.readers.append(reader)
-        // debug("\(reader.self) was added", log: self.log)
     }
     
     // handler for reader, calls when main reader is ready, and return first value
     public func readyHandler() {
-        // debug("Reader report readiness", log: self.log)
     }
     
     // determine if module is available (can be overrided in module)

@@ -15,14 +15,9 @@ func convertToGB(_ num: Double) -> Double {
     return round(res * 1000)/1000.0
 }
 
-func eraseScreen() {
-    print("\u{001B}[H\u{001B}[0J")
-}
-
 func vd_init(sd: static_data) -> variating_data {
     var vd = variating_data()
     let cores = sd.cluster_core_counts
-    // let cores = [2, 2, 4, 4, 4, 4]
     for i in 0..<sd.complex_pwr_channels.count {
         vd.cluster_residencies.append([])
         vd.cluster_pwrs.append(0)

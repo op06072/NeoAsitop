@@ -29,7 +29,17 @@ var subchn: Unmanaged<CFMutableDictionary>? = nil
 var chn = IOReportCopyAllChannels(0, 0)
 var sub = IOReportCreateSubscription(nil, chn?.takeUnretainedValue(), &subchn, 0, nil)
 
-var samples = Array((IOReportCreateSamples(sub, subchn?.takeUnretainedValue(), nil).takeUnretainedValue() as Dictionary).values)[0] as! Array<CFDictionary>
+let interval: Double = 175
+
+var samples_a = IOReportCreateSamples(sub, subchn?.takeUnretainedValue(), nil).takeUnretainedValue()
+
+Thread.sleep(forTimeInterval: interval*1e-3)
+
+var samples_b = IOReportCreateSamples(sub, subchn?.takeUnretainedValue(), nil).takeUnretainedValue()
+
+let samp_delta = Array((IOReportCreateSamplesDelta(
+    samples_a, samples_b, nil
+).takeUnretainedValue() as Dictionary).values)[0] as! Array<CFDictionary>
 
 /*func IOReportGetInt(_ data: CFDictionary, _ mode: UInt8) {
     var data2 = (data as! Dictionary<String, AnyObject>)["RawElements"] as! NSData
@@ -38,7 +48,7 @@ var samples = Array((IOReportCreateSamples(sub, subchn?.takeUnretainedValue(), n
     print(arr)
 }*/
 
-for sample in samples {
+for sample in samp_delta {
     let group = IOReportChannelGetGroup(sample)
     var subgroup = IOReportChannelGetSubGroup(sample)
     let chann_name = IOReportChannelGetChannelName(sample)

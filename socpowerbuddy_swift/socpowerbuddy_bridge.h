@@ -10,5 +10,4 @@
 
 #import "socpwrbud.h"
 
-
 #endif /* socpowerbuddy_bridge_h */
