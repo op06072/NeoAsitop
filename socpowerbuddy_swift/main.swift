@@ -7,7 +7,6 @@
 
 import Foundation
 import IOKit.graphics
-import SwiftShell
 import ArgumentParser
 
 struct NeoasitopOptions: ParsableArguments {
@@ -155,40 +154,72 @@ var scr = scrin.tbx
 xy = scrin.xy
 
 while true {
-    var rd = render_data()
-    var vd = vd_init(sd: sd)
-    if fan_set {
-        getSensorVal(vd: &vd, set_mode: fan_set, sd: &sd) // 센서값
-        fan_set = false
-    } else {
-        getSensorVal(vd: &vd, sd: &sd) // 센서값
+    autoreleasepool {
+        var rd = render_data()
+        var vd = vd_init(sd: sd)
+        if fan_set {
+            getSensorVal(vd: &vd, set_mode: fan_set, sd: &sd) // 센서값
+            fan_set = false
+        } else {
+            getSensorVal(vd: &vd, sd: &sd) // 센서값
+        }
+        getMemUsage(vd: &vd)
+        sd.ram_capacity = Int(vd.mem_stat.total)
+        monInfo = dispInfo(sd: sd)
+        monInfo.cpu_pwr.val = cpu_pwr
+        monInfo.gpu_pwr.val = gpu_pwr
+        
+        sample(iorep: iorep, sd: sd, vd: &vd, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
+        format(sd: &sd, vd: &vd) // 포매팅
+        //print("formatting finish")
+        summary(sd: sd, vd: vd, rd: &rd, rvd: &monInfo, opt: options.avg)
+        cpu_pwr = monInfo.cpu_pwr.val
+        gpu_pwr = monInfo.gpu_pwr.val
+        //print("summarize finish")
+        
+        switch getch() {
+        // Wait for user input
+        // Exit on 'q'
+        case Int32(UnicodeScalar("q").value):
+            endwin()
+            if scr.items.count != 0 {
+                if scr.items[0].items.count != 0 {
+                    if sd.fan_exist {
+                        del_tbox(tbx: &scr.items[0].items[2].items[0])
+                    }
+                    for i in (0...2).reversed() {
+                        del_tbox(tbx: &scr.items[0].items[i])
+                    }
+                }
+                if scr.items[1].items.count != 0 {
+                    for i in (0...1).reversed() {
+                        del_tbox(tbx: &scr.items[1].items[i])
+                    }
+                }
+                for i in 0...2 {
+                    del_tbox(tbx: &scr.items[i])
+                }
+            }
+            del_tbox(tbx: &scr)
+            exit(EX_OK)
+        default:
+            scrin = display(monInfo, false, scr, xy, options.color) // 정보 출력
+            scr = scrin.tbx
+            xy = scrin.xy
+            wclear(scr.t.win)
+            del_tbox(tbx: &scr.items[0].items[2].items[0])
+            for i in (0...2).reversed() {
+                del_tbox(tbx: &scr.items[0].items[i])
+            }
+            for i in (0...1).reversed() {
+                del_tbox(tbx: &scr.items[1].items[i])
+            }
+            for i in 0...2 {
+                del_tbox(tbx: &scr.items[i])
+            }
+            del_tbox(tbx: &scr)
+            //print("render finish")
+        }
+        Thread.sleep(forTimeInterval: options.interval-(cmd.interval*1e-3))
     }
-    getMemUsage(vd: &vd)
-    sd.ram_capacity = Int(vd.mem_stat.total)
-    monInfo = dispInfo(sd: sd)
-    monInfo.cpu_pwr.val = cpu_pwr
-    monInfo.gpu_pwr.val = gpu_pwr
-    
-    sample(iorep: iorep, sd: sd, vd: &vd, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
-    format(sd: &sd, vd: &vd) // 포매팅
-    //print("formatting finish")
-    summary(sd: sd, vd: vd, rd: &rd, rvd: &monInfo, opt: options.avg)
-    cpu_pwr = monInfo.cpu_pwr.val
-    gpu_pwr = monInfo.gpu_pwr.val
-    //print("summarize finish")
-    
-    switch getch() {
-    // Wait for user input
-    // Exit on 'q'
-    case Int32(UnicodeScalar("q").value):
-        endwin()
-        exit(EX_OK)
-    default:
-        scrin = display(monInfo, false, scr, xy, options.color) // 정보 출력
-        scr = scrin.tbx
-        xy = scrin.xy
-        wclear(scr.t.win)
-        //print("render finish")
-    }
-    Thread.sleep(forTimeInterval: options.interval-(cmd.interval*1e-3))
 }
