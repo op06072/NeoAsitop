@@ -429,7 +429,8 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
     autoreleasepool {
         
         if lines < 34 || cols < 63 {
-            print("Terminal size is too small")
+            endwin()
+            print("Terminal size is too small!\nThis tool needs 63 cols and 34 lines at least!")
             exit(1)
         }
 
