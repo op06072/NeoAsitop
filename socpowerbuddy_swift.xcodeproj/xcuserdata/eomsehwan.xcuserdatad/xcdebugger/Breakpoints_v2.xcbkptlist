@@ -14,8 +14,8 @@
             filePath = "socpowerbuddy_swift/sampler.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "296"
-            endingLineNumber = "296"
+            startingLineNumber = "299"
+            endingLineNumber = "299"
             landmarkName = "format(sd:vd:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1830,8 +1830,8 @@
             filePath = "socpowerbuddy_swift/sampler.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "207"
-            endingLineNumber = "207"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
             landmarkName = "getSensorVal(vd:set_mode:sd:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2070,8 +2070,8 @@
             filePath = "socpowerbuddy_swift/sampler.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "208"
-            endingLineNumber = "208"
+            startingLineNumber = "211"
+            endingLineNumber = "211"
             landmarkName = "getSensorVal(vd:set_mode:sd:)"
             landmarkType = "9">
          </BreakpointContent>

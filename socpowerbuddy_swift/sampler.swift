@@ -18,6 +18,8 @@ func sample(iorep: iorep_data,
         let idletype_state = "IDLE"
         let offtype_state = "OFF"
         
+        // It's awful and horrible memory leaking time!
+        // I have no idea how can I fix this.
         var tmp_samp = IOReportCreateSamples(
             iorep.cpusub, iorep.cpusubchn?.takeUnretainedValue(), nil
         ).takeRetainedValue()
@@ -66,6 +68,7 @@ func sample(iorep: iorep_data,
         let clpc_delta = Array((ttmp as! Dictionary<String, Any>).values)[0] as? Array<CFDictionary>
         ttmp = IOReportCreateSamplesDelta(bwsamp_a, bwsamp_b, nil)?.takeRetainedValue()
         let bw_delta = Array((ttmp as! Dictionary<String, Any>).values)[0] as? Array<CFDictionary>
+        // Fortunately, You just passed the memory leak part "this time".
         
         for sample in cpu_delta! {
             for i in stride(from: 0, to: IOReportStateGetCount(sample), by: 1) {
@@ -537,10 +540,10 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
                 )
                 if w.ws_col >= 80 {
                     rvd.ecpu_usg.title += String(
-                        format:" (%.1f°C)", 100.0//rd.ecpu.temp
+                        format:" (%.1f°C)", rd.ecpu.temp
                     )
                     rvd.pcpu_usg.title += String(
-                        format:" (%.1f°C)", 100.0//rd.pcpu.temp
+                        format:" (%.1f°C)", rd.pcpu.temp
                     )
                 }
             }
