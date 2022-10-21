@@ -403,11 +403,11 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         rd.gpu.usage = 100 - rd.gpu.usage/gpu
         rd.gpu.freq /= gpu
         
-        rvd.ecpu_usg.title = String(format:"E-CPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.ecpu.usage, rd.ecpu.freq, rd.ecpu.temp)
+        rvd.ecpu_usg.title = String(format:"E-CPU Usage %.1f%% @ %.0f MHz", rd.ecpu.usage, rd.ecpu.freq)
         rvd.ecpu_usg.val = rd.ecpu.usage
-        rvd.pcpu_usg.title = String(format:"P-CPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.pcpu.usage, rd.pcpu.freq, rd.pcpu.temp)
+        rvd.pcpu_usg.title = String(format:"P-CPU Usage %.1f%% @ %.0f MHz", rd.pcpu.usage, rd.pcpu.freq)
         rvd.pcpu_usg.val = rd.pcpu.usage
-        rvd.gpu_usg.title = String(format:"GPU Usage %.1f%% @ %.0f MHz (%.1f°C)", rd.gpu.usage, rd.gpu.freq, rd.gpu.temp)
+        rvd.gpu_usg.title = String(format:"GPU Usage %.1f%% @ %.0f MHz", rd.gpu.usage, rd.gpu.freq)
         rvd.gpu_usg.val = rd.gpu.usage
         
         var ane_value: Float = 0
@@ -521,36 +521,91 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         var baseLen = 0
         var LongShort = 0
         var rw_disp = false
+        var stat_disp = false
+        var pwr_unit = 0
+        var bw_unit = 3
+        var total_pwr = 2
+        // 변동 레이아웃
         if ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 {
-            if w.ws_col >= 152 {
+            var space = 0
+            var space0 = 0 // 추가 내용 뺀 부분의 여분길이
+            var space1 = 0
+            // CPU & GPU 온도
+            if w.ws_col >= 73 {
+                rvd.gpu_usg.title += String(
+                    format:" (%.1f°C)", rd.gpu.temp
+                )
+                if w.ws_col >= 80 {
+                    rvd.ecpu_usg.title += String(
+                        format:" (%.1f°C)", 100.0//rd.ecpu.temp
+                    )
+                    rvd.pcpu_usg.title += String(
+                        format:" (%.1f°C)", 100.0//rd.pcpu.temp
+                    )
+                }
+            }
+            // Memory Bandwidth
+            space = 0
+            var tmp_val = 200.0
+            var sum_num: Double = 0
+            for i in ["ecpu", "pcpu", "gfx", "media"] {
+                sum_num = 0
+                for j in 0...1 {
+                    tmp_val = vd.bandwidth_cnt["\(i) dcs"]![j]
+                    space += String(Int(tmp_val)).count - 1
+                    sum_num += tmp_val
+                    //space += 2
+                }
+                space0 += String(Int(sum_num)).count - 1
+                //space += 2
+            }
+            sum_num = 0
+            for i in vd.bandwidth_cnt["dcs"]! {
+                tmp_val = i
+                //tmp_val = 200.0
+                space1 += String(Int(tmp_val)).count - 1
+                sum_num += tmp_val
+            }
+            space1 += String(Int(sum_num)).count - 1
+            //print(space1)
+            space += space0
+            if w.ws_col >= 143 + space {
                 rw_disp = true
-                 if w.ws_col >= 191 {
-                     LongShort = 2
-                 } else if w.ws_col >= 175 {
-                     LongShort = 1
-                 }
-                 if w.ws_col >= 167 {
-                     baseLen = 1
-                 }
-            } else {
-                if w.ws_col >= 79 {
+                if w.ws_col >= 191 + space {
                     LongShort = 2
-                } else if w.ws_col >= 71 {
+                } else if w.ws_col >= 175 + space {
                     LongShort = 1
                 }
-                if w.ws_col >= 71 {
+                if w.ws_col >= 167 + space {
                     baseLen = 1
                 }
+            } else {
+                if w.ws_col >= 79 + space0 {
+                    LongShort = 2
+                } else if w.ws_col >= 71 + space0 {
+                    LongShort = 1
+                }
+                if w.ws_col >= 71 + space0 {
+                    baseLen = 1
+                } else if w.ws_col < 59 + space1 {
+                    bw_unit = 2
+                }
             }
-            if w.ws_col >= 88 {
-                rvd.ram_usg.title = String(
-                    format: "\(rvd.ram_usg.title) [RAM Power: %.2fW (avg: %.2fW peak: %.2fW)]",
-                    ram_power,
-                    rvd.ram_pwr_avg.reduce(0, +)/Float(rvd.ram_pwr_avg.count),
-                    rvd.ram_pwr_max
-                )
+            // CPU GPU pwr
+            if w.ws_col >= 82 {
+                stat_disp = true
+                pwr_unit = 1
+                if w.ws_col >= 86 {
+                    pwr_unit = 2
+                }
+            } else {
+                pwr_unit = 2
+                if w.ws_col < 65 {
+                    total_pwr = 1
+                }
             }
         }
+        
         var form = ""
         
         let ecpu_total_bw = (vd.bandwidth_cnt["ecpu dcs"]![0]+vd.bandwidth_cnt["ecpu dcs"]![1])
@@ -563,6 +618,9 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             ecpu_total_bw,
             vd.bandwidth_cnt["ecpu dcs"]![0],
             vd.bandwidth_cnt["ecpu dcs"]![1]
+            /*200.0,
+            200.0,
+            200.0*/
         )
         rvd.ecpu_bw.val = Float(ecpu_total_bw/Double(sd.max_bw[0])*100)
         
@@ -576,6 +634,9 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             pcpu_total_bw,
             vd.bandwidth_cnt["pcpu dcs"]![0],
             vd.bandwidth_cnt["pcpu dcs"]![1]
+            /*200.0,
+            200.0,
+            200.0*/
         )
         rvd.pcpu_bw.val = Float(pcpu_total_bw/Double(sd.max_bw[0])*100)
         
@@ -589,6 +650,9 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             gpu_total_bw,
             vd.bandwidth_cnt["gfx dcs"]![0],
             vd.bandwidth_cnt["gfx dcs"]![1]
+            /*200.0,
+            200.0,
+            200.0*/
         )
         rvd.gpu_bw.val = Float(gpu_total_bw/Double(sd.max_bw[1])*100)
         
@@ -602,15 +666,21 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             media_total_bw,
             vd.bandwidth_cnt["media dcs"]![0],
             vd.bandwidth_cnt["media dcs"]![1]
+            /*200.0,
+            200.0,
+            200.0*/
         )
         rvd.media_bw.val = Float(media_total_bw/Double(sd.max_bw[2])*100)
         
         let total_bw = (vd.bandwidth_cnt["dcs"]![0]+vd.bandwidth_cnt["dcs"]![1])
         rvd.bw_grp = String(
-            format: "Memory Bandwidth: %.3f GB/s (R:%.3f GB/s W:%.3f GB/s)",
+            format: "Memory Bandwidth: %.\(bw_unit)f GB/s (R:%.\(bw_unit)f GB/s W:%.\(bw_unit)f GB/s)",
             total_bw,
             vd.bandwidth_cnt["dcs"]![0],
             vd.bandwidth_cnt["dcs"]![1]
+            /*200.0,
+            200.0,
+            200.0*/
         )
         
         let sys_pwr_W = vd.soc_power["System Total"]!
@@ -633,10 +703,13 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             break
         }
         rvd.pwr_grp = String(
-            format: "System Power: %.2fW (avg: %.2fW peak: %.2fW)%@",
+            format: "System Power: %.\(total_pwr)fW (avg: %.\(total_pwr)fW peak: %.\(total_pwr)fW)%@",
             sys_pwr_W,
             rvd.sys_pwr_avg.reduce(0, +)/Double(rvd.sys_pwr_avg.count),
             rvd.sys_pwr_max,
+            /*200.0,
+            200.0,
+            200.0,*/
             throttle
         )
         
@@ -654,11 +727,18 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         if rvd.cpu_pwr_avg.count > average {
             rvd.cpu_pwr_avg = Array(rvd.cpu_pwr_avg[1..<average])
         }
+        form = "CPU: %.2fW"
+        if stat_disp {
+            form += " (avd: %.\(pwr_unit)fW peak: %.\(pwr_unit)fW)"
+        }
         rvd.cpu_pwr.title = String(
-            format: "CPU: %.2fW (avd: %.2fW peak: %.2fW)",
+            format: form,
             cpu_power,
             rvd.cpu_pwr_avg.reduce(0, +)/Float(rvd.cpu_pwr_avg.count),
             rvd.cpu_pwr_max
+            /*100.0,
+             100.0,
+             100.0*/
         )
         rvd.cpu_pwr.val.append(cpu_power/sd.max_pwr[0]*100)
         if rvd.cpu_pwr.val.count > 500 {
@@ -679,11 +759,18 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         if rvd.gpu_pwr_avg.count > average {
             rvd.gpu_pwr_avg = Array(rvd.gpu_pwr_avg[1..<average])
         }
+        form = "GPU: %.2fW"
+        if stat_disp {
+            form += " (avd: %.\(pwr_unit)fW peak: %.\(pwr_unit)fW)"
+        }
         rvd.gpu_pwr.title = String(
-            format: "GPU: %.2fW (avg: %.2fW peak: %.2fW)",
+            format: form,
             gpu_power,
             rvd.gpu_pwr_avg.reduce(0, +)/Float(rvd.gpu_pwr_avg.count),
             rvd.gpu_pwr_max
+            /*100.0,
+             100.0,
+             100.0*/
         )
         rvd.gpu_pwr.val.append(gpu_power/sd.max_pwr[1]*100)
         if rvd.gpu_pwr.val.count > 500 {

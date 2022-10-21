@@ -172,12 +172,14 @@ func gen_screen() {
     setlocale(LC_CTYPE, "en_US.UTF-8")
     newterm(nil, stderr, stdin)
     setlocale(LC_CTYPE, "en_US.UTF-8")
+    //print("locale set and terminal gen")
     cbreak()
     noecho()                    // Don't echo user input
     nonl()                      // Disable newline mode
     intrflush(stdscr, true)     // Prevent flush
     keypad(stdscr, true)        // Enable function and arrow keys
     curs_set(0)                 // Set cursor to invisible
+    //print("term set")
     start_color()
     nodelay(stdscr, true)
 }
@@ -442,25 +444,44 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
             first_stack = 3
         }
         
+        //print("rendering start")
         Stack(
             size: 3,
             title: [disp.proc_grp, disp.mem_grp, disp.pwr_grp],
             border: 1, stack: .vsplit, tbx: &scrn, render: !gn
         )
+        //print("three box")
         Stack(
             size: first_stack,
             title: [], border: 0, stack: .vsplit,
             tbx: &scrn.items[0], render: !gn
         )
+        //print("first box")
         Stack(
             size: 2, title: [disp.ram_usg.title, disp.bw_grp],
             border: 0, stack: .vsplit, tbx: &scrn.items[1], render: !gn
         )
+        //print("second box")
         Stack(
             size: 2, title: [disp.cpu_pwr.title, disp.gpu_pwr.title],
             border: 0, stack: .hsplit, tbx: &scrn.items[2], render: !gn
         )
-        for (idx, titl) in [[disp.ecpu_usg.title, disp.pcpu_usg.title], [disp.gpu_usg.title, disp.ane_usg.title], [disp.fan_usg.title, ""]].enumerated() {
+        //print("third box")
+        var first_box = [[""]]
+        if sd.fan_exist {
+            first_box = [
+                [disp.ecpu_usg.title, disp.pcpu_usg.title],
+                [disp.gpu_usg.title, disp.ane_usg.title],
+                [disp.fan_usg.title, ""]
+            ]
+        } else {
+            first_box = [
+                [disp.ecpu_usg.title, disp.pcpu_usg.title],
+                [disp.gpu_usg.title, disp.ane_usg.title]
+            ]
+        }
+        
+        for (idx, titl) in first_box.enumerated() {
             Stack(
                 size: 2, title: titl, border: 0, stack: .hsplit,
                 tbx: &scrn.items[0].items[idx], render: !gn
@@ -502,17 +523,19 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
         } //processor utilization group
         //print("processor gauge finish")
         
-        let fan_label = scrn.items[0].items[2].items[1].t
-        var mid = Int32((fan_label.h-1)/2)
-        wattron(fan_label.win, COLOR_PAIR(1))
-        for i in disp.airflow_info {
-            wmove(fan_label.win, mid, 0)
-            waddstr(fan_label.win, i)
-            mid += 1
-        }
-        wattroff(fan_label.win, COLOR_PAIR(1))
-        if !gn {
-            wrefresh(fan_label.win)
+        if sd.fan_exist {
+            let fan_label = scrn.items[0].items[2].items[1].t
+            var mid = Int32((fan_label.h-1)/2)
+            wattron(fan_label.win, COLOR_PAIR(1))
+            for i in disp.airflow_info {
+                wmove(fan_label.win, mid, 0)
+                waddstr(fan_label.win, i)
+                mid += 1
+            }
+            wattroff(fan_label.win, COLOR_PAIR(1))
+            if !gn {
+                wrefresh(fan_label.win)
+            }
         }
         
         Gauge(

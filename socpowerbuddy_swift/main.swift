@@ -50,7 +50,9 @@ let systemVersion = procInfo.operatingSystemVersion
 sd.os_ver = "macOS \(systemVersion.majorVersion).\(systemVersion.minorVersion)"
 
 generateDvfmTable(sd: &sd)
+//print("dvfm table gen finish")
 generateProcessorName(sd: &sd)
+//print("process name gen finish")
 
 var tmp = sd.extra[0].lowercased()
 //tmp = "m1 ultra"
@@ -82,9 +84,13 @@ if tmp.contains("pro") || tmp.contains("max") {
     let ttmp = sd.dvfm_states_holder
     sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[2]]
 }
+//print("channel name table gen finish")
 generateCoreCounts(sd: &sd)
+//print("core counting finish")
 generateSiliconsIds(sd: &sd)
+//print("id gen finish")
 generateMicroArchs(sd: &sd)
+//print("arch get finish")
 
 if sd.extra[0].lowercased().contains("apple") {
     var size = 0
@@ -100,6 +106,7 @@ if sd.extra[0].lowercased().contains("apple") {
 }
 
 generateSocMax(sd: &sd)
+//print("soc max gen finish")
 sd.max_pwr.append(8)
 sd.max_bw.append(7)
 
@@ -145,11 +152,14 @@ iorep.bwsub = IOReportCreateSubscription(
 print("\n [2/2] Gathering System Info\n")
 var fan_set = sd.fan_exist
 gen_screen()
+//print("gen screen")
 var monInfo = dispInfo(sd: sd)
+//print("monitor Info")
 var cpu_pwr = monInfo.cpu_pwr.val
 var gpu_pwr = monInfo.gpu_pwr.val
 var xy: [Int32] = [0, 0]
 var scrin = display(monInfo, true, nil, xy, options.color) // 레이아웃 렌더링
+//print("layout finish")
 var scr = scrin.tbx
 xy = scrin.xy
 
@@ -170,6 +180,7 @@ while true {
         monInfo.gpu_pwr.val = gpu_pwr
         
         sample(iorep: iorep, sd: sd, vd: &vd, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
+        //print("sampling finish")
         format(sd: &sd, vd: &vd) // 포매팅
         //print("formatting finish")
         summary(sd: sd, vd: vd, rd: &rd, rvd: &monInfo, opt: options.avg)
@@ -207,8 +218,12 @@ while true {
             scr = scrin.tbx
             xy = scrin.xy
             wclear(scr.t.win)
-            del_tbox(tbx: &scr.items[0].items[2].items[0])
-            for i in (0...2).reversed() {
+            var first_box = 1
+            if fan_set {
+                del_tbox(tbx: &scr.items[0].items[2].items[0])
+                first_box = 2
+            }
+            for i in (0...first_box).reversed() {
                 del_tbox(tbx: &scr.items[0].items[i])
             }
             for i in (0...1).reversed() {
