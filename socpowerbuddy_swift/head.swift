@@ -42,7 +42,7 @@ struct static_data {
     var complex_pwr_channels: Array<String> = []
     var core_pwr_channels: Array<String> = []
     var core_ep_counts: Array<UInt8> = [0, 0]
-    var ram_capacity = 0
+    var ram_capacity = ""
     var max_pwr: Array<Float> = []
     var max_bw: Array<Float> = []
     var fan_exist = true
@@ -98,7 +98,7 @@ struct render_data {
 }
 
 struct mem_info {
-    var total: Double = 0
-    var used: Double = 0
-    var free: Double = 0
+    var total: [Double] = [0, 0]
+    var used: [Double] = [0, 0]
+    var free: [Double] = [0, 0]
 }

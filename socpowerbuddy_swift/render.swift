@@ -128,7 +128,7 @@ struct dispInfo {
                 } else if mode == "Rosetta 2" {
                     cpu_title += "[Rosetta 2] (cores: \(sd.core_ep_counts.reduce(0,+))C+"
                 }
-                cpu_title += "\(sd.gpu_core_count)GPU+\(sd.ram_capacity)GB)"
+                cpu_title += "\(sd.gpu_core_count)GPU+\(sd.ram_capacity))"
             }
             cpu_title += " \(sd.os_ver)"
             

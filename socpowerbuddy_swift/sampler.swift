@@ -504,19 +504,21 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         if rvd.ram_pwr_avg.count > average {
             rvd.gpu_pwr_avg = Array(rvd.gpu_pwr_avg[1..<average])
         }
-        if vd.swap_stat.total < 0.1 {
+        let munit = ByteUnit(vd.mem_stat.used[1])
+        let munit_tot = ByteUnit(vd.mem_stat.total[1])
+        if vd.swap_stat.total[0] < 0.1 {
             rvd.ram_usg.title = String(
-                format: "RAM Usage: %.1f/%.1fGB - swap inactive",
-                vd.mem_stat.used,
-                vd.mem_stat.total
+                format: "RAM Usage: %.1f\(munit)/%.1f\(munit_tot) - swap inactive",
+                vd.mem_stat.used[0],
+                vd.mem_stat.total[0]
             )
         } else {
             rvd.ram_usg.title = String(
-                format: "RAM Usage: %.1f/%.1fGB - swap: %.1f/%.1fGB",
-                vd.mem_stat.used,
-                vd.mem_stat.total,
-                vd.swap_stat.used,
-                vd.swap_stat.total
+                format: "RAM Usage: %.1f\(munit)/%.1f\(munit_tot) - swap: %.1f\(ByteUnit(vd.swap_stat.used[1]))/%.1f\(ByteUnit(vd.swap_stat.total[1]))",
+                vd.mem_stat.used[0],
+                vd.mem_stat.total[0],
+                vd.swap_stat.used[0],
+                vd.swap_stat.total[0]
             )
         }
         rvd.ram_usg.val = Float(vd.mem_percent)

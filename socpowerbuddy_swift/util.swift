@@ -7,11 +7,27 @@
 
 import Foundation
 
-func convertToGB(_ num: Double) -> Double {
-    autoreleasepool {
-        var res = num
-        return round(res / 1048576 * 1000)/1000.0
+func convertToGB(_ num: Double) -> [Double] {
+    var res = [num, 0]
+    while res[0] > 1024 {
+        res[0] /= 1024
+        res[1] += 1
     }
+    res[0] = round(res[0] * 1000)/1000.0
+    return res
+}
+
+func ByteUnit(_ num: Double) -> String {
+    var unit = ""
+    switch num {
+    case 0: unit = "B"
+    case 1: unit = "KB"
+    case 2: unit = "MB"
+    case 3: unit = "GB"
+    case 4: unit = "TB"
+    default: break
+    }
+    return unit
 }
 
 func vd_init(sd: static_data) -> variating_data {

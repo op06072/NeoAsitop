@@ -174,7 +174,7 @@ while true {
             getSensorVal(vd: &vd, sd: &sd) // 센서값
         }
         getMemUsage(vd: &vd)
-        sd.ram_capacity = Int(vd.mem_stat.total)
+        sd.ram_capacity = "\(Int(vd.mem_stat.total[0]))\(ByteUnit(vd.mem_stat.total[1]))"
         monInfo = dispInfo(sd: sd)
         monInfo.cpu_pwr.val = cpu_pwr
         monInfo.gpu_pwr.val = gpu_pwr
