@@ -10,10 +10,7 @@ import Foundation
 func convertToGB(_ num: Double) -> Double {
     autoreleasepool {
         var res = num
-        while res >= 1024 {
-            res /= 1024
-        }
-        return round(res * 1000)/1000.0
+        return round(res / 1048576 * 1000)/1000.0
     }
 }
 
@@ -55,4 +52,18 @@ func del_tbox(tbx: inout tbox) {
         delwin(i.t.win)
     }
     tbx.items.removeAll()
+}
+
+func dfs_kill(tbx: inout tbox) {
+    while true {
+        if tbx.items.count != 0 {
+            for var i in tbx.items {
+                dfs_kill(tbx: &i)
+            }
+            tbx.items.removeAll()
+        } else {
+            delwin(tbx.t.win)
+            break
+        }
+    }
 }

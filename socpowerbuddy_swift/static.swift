@@ -37,8 +37,7 @@ func generateDvfmTable(sd: inout static_data) {
                     exit(1)
                 }
                 
-                guard let serviceDict = servicedict?.takeUnretainedValue() as? [String : AnyObject] else { continue }
-                servicedict?.release()
+                guard let serviceDict = servicedict?.takeRetainedValue() as? [String : AnyObject] else { continue }
                 var data: AnyObject? = nil
                 
                 switch i {
@@ -178,8 +177,7 @@ func generateCoreCounts(sd: inout static_data) {
                 exit(1)
             }
             
-            guard let serviceDict = servicedict?.takeUnretainedValue() as? [String : AnyObject] else { continue }
-            servicedict?.release()
+            guard let serviceDict = servicedict?.takeRetainedValue() as? [String : AnyObject] else { continue }
             
             if case let data = serviceDict["clusters"], data != nil {
                 let databytes = data?.bytes?.assumingMemoryBound(to: UInt8.self)
@@ -273,8 +271,7 @@ func generateSiliconsIds(sd: inout static_data) {
                 siliconError(sd: &sd)
             }
             
-            guard let serviceDict = servicedict?.takeUnretainedValue() as? [String : AnyObject] else { continue }
-            servicedict?.release()
+            guard let serviceDict = servicedict?.takeRetainedValue() as? [String : AnyObject] else { continue }
             if case let data = serviceDict["platform-name"], data != nil {
                 sd.extra.append(String(
                     format: "%s",
@@ -335,7 +332,7 @@ func generateMicroArchs(sd: inout static_data) {
         if case let data = IORegistryEntryCreateCFProperty(service, "compatible" as CFString, kCFAllocatorDefault, 0), data != nil {
             sd.extra.append(String(
                 format: "%s",
-                (data?.takeUnretainedValue().bytes?.assumingMemoryBound(to: UInt8.self))!
+                (data?.takeRetainedValue().bytes?.assumingMemoryBound(to: UInt8.self))!
             ))
         } else {
             archError(sd: &sd)
@@ -345,7 +342,7 @@ func generateMicroArchs(sd: inout static_data) {
         if case let data = IORegistryEntryCreateCFProperty(service, "compatible" as CFString, kCFAllocatorDefault, 0), data != nil {
             sd.extra.append(String(
                 format: "%s",
-                (data?.takeUnretainedValue().bytes?.assumingMemoryBound(to: UInt8.self))!
+                (data?.takeRetainedValue().bytes?.assumingMemoryBound(to: UInt8.self))!
             ))
         } else {
             archError(sd: &sd)

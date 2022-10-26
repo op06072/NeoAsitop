@@ -40,6 +40,8 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
+      queueDebuggingEnabled = "No"
+      memoryGraphOnResourceException = "Yes"
       consoleMode = "1">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
@@ -51,6 +53,18 @@
             ReferencedContainer = "container:socpowerbuddy_swift.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <AdditionalOptions>
+         <AdditionalOption
+            key = "MallocStackLogging"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "PrefersMallocStackLoggingLite"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

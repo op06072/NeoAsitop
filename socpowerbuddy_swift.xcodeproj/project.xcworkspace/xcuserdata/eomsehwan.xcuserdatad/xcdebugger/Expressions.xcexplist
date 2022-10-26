@@ -29,6 +29,11 @@
       </ContextState>
       <ContextState
          contextName = "closure #1 in :main.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "tbx">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "generateMicroArchs(sd:):static.swift">
@@ -37,10 +42,10 @@
          contextName = "main:main.swift">
          <PersistentStrings>
             <PersistentString
-               value = "sd">
+               value = "tmp_report">
             </PersistentString>
             <PersistentString
-               value = "IOReportStateGetResidency(sample, i)">
+               value = "subchndic">
             </PersistentString>
             <PersistentString
                value = "ttmp">
@@ -52,12 +57,15 @@
                value = "vd">
             </PersistentString>
             <PersistentString
-               value = "tmp_report">
+               value = "IOReportStateGetResidency(sample, i)">
             </PersistentString>
             <PersistentString
-               value = "subchndic">
+               value = "sd">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "dfs_kill(tbx:):util.swift">
       </ContextState>
       <ContextState
          contextName = "sample(iorep:sd:vd:cmd:):sampler.swift">

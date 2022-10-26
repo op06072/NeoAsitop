@@ -123,29 +123,29 @@ iorep.bwchn = IOReportCopyChannelsInGroup("AMC Stats", nil, 0, 0, 0)
 
 IOReportMergeChannels(
     iorep.cpuchn_cpu?.takeUnretainedValue(),
-    iorep.cpuchn_gpu?.takeUnretainedValue(),
+    iorep.cpuchn_gpu?.takeRetainedValue(),
     nil
 )
 IOReportMergeChannels(
     iorep.pwrchn_eng?.takeUnretainedValue(),
-    iorep.pwrchn_pmp?.takeUnretainedValue(),
+    iorep.pwrchn_pmp?.takeRetainedValue(),
     nil
 )
 
 iorep.cpusub = IOReportCreateSubscription(
-    nil, iorep.cpuchn_cpu?.takeUnretainedValue(),
+    nil, iorep.cpuchn_cpu?.takeRetainedValue(),
     &iorep.cpusubchn, 0, nil
 )
 iorep.pwrsub = IOReportCreateSubscription(
-    nil, iorep.pwrchn_eng?.takeUnretainedValue(),
+    nil, iorep.pwrchn_eng?.takeRetainedValue(),
     &iorep.pwrsubchn, 0, nil
 )
 iorep.clpcsub = IOReportCreateSubscription(
-    nil, iorep.clpcchn?.takeUnretainedValue(),
+    nil, iorep.clpcchn?.takeRetainedValue(),
     &iorep.clpcsubchn, 0, nil
 )
 iorep.bwsub = IOReportCreateSubscription(
-    nil, iorep.bwchn?.takeUnretainedValue(),
+    nil, iorep.bwchn?.takeRetainedValue(),
     &iorep.bwsubchn, 0, nil
 )
 
@@ -218,6 +218,9 @@ while true {
             scr = scrin.tbx
             xy = scrin.xy
             wclear(scr.t.win)
+            
+            //dfs_kill(tbx: &scr)
+            
             var first_box = 1
             if fan_set {
                 del_tbox(tbx: &scr.items[0].items[2].items[0])
