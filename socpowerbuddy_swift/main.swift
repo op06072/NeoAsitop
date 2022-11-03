@@ -56,7 +56,10 @@ generateProcessorName(sd: &sd)
 
 var tmp = sd.extra[0].lowercased()
 //tmp = "m1 ultra"
-if tmp.contains("pro") || tmp.contains("max") {
+if tmp.contains("virtual") {
+    print("You can't use this tool on apple virtual machine.")
+    exit(2)
+} else if tmp.contains("pro") || tmp.contains("max") {
     sd.complex_pwr_channels = ["EACC_CPU", "PACC0_CPU", "PACC1_CPU", "GPU0", "ANE0", "DRAM0"]
     sd.core_pwr_channels = ["EACC_CPU", "PACC0_CPU", "PACC1_CPU"]
     
