@@ -12,168 +12,211 @@ func sample(iorep: iorep_data,
             sd: static_data,
             vd: inout variating_data,
             cmd: cmd_data) {
-    autoreleasepool {
-        let ptype_state = "P"
-        let vtype_state = "V"
-        let idletype_state = "IDLE"
-        let offtype_state = "OFF"
-        
-        // It's awful and horrible memory leaking time!
-        // I have no idea how can I fix this.
-        var tmp_samp = IOReportCreateSamples(
-            iorep.cpusub, iorep.cpusubchn?.takeUnretainedValue(), nil
-        ).takeRetainedValue()
-        
-        let cpusamp_a = tmp_samp
-        tmp_samp = IOReportCreateSamples(
-            iorep.pwrsub, iorep.pwrsubchn?.takeUnretainedValue(), nil
-        ).takeRetainedValue()
-        let pwrsamp_a = tmp_samp
-        tmp_samp = IOReportCreateSamples(
-            iorep.clpcsub, iorep.clpcsubchn?.takeUnretainedValue(), nil
-        ).takeRetainedValue()
-        let clpcsamp_a = tmp_samp
-        tmp_samp = IOReportCreateSamples(
-            iorep.bwsub, iorep.bwsubchn?.takeUnretainedValue(), nil
-        ).takeRetainedValue()
-        let bwsamp_a = tmp_samp
-        
-        if cmd.interval > 0 {
-            Thread.sleep(forTimeInterval: cmd.interval*1e-3)
-        }
-        
-        tmp_samp = IOReportCreateSamples(
-            iorep.cpusub, iorep.cpusubchn?.takeUnretainedValue(), nil
-        ).takeRetainedValue()
-        let cpusamp_b = tmp_samp
-        tmp_samp = IOReportCreateSamples(
-            iorep.pwrsub, iorep.pwrsubchn?.takeUnretainedValue(), nil
-        ).takeRetainedValue()
-        let pwrsamp_b = tmp_samp
-        tmp_samp = IOReportCreateSamples(
-            iorep.bwsub, iorep.bwsubchn?.takeUnretainedValue(), nil
-        ).takeRetainedValue()
-        let clpcsamp_b = tmp_samp
-        tmp_samp = IOReportCreateSamples(
-            iorep.bwsub, iorep.bwsubchn?.takeUnretainedValue(), nil
-        ).takeRetainedValue()
-        let bwsamp_b = tmp_samp
-        
-        var ttmp = IOReportCreateSamplesDelta(cpusamp_a, cpusamp_b, nil)?.takeRetainedValue()
-        
-        let cpu_delta = Array((ttmp as! Dictionary<String, Any>).values)[0] as? Array<CFDictionary>
-        ttmp = IOReportCreateSamplesDelta(pwrsamp_a, pwrsamp_b, nil)?.takeRetainedValue()
-        let pwr_delta = Array((ttmp as! Dictionary<String, Any>).values)[0] as? Array<CFDictionary>
-        ttmp = IOReportCreateSamplesDelta(clpcsamp_a, clpcsamp_b, nil)?.takeRetainedValue()
-        let clpc_delta = Array((ttmp as! Dictionary<String, Any>).values)[0] as? Array<CFDictionary>
-        ttmp = IOReportCreateSamplesDelta(bwsamp_a, bwsamp_b, nil)?.takeRetainedValue()
-        let bw_delta = Array((ttmp as! Dictionary<String, Any>).values)[0] as? Array<CFDictionary>
-        // Fortunately, You just passed the memory leak part "this time".
-        
-        for sample in cpu_delta! {
-            for i in stride(from: 0, to: IOReportStateGetCount(sample), by: 1) {
-                let subgroup = IOReportChannelGetSubGroup(sample)
-                let idx_name = IOReportStateGetNameForIndex(sample, i)
-                let chann_name = IOReportChannelGetChannelName(sample)
-                let residency = IOReportStateGetResidency(sample, i)
-                
-                for ii in 0..<sd.complex_freq_channels.count {
-                    if subgroup == "CPU Complex Performance States" || subgroup == "GPU Performance States" {
-                        if chann_name == sd.complex_freq_channels[ii] {
-                            if idx_name!.contains(ptype_state) || idx_name!.contains(vtype_state) {
-                                vd.cluster_sums[ii] += residency
-                                vd.cluster_residencies[ii].append(Float(residency))
-                            } else if idx_name!.contains(idletype_state) || idx_name!.contains(offtype_state) {
-                                vd.cluster_use[ii] = Float(residency)
-                            }
-                        }
-                    } else if subgroup == "CPU Core Performance States" {
-                        if ii <= sd.cluster_core_counts.count-1 {
-                            for iii in 0..<Int(sd.cluster_core_counts[ii]) {
-                                if chann_name == String(format: "%@%d", sd.core_freq_channels[ii], iii) {
-                                    if idx_name!.contains(ptype_state) || idx_name!.contains(vtype_state) {
-                                        vd.core_sums[ii][iii] += residency
-                                        vd.core_residencies[ii][iii].append(Float(residency))
-                                    } else if idx_name!.contains(idletype_state) || idx_name!.contains(offtype_state) {
-                                        vd.core_use[ii][iii] = residency
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //var package = 0
-        for sample in pwr_delta! {
-            let chann_name = IOReportChannelGetChannelName(sample)
-            let group = IOReportChannelGetGroup(sample)
-            let value = IOReportSimpleGetIntegerValue(sample, 0)
+    let ptype_state    = "P"
+    let vtype_state    = "V"
+    let idletype_state = "IDLE"
+    let offtype_state  = "OFF"
+    
+    let cpusamp_a  = IOReportCreateSamples(iorep.cpusub, iorep.cpusubchn?.takeUnretainedValue(), nil)
+    let pwrsamp_a  = IOReportCreateSamples(iorep.pwrsub, iorep.pwrsubchn?.takeUnretainedValue(), nil)
+    let clpcsamp_a = IOReportCreateSamples(iorep.clpcsub, iorep.clpcsubchn?.takeUnretainedValue(), nil)
+    let bwsamp_a   = IOReportCreateSamples(iorep.bwsub, iorep.bwsubchn?.takeUnretainedValue(), nil)
+    
+    if cmd.interval > 0 {
+        Thread.sleep(forTimeInterval: cmd.interval*1e-3)
+    }
+    
+    let cpusamp_b  = IOReportCreateSamples(iorep.cpusub, iorep.cpusubchn?.takeUnretainedValue(), nil)
+    let pwrsamp_b  = IOReportCreateSamples(iorep.pwrsub, iorep.pwrsubchn?.takeUnretainedValue(), nil)
+    let clpcsamp_b = IOReportCreateSamples(iorep.clpcsub, iorep.clpcsubchn?.takeUnretainedValue(), nil)
+    let bwsamp_b   = IOReportCreateSamples(iorep.bwsub, iorep.bwsubchn?.takeUnretainedValue(), nil)
+    
+    let cpu_delta  = IOReportCreateSamplesDelta(cpusamp_a?.takeUnretainedValue(), cpusamp_b?.takeUnretainedValue(), nil)
+    let pwr_delta  = IOReportCreateSamplesDelta(pwrsamp_a?.takeUnretainedValue(), pwrsamp_b?.takeUnretainedValue(), nil)
+    let clpc_delta = IOReportCreateSamplesDelta(clpcsamp_a?.takeUnretainedValue(), clpcsamp_b?.takeUnretainedValue(), nil)
+    let bw_delta   = IOReportCreateSamplesDelta(bwsamp_a?.takeUnretainedValue(), bwsamp_b?.takeUnretainedValue(), nil)
+    
+    cpusamp_a?.release()
+    cpusamp_b?.release()
+    pwrsamp_a?.release()
+    pwrsamp_b?.release()
+    clpcsamp_a?.release()
+    clpcsamp_b?.release()
+    bwsamp_a?.release()
+    bwsamp_b?.release()
+    
+    var tmp_vd: variating_data? = vd
+    
+    IOReportIterate(cpu_delta?.takeUnretainedValue(), { sample in
+        for i in stride(from: 0, to: IOReportStateGetCount(sample), by: 1) {
+            var subgroup   = IOReportChannelGetSubGroup(sample)
+            var idx_name   = IOReportStateGetNameForIndex(sample, i)
+            var chann_name = IOReportChannelGetChannelName(sample)
+            let residency  = IOReportStateGetResidency(sample, i)
             
-            for ii in 0..<sd.complex_pwr_channels.count {
-                if group == "Energy Model" {
-                    if chann_name == sd.complex_pwr_channels[ii] {
-                        vd.cluster_pwrs[ii] = Float(value)/Float(cmd.interval/1e+3)
+            for ii in 0..<sd.complex_freq_channels.count {
+                if subgroup == "CPU Complex Performance States" || subgroup == "GPU Performance States" {
+                    if chann_name == sd.complex_freq_channels[ii] {
+                        if idx_name!.contains(ptype_state) || idx_name!.contains(vtype_state) {
+                            var tmp_sum: UInt64? = tmp_vd!.cluster_sums[ii] + residency
+                            var tmp_flt: Float? = Float(residency)
+                            tmp_vd!.cluster_sums[ii] = tmp_sum!
+                            tmp_vd!.cluster_residencies[ii].append(tmp_flt!)
+                            tmp_sum = nil
+                            tmp_flt = nil
+                        } else if idx_name!.contains(idletype_state) || idx_name!.contains(offtype_state) {
+                            var tmp_flt: Float? = Float(residency)
+                            tmp_vd!.cluster_use[ii] = tmp_flt!
+                            tmp_flt = nil
+                        }
                     }
-                        
+                } else if subgroup == "CPU Core Performance States" {
                     if ii <= sd.cluster_core_counts.count-1 {
                         for iii in 0..<Int(sd.cluster_core_counts[ii]) {
-                            if chann_name == String(format: "%@%d", sd.core_pwr_channels[ii], iii) {
-                                vd.core_pwrs[ii][iii] = Float(value)/Float(cmd.interval/1e+3)
+                            autoreleasepool {
+                                var key: String? = String(format: "%@%d", sd.core_freq_channels[ii], iii)
+                                if chann_name == key! {
+                                    if idx_name!.contains(ptype_state) || idx_name!.contains(vtype_state) {
+                                        var tmp_sum: UInt64? = tmp_vd!.core_sums[ii][iii] + residency
+                                        var tmp_flt: Float? = Float(residency)
+                                        tmp_vd!.core_sums[ii][iii] = tmp_sum!
+                                        tmp_vd!.core_residencies[ii][iii].append(tmp_flt!)
+                                        tmp_sum = nil
+                                        tmp_flt = nil
+                                    } else if idx_name!.contains(idletype_state) || idx_name!.contains(offtype_state) {
+                                        var tmp: UInt64? = residency
+                                        tmp_vd!.core_use[ii][iii] = tmp!
+                                        tmp = nil
+                                    }
+                                }
+                                key = nil
                             }
                         }
                     }
                 }
-                
-                if sd.extra[0].lowercased() == "apple m1" || sd.extra[0].lowercased() == "apple m2" {
-                    if group?.uppercased() == "PMP" {
-                        if chann_name?.uppercased() == "GPU" {
-                            vd.cluster_pwrs[2] = Float(value)/Float(cmd.interval/1e+3)
-                        } else if chann_name?.uppercased() == "ANE" {
-                            vd.cluster_pwrs[3] = Float(value)/Float(cmd.interval/1e+3)
-                        } else if chann_name?.uppercased() == "DRAM" {
-                            vd.cluster_pwrs[4] = Float(value)/Float(cmd.interval/1e+3)
+            }
+            
+            chann_name = nil
+            subgroup   = nil
+            idx_name   = nil
+        }
+        
+        return Int32(kIOReportIterOk)
+    })
+    cpu_delta?.release()
+    
+    IOReportIterate(pwr_delta?.takeUnretainedValue(), { sample in
+        var chann_name  = IOReportChannelGetChannelName(sample)
+        var group       = IOReportChannelGetGroup(sample)
+        var value: Int? = IOReportSimpleGetIntegerValue(sample, 0)
+        
+        for ii in 0..<sd.complex_pwr_channels.count {
+            if group == "Energy Model" {
+                if chann_name == sd.complex_pwr_channels[ii] {
+                    var tmp: Float? = Float(value!)/Float(cmd.interval/1e+3)
+                    tmp_vd!.cluster_pwrs[ii] = tmp!
+                    tmp = nil
+                }
+                    
+                if ii <= sd.cluster_core_counts.count-1 {
+                    for iii in 0..<Int(sd.cluster_core_counts[ii]) {
+                        autoreleasepool {
+                            var val: String? = String(format: "%@%d", sd.core_pwr_channels[ii], iii)
+                            if chann_name == val! {
+                                var tmp: Float? = Float(value!)/Float(cmd.interval/1e+3)
+                                tmp_vd!.core_pwrs[ii][iii] = tmp!
+                                tmp = nil
+                            }
+                            val = nil
                         }
                     }
                 }
             }
-        }
-        
-        for sample in clpc_delta! {
-            let chann_name = IOReportChannelGetChannelName(sample)
             
-            for i in 0..<sd.cluster_core_counts.count {
-                let value = IOReportArrayGetValueAtIndex(sample, Int32(i))
-                
-                if chann_name == "CPU cycles, by cluster" {
-                    vd.cluster_instrcts_clk.append(CLong(value))
-                } else if chann_name == "CPU instructions, by cluster" {
-                    vd.cluster_instrcts_ret.append(CLong(value))
-                }
-            }
-            
-            if vd.cluster_instrcts_ret.count == sd.cluster_core_counts.count {
-                break
-            }
-        }
-        
-        var last_name = ""
-        for i in 0..<bw_delta!.count {
-            let sample = bw_delta![i]
-            let chann_name = IOReportChannelGetChannelName(sample).lowercased()
-            if chann_name.contains("dcs") && (chann_name.contains("rd") || chann_name.contains("wr")) {
-                let raw = Double(IOReportSimpleGetIntegerValue(sample, 0))
-                
-                if chann_name == last_name+" wr" {
-                    vd.bandwidth_cnt[last_name]!.append(raw/Double(cmd.interval/1e+3)/1e9)
-                } else if chann_name.contains(" rd") {
-                    let last_tmp = chann_name.split(separator: " ")
-                    last_name = last_tmp[0..<last_tmp.count-1].joined(separator: " ")
-                    vd.bandwidth_cnt[last_name] = [raw/Double(cmd.interval/1e+3)/1e9]
+            if sd.extra[0].lowercased() == "apple m1" || sd.extra[0].lowercased() == "apple m2" {
+                if group?.uppercased() == "PMP" {
+                    var tmp_flt: Float? = Float(value!)/Float(cmd.interval/1e+3)
+                    if chann_name?.uppercased() == "GPU" {
+                        tmp_vd!.cluster_pwrs[2] = tmp_flt!
+                    } else if chann_name?.uppercased() == "ANE" {
+                        tmp_vd!.cluster_pwrs[3] = tmp_flt!
+                    } else if chann_name?.uppercased() == "DRAM" {
+                        tmp_vd!.cluster_pwrs[4] = tmp_flt!
+                    }
+                    tmp_flt = nil
                 }
             }
         }
-    }
+        
+        chann_name = nil
+        group      = nil
+        value      = nil
+        
+        return Int32(kIOReportIterOk)
+    })
+    pwr_delta?.release()
+    
+    IOReportIterate(clpc_delta?.takeUnretainedValue(), {sample in
+        var chann_name = IOReportChannelGetChannelName(sample)
+        
+        for i in 0..<sd.cluster_core_counts.count {
+            var value: UInt64? = IOReportArrayGetValueAtIndex(sample, Int32(i))
+            
+            if chann_name == "CPU cycles, by cluster" {
+                var tmp: CLong? = CLong(value!)
+                tmp_vd!.cluster_instrcts_clk.append(tmp!)
+                tmp = nil
+            } else if chann_name == "CPU instructions, by cluster" {
+                var tmp: CLong? = CLong(value!)
+                tmp_vd!.cluster_instrcts_ret.append(tmp!)
+                tmp = nil
+            }
+            value = nil
+        }
+        
+        if tmp_vd!.cluster_instrcts_ret.count == sd.cluster_core_counts.count {
+            return Int32(kIOReportIterFailed)
+        }
+        
+        chann_name = nil
+        
+        return Int32(kIOReportIterOk)
+    })
+    clpc_delta?.release()
+    
+    var last_name: String? = ""
+    IOReportIterate(bw_delta?.takeUnretainedValue(), {sample in
+        var chann_name: String? = IOReportChannelGetChannelName(sample).lowercased()
+        
+        if chann_name!.contains("dcs") && (chann_name!.contains("rd") || chann_name!.contains("wr")) {
+            var raw: Double? = (Double(IOReportSimpleGetIntegerValue(sample, 0))/Double(cmd.interval/1e+3))/1e9
+            
+            if chann_name! == last_name!+" wr" {
+                tmp_vd!.bandwidth_cnt[last_name!]!.append(raw!)
+            } else if chann_name!.contains(" rd") {
+                var last_tmp: Array<Substring>? = chann_name!.split(separator: " ")
+                var tmp_name: String? = last_tmp![0..<last_tmp!.count-1].joined(separator: " ")
+                var tmp: Array<Double>? = [raw!]
+                
+                tmp_vd!.bandwidth_cnt[tmp_name!] = tmp!
+                
+                last_name = tmp_name
+                last_tmp = nil
+                tmp_name = nil
+                tmp      = nil
+            }
+            
+            raw = nil
+        }
+        
+        chann_name = nil
+        
+        return Int32(kIOReportIterOk)
+    })
+    bw_delta?.release()
+    
+    vd = tmp_vd!
+    tmp_vd = nil
 }
 
 func appleSiliconSensors(page: Int32, usage: Int32, typ: Int32) -> Dictionary<String, IOHIDFloat>? {
@@ -190,9 +233,9 @@ func appleSiliconSensors(page: Int32, usage: Int32, typ: Int32) -> Dictionary<St
     autoreleasepool {
         for i in 0..<services!.count {
             let service = services![i]
-            let name = IOHIDServiceClientCopyProperty(service, "Product" as CFString)
+            var name = IOHIDServiceClientCopyProperty(service, "Product" as CFString)
             
-            let event = IOHIDServiceClientCopyEvent(service, Int64(typ), 0, 0)
+            var event = IOHIDServiceClientCopyEvent(service, Int64(typ), 0, 0)
             if event == nil {
                 continue
             }
@@ -200,6 +243,8 @@ func appleSiliconSensors(page: Int32, usage: Int32, typ: Int32) -> Dictionary<St
             if (name != nil) && (event != nil) {
                 dctionary[name as! String] = IOHIDEventGetFloatValue(event, (typ << 16))
             }
+            name = nil
+            event = nil
         }
     }
     return dctionary
@@ -297,23 +342,37 @@ func getMemUsage(vd: inout variating_data) {
 }
 
 func format(sd: inout static_data, vd: inout variating_data) {
+    var res: Float? = 0
+    var core_res: Float? = 0
     autoreleasepool {
         for i in 0..<sd.complex_freq_channels.count {
             for ii in 0..<vd.cluster_residencies[i].count {
-                let res = vd.cluster_residencies[i][ii]
-                if res != 0 {
-                    let perc = res/Float(vd.cluster_sums[i])
-                    vd.cluster_freqs[i] += Float(sd.dvfm_states[i][ii])*perc
-                    vd.cluster_residencies[i][ii] = perc
-                }
-                
-                if i <= sd.cluster_core_counts.count-1 {
-                    for iii in 0..<Int(sd.cluster_core_counts[i]) {
-                        let core_res = vd.core_residencies[i][iii][ii]
-                        if core_res != 0 {
-                            let core_perc = Float(core_res) / Float(vd.core_sums[i][iii])
-                            vd.core_freqs[i][iii] += Float(sd.dvfm_states[i][ii])*core_perc
-                            vd.core_residencies[i][iii][ii] = core_perc
+                autoreleasepool {
+                    res = vd.cluster_residencies[i][ii]
+                    if res != 0 {
+                        var perc: Float? = res!/Float(vd.cluster_sums[i])
+                        var tmp_freq: Float? = vd.cluster_freqs[i] + Float(sd.dvfm_states[i][ii])*perc!
+                        
+                        vd.cluster_freqs[i] = tmp_freq!
+                        vd.cluster_residencies[i][ii] = perc!
+                        
+                        perc = nil
+                        tmp_freq = nil
+                    }
+                    
+                    if i <= sd.cluster_core_counts.count-1 {
+                        for iii in 0..<Int(sd.cluster_core_counts[i]) {
+                            core_res = vd.core_residencies[i][iii][ii]
+                            if core_res! != 0 {
+                                var core_perc: Float? = core_res!/Float(vd.core_sums[i][iii])
+                                var tmp_freq: Float? = vd.core_freqs[i][iii] + Float(sd.dvfm_states[i][ii])*core_perc!
+                                
+                                vd.core_freqs[i][iii] = tmp_freq!
+                                vd.core_residencies[i][iii][ii] = core_perc!
+                                
+                                core_perc = nil
+                                tmp_freq = nil
+                            }
                         }
                     }
                 }
@@ -323,8 +382,11 @@ func format(sd: inout static_data, vd: inout variating_data) {
             vd.cluster_use[i] *= 100
             if i <= sd.cluster_core_counts.count-1 {
                 for iii in 0..<Int(sd.cluster_core_counts[i]) {
-                    let tmp = Float(vd.core_sums[i][iii])+Float(vd.core_use[i][iii] as! UInt64)
-                    vd.core_use[i][iii] = 100-(Float(vd.core_use[i][iii] as! UInt64)/tmp)*100
+                    var tmp: Float? = Float(vd.core_sums[i][iii])+Float(vd.core_use[i][iii] as! UInt64)
+                    var tmp_use: Float? = 100-(Float(vd.core_use[i][iii] as! UInt64)/tmp!)*100
+                    vd.core_use[i][iii] = tmp_use!
+                    tmp = nil
+                    tmp_use = nil
                 }
             }
         }

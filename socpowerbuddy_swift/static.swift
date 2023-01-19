@@ -288,30 +288,35 @@ func generateSiliconsIds(sd: inout static_data) {
 
 func siliconError(sd: inout static_data) {
     autoreleasepool {
-        var tmp = ""
+        var tmp: String? = "T****"
         if sd.extra.count == 0 {
             tmp = "T****"
         } else {
-            let ttmp = sd.extra[0]
-            if ttmp.contains("M1") {
-                if ttmp.contains("Pro") {
+            let ttmp = sd.extra[0].lowercased()
+            if ttmp.contains("m1") {
+                if ttmp.contains("pro") {
                     tmp = "T6000"
-                } else if ttmp.contains("Max") {
+                } else if ttmp.contains("max") {
                     tmp = "T6001"
-                } else if ttmp.contains("Ultra") {
+                } else if ttmp.contains("ultra") {
                     tmp = "T6002"
                 } else {
                     tmp = "T8103"
                 }
-            } else if ttmp.contains("M2") {
-                if ttmp == "Apple M2" {
+            } else if ttmp.contains("m2") {
+                if ttmp.contains("pro") {
+                    tmp = "T6***"
+                } else if ttmp.contains("max") {
+                    tmp = "T6***"
+                } else {
                     tmp = "T8112"
                 }
             } else {
                 tmp = "T****"
             }
         }
-        sd.extra.append(tmp)
+        sd.extra.append(tmp!)
+        tmp = nil
     }
 }
 
@@ -390,8 +395,18 @@ func generateSocMax(sd: inout static_data) {
                 sd.max_bw = [70, 70]
             }
         } else if tmp.contains("m2") {
-            if tmp.contains("m2 ") {
-                
+            if tmp.contains("pro") {
+                sd.max_pwr = [40, 25]
+                sd.max_bw = [200, 200]
+            } else if tmp.contains("max") {
+                sd.max_pwr = [40, 50]
+                sd.max_bw = [250, 400]
+            } else if tmp.contains("ultra") { // hmm...
+                sd.max_pwr = [80, 100] // this is just my sweet dream
+                sd.max_bw = [500, 800] // for next gen mac studio and
+            } else if tmp.contains("extreme") { // wish of all of us
+                sd.max_pwr = [160, 200] // The apple silicon
+                sd.max_bw = [1000, 1600] // mac pro
             } else {
                 sd.max_pwr = [25, 15]
                 sd.max_bw = [100, 100]

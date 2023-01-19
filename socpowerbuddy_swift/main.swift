@@ -38,11 +38,11 @@ while cmd.interval/1000 >= options.interval {
     cmd.interval /= 2
 }
 
-var cpu_peak_pwr: Float = 0
-var gpu_peak_pwr: Float = 0
+var cpu_peak_pwr: Float    = 0
+var gpu_peak_pwr: Float    = 0
 var system_peak_pwr: Float = 0
-var cpu_avg_pwr_list: [Float] = []
-var gpu_avg_pwr_list: [Float] = []
+var cpu_avg_pwr_list: [Float]    = []
+var gpu_avg_pwr_list: [Float]    = []
 var system_avg_pwr_list: [Float] = []
 
 let procInfo = ProcessInfo()
@@ -113,10 +113,10 @@ generateSocMax(sd: &sd)
 sd.max_pwr.append(8)
 sd.max_bw.append(7)
 
-iorep.cpusubchn = nil
-iorep.pwrsubchn = nil
+iorep.cpusubchn  = nil
+iorep.pwrsubchn  = nil
 iorep.clpcsubchn = nil
-iorep.bwsubchn = nil
+iorep.bwsubchn   = nil
 iorep.cpuchn_cpu = IOReportCopyChannelsInGroup("CPU Stats", nil, 0, 0, 0)
 iorep.cpuchn_gpu = IOReportCopyChannelsInGroup("GPU Stats", nil, 0, 0, 0)
 iorep.pwrchn_eng = IOReportCopyChannelsInGroup("Energy Model", nil, 0, 0, 0)
@@ -152,6 +152,13 @@ iorep.bwsub = IOReportCreateSubscription(
     &iorep.bwsubchn, 0, nil
 )
 
+iorep.cpuchn_cpu = nil
+iorep.cpuchn_gpu = nil
+iorep.pwrchn_eng = nil
+iorep.pwrchn_pmp = nil
+iorep.clpcchn    = nil
+iorep.bwchn      = nil
+
 print("\n [2/2] Gathering System Info\n")
 var fan_set = sd.fan_exist
 gen_screen()
@@ -161,86 +168,77 @@ var monInfo = dispInfo(sd: sd)
 var cpu_pwr = monInfo.cpu_pwr.val
 var gpu_pwr = monInfo.gpu_pwr.val
 var xy: [Int32] = [0, 0]
-var scrin = display(monInfo, true, nil, xy, options.color) // 레이아웃 렌더링
+var scrin: refreshInfo? = display(monInfo, true, nil, xy, options.color) // 레이아웃 렌더링
 //print("layout finish")
-var scr = scrin.tbx
-xy = scrin.xy
+var scr = scrin!.tbx
+var bottomPnt: OpaquePointer? = nil
+xy = scrin!.xy
 
 while true {
     autoreleasepool {
-        var rd = render_data()
-        var vd = vd_init(sd: sd)
+        var rd: render_data? = render_data()
+        var vd: variating_data? = vd_init(sd: sd)
         if fan_set {
-            getSensorVal(vd: &vd, set_mode: fan_set, sd: &sd) // 센서값
+            getSensorVal(vd: &vd!, set_mode: fan_set, sd: &sd) // 센서값
             fan_set = false
         } else {
-            getSensorVal(vd: &vd, sd: &sd) // 센서값
+            getSensorVal(vd: &vd!, sd: &sd) // 센서값
         }
-        getMemUsage(vd: &vd)
-        sd.ram_capacity = "\(Int(vd.mem_stat.total[0]))\(ByteUnit(vd.mem_stat.total[1]))"
+        getMemUsage(vd: &vd!)
+        sd.ram_capacity = "\(Int(vd!.mem_stat.total[0]))\(ByteUnit(vd!.mem_stat.total[1]))"
         monInfo = dispInfo(sd: sd)
         monInfo.cpu_pwr.val = cpu_pwr
         monInfo.gpu_pwr.val = gpu_pwr
         
-        sample(iorep: iorep, sd: sd, vd: &vd, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
+        sample(iorep: iorep, sd: sd, vd: &vd!, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
         //print("sampling finish")
-        format(sd: &sd, vd: &vd) // 포매팅
+        format(sd: &sd, vd: &vd!) // 포매팅
         //print("formatting finish")
-        summary(sd: sd, vd: vd, rd: &rd, rvd: &monInfo, opt: options.avg)
-        cpu_pwr = monInfo.cpu_pwr.val
-        gpu_pwr = monInfo.gpu_pwr.val
-        //print("summarize finish")
-        
-        switch getch() {
-        // Wait for user input
-        // Exit on 'q'
-        case Int32(UnicodeScalar("q").value):
-            endwin()
-            if scr.items.count != 0 {
-                if scr.items[0].items.count != 0 {
-                    if sd.fan_exist {
-                        del_tbox(tbx: &scr.items[0].items[2].items[0])
-                    }
-                    for i in (0...2).reversed() {
-                        del_tbox(tbx: &scr.items[0].items[i])
-                    }
+        summary(sd: sd, vd: vd!, rd: &rd!, rvd: &monInfo, opt: options.avg)
+        rd = nil
+        vd = nil
+    }
+    
+    cpu_pwr = monInfo.cpu_pwr.val
+    gpu_pwr = monInfo.gpu_pwr.val
+    //print("summarize finish")
+    
+    switch getch() {
+    // Wait for user input
+    // Exit on 'q'
+    case Int32(UnicodeScalar("q").value):
+        endwin()
+        if scr.items.count != 0 {
+            if scr.items[0].items.count != 0 {
+                if sd.fan_exist {
+                    del_tbox(tbx: &scr.items[0].items[2].items[0])
                 }
-                if scr.items[1].items.count != 0 {
-                    for i in (0...1).reversed() {
-                        del_tbox(tbx: &scr.items[1].items[i])
-                    }
-                }
-                for i in 0...2 {
-                    del_tbox(tbx: &scr.items[i])
+                for i in (0...2).reversed() {
+                    del_tbox(tbx: &scr.items[0].items[i])
                 }
             }
-            del_tbox(tbx: &scr)
-            exit(EX_OK)
-        default:
-            scrin = display(monInfo, false, scr, xy, options.color) // 정보 출력
-            scr = scrin.tbx
-            xy = scrin.xy
-            wclear(scr.t.win)
-            
-            //dfs_kill(tbx: &scr)
-            
-            var first_box = 1
-            if fan_set {
-                del_tbox(tbx: &scr.items[0].items[2].items[0])
-                first_box = 2
-            }
-            for i in (0...first_box).reversed() {
-                del_tbox(tbx: &scr.items[0].items[i])
-            }
-            for i in (0...1).reversed() {
-                del_tbox(tbx: &scr.items[1].items[i])
+            if scr.items[1].items.count != 0 {
+                for i in (0...1).reversed() {
+                    del_tbox(tbx: &scr.items[1].items[i])
+                }
             }
             for i in 0...2 {
                 del_tbox(tbx: &scr.items[i])
             }
-            del_tbox(tbx: &scr)
-            //print("render finish")
         }
-        Thread.sleep(forTimeInterval: options.interval-(cmd.interval*1e-3))
+        del_tbox(tbx: &scr)
+        print("\nGood Bye")
+        exit(EX_OK)
+    default:
+        autoreleasepool {
+            scrin = display(monInfo, false, scr, xy, options.color, bottomPnt) // 정보 출력
+            scr = scrin!.tbx
+            xy = scrin!.xy
+            bottomPnt = scrin!.bottom
+            scrin = nil
+        }
+        wclear(scr.t.win)
+        //print("render finish")
     }
+    Thread.sleep(forTimeInterval: options.interval-(cmd.interval*1e-3))
 }

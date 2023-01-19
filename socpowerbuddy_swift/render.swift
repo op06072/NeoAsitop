@@ -48,6 +48,7 @@ struct chartInfo {
 
 struct refreshInfo {
     var tbx: tbox
+    var bottom: OpaquePointer?
     var xy: [Int32]
 }
 
@@ -184,12 +185,16 @@ func gen_screen() {
     nodelay(stdscr, true)
 }
 
-func screen_bottom() {
+func screen_bottom(_ bottm: OpaquePointer? = nil) -> OpaquePointer? {
     autoreleasepool {
         let size = get_size()
         let lines = size[0]-1
         let cols = size[1]
-        let bottom = newwin(1, cols, lines, 0)!
+        var bottom = newwin(1, cols, lines, 0)!
+        if bottm != nil {
+            delwin(bottom)
+            bottom = bottm!
+        }
         init_pair(3, Int16(blue), Int16(blue))
         wattron(bottom, COLOR_PAIR(3))
         box(bottom, 0, 0)
@@ -200,6 +205,8 @@ func screen_bottom() {
         waddstr(bottom, quit_msg)
         wattroff(bottom, COLOR_PAIR(2))
         wrefresh(bottom)
+        
+        return bottom
     }
 }
 
@@ -225,41 +232,41 @@ func screen_init() -> tbox {
 }
 
 func Stack(size: Int32, title: [String], border: Int, stack: split, tbx: inout tbox, offset: Int32? = nil, render: Bool) {
+    let hstack = 1-stack.mode
+    let vstack = stack.mode
+    let t = tbx.t
+    var line = t.h
+    var col = t.w
+    var left = t.x
+    var top = t.y
+    var tiles: [tbox]? = []
+    var colr = green
+    
+    if t.c != black && t.c != red && t.title != "" {
+        line -= 2
+        col -= 2
+        left += 1
+        top += 1
+    } else if t.title != "" {
+        line -= 1
+        col -= 1
+        left += 1
+        top += 1
+    }
+    
+    var hsize = col
+    var vsize = line
+    var hplus: Int32 = 0
+    var vplus: Int32 = 0
+    if hstack > 0 {
+        hsize /= size
+        hplus = hsize
+    } else if vstack > 0 {
+        vsize /= size
+        vplus = vsize
+    }
+    
     autoreleasepool {
-        let hstack = 1-stack.mode
-        let vstack = stack.mode
-        let t = tbx.t
-        var line = t.h
-        var col = t.w
-        var left = t.x
-        var top = t.y
-        var tiles: [tbox] = []
-        var colr = green
-        
-        if t.c != black && t.c != red && t.title != "" {
-            line -= 2
-            col -= 2
-            left += 1
-            top += 1
-        } else if t.title != "" {
-            line -= 1
-            col -= 1
-            left += 1
-            top += 1
-        }
-        
-        var hsize = col
-        var vsize = line
-        var hplus: Int32 = 0
-        var vplus: Int32 = 0
-        if hstack > 0 {
-            hsize /= size
-            hplus = hsize
-        } else if vstack > 0 {
-            vsize /= size
-            vplus = vsize
-        }
-        
         for i in 0..<size {
             var y = top+vplus*i
             let x = left+hplus*i
@@ -272,52 +279,70 @@ func Stack(size: Int32, title: [String], border: Int, stack: split, tbx: inout t
                     y += (offset ?? 0)
                 }
             }
-            let win = newwin(vsize+spair, hsize, y, x)
-            wattron(win, COLOR_PAIR(1))
-            //werase(win)
-            if border > 0 {
-                if border == 2 {
-                    init_pair(5, Int16(yellow), Int16(black))
-                    wattron(win, COLOR_PAIR(5))
-                    colr = yellow
-                } else if border == 3 {
-                    init_pair(6, Int16(red), Int16(black))
-                    wattron(win, COLOR_PAIR(6))
-                    colr = red
+            autoreleasepool {
+                var win: OpaquePointer? = nil
+                if tbx.items.count > 0 {
+                    win = tbx.items[Int(i)].t.win
+                    wresize(win, vsize+spair, hsize)
+                    mvwin(win, y, x)
+                } else {
+                    win = newwin(vsize+spair, hsize, y, x)
                 }
-                box(win, 0, 0)
-            } else {
-                colr = black
-            }
-            var titl = ""
-            if title.count > i {
-                titl = title[Int(i)]
-                if titl != "" {
-                    var start = col/8
-                    if border == 1{
-                        start = col/10
+                wattron(win, COLOR_PAIR(1))
+                //werase(win)
+                if border > 0 {
+                    if border == 2 {
+                        init_pair(5, Int16(yellow), Int16(black))
+                        wattron(win, COLOR_PAIR(5))
+                        colr = yellow
+                    } else if border == 3 {
+                        init_pair(6, Int16(red), Int16(black))
+                        wattron(win, COLOR_PAIR(6))
+                        colr = red
                     }
-                    start -= Int32(titl.count/2)
-                    if start < 0 {
-                        start = 0
-                    }
-                    wmove(win, 0, start)
-                    wattron(win, COLOR_PAIR(1))
-                    waddstr(win, " \(titl) ")
+                    box(win, 0, 0)
+                } else {
+                    colr = black
                 }
+                var titl = ""
+                if title.count > i {
+                    titl = title[Int(i)]
+                    if titl != "" {
+                        var start = col/8
+                        if border == 1{
+                            start = col/10
+                        }
+                        start -= Int32(titl.count/2)
+                        if start < 0 {
+                            start = 0
+                        }
+                        wmove(win, 0, start)
+                        wattron(win, COLOR_PAIR(1))
+                        waddstr(win, " \(titl) ")
+                    }
+                }
+                
+                wattroff(win, COLOR_PAIR(1))
+                if tbx.items.count > 0 {
+                    tiles!.append(tbox(
+                        t: Tile(x: x, y: y, w: hsize, h: vsize, c: colr, win: win, title: titl),
+                        items: tbx.items[Int(i)].items
+                    ))
+                } else {
+                    tiles!.append(tbox(
+                        t: Tile(x: x, y: y, w: hsize, h: vsize, c: colr, win: win, title: titl),
+                        items: []
+                    ))
+                }
+                if render {
+                    wrefresh(win)
+                }
+                win = nil
             }
-            
-            wattroff(win, COLOR_PAIR(1))
-            if render {
-                wrefresh(win)
-            }
-            tiles.append(tbox(
-                t: Tile(x: x, y: y, w: hsize, h: vsize, c: colr, win: win, title: titl),
-                items: []
-            ))
         }
         
-        tbx.items = tiles
+        tbx.items = tiles!
+        tiles = nil
     }
 }
 
@@ -371,7 +396,7 @@ func Gauge(value: Float? = nil, gauge: split, tbx: inout tbox, datapoint: [Float
             }
             for i in peak...line {
                 wmove(win, i, 1+(offset ?? 0))
-                waddstr(win,bar)
+                waddstr(win, bar)
             }
         } else if vgauge != 0 {
             if title != "" {
@@ -420,32 +445,49 @@ func Gauge(value: Float? = nil, gauge: split, tbx: inout tbox, datapoint: [Float
     }
 }
 
-func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [Int32], _ colr: UInt8 = 2) -> refreshInfo {
+func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [Int32], _ colr: UInt8 = 2, _ bottom: OpaquePointer? = nil) -> refreshInfo {
     let size = get_size()
     let lines = size[0]
     let cols = size[1]
     var scrn = scrin ?? screen_init()
+    var btm: OpaquePointer? = nil
     
-    autoreleasepool {
-        
-        if lines < 34 || cols < 63 {
-            endwin()
-            print("Terminal size is too small!\nThis tool needs 63 cols and 34 lines at least!")
-            exit(1)
-        }
+    if lines < 34 || cols < 63 {
+        endwin()
+        print("Terminal size is too small!\nThis tool needs 63 cols and 34 lines at least!")
+        exit(1)
+    }
 
-        if (cols != xy[0]) || (lines != xy[1]) {
-            scrn = screen_init()
+    if (cols != xy[0]) || (lines != xy[1]) {
+        if !gn {
+            var first_box = 1
+            if sd.fan_exist {
+                del_tbox(tbx: &scrn.items[0].items[2].items[0])
+                first_box = 2
+            }
+            for i in (0...first_box).reversed() {
+                del_tbox(tbx: &scrn.items[0].items[i])
+            }
+            for i in (0...1).reversed() {
+                del_tbox(tbx: &scrn.items[1].items[i])
+            }
+            for i in 0...2 {
+                del_tbox(tbx: &scrn.items[i])
+            }
+            del_tbox(tbx: &scrn)
         }
-        
-        init_pair(1, Int16(colr), Int16(black))
-        
-        var first_stack: Int32 = 2
-        if sd.fan_exist {
-            first_stack = 3
-        }
-        
-        //print("rendering start")
+        scrn = screen_init()
+    }
+    
+    init_pair(1, Int16(colr), Int16(black))
+    
+    var first_stack: Int32 = 2
+    if sd.fan_exist {
+        first_stack = 3
+    }
+    
+    //print("rendering start")
+    autoreleasepool {
         Stack(
             size: 3,
             title: [disp.proc_grp, disp.mem_grp, disp.pwr_grp],
@@ -467,28 +509,31 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
             size: 2, title: [disp.cpu_pwr.title, disp.gpu_pwr.title],
             border: 0, stack: .hsplit, tbx: &scrn.items[2], render: !gn
         )
-        //print("third box")
-        var first_box = [[""]]
-        if sd.fan_exist {
-            first_box = [
-                [disp.ecpu_usg.title, disp.pcpu_usg.title],
-                [disp.gpu_usg.title, disp.ane_usg.title],
-                [disp.fan_usg.title, ""]
-            ]
-        } else {
-            first_box = [
-                [disp.ecpu_usg.title, disp.pcpu_usg.title],
-                [disp.gpu_usg.title, disp.ane_usg.title]
-            ]
-        }
-        
-        for (idx, titl) in first_box.enumerated() {
-            Stack(
-                size: 2, title: titl, border: 0, stack: .hsplit,
-                tbx: &scrn.items[0].items[idx], render: !gn
-            )
-        }
-        //print("fan gauge start")
+    }
+    
+    //print("third box")
+    var first_box = [[""]]
+    if sd.fan_exist {
+        first_box = [
+            [disp.ecpu_usg.title, disp.pcpu_usg.title],
+            [disp.gpu_usg.title, disp.ane_usg.title],
+            [disp.fan_usg.title, ""]
+        ]
+    } else {
+        first_box = [
+            [disp.ecpu_usg.title, disp.pcpu_usg.title],
+            [disp.gpu_usg.title, disp.ane_usg.title]
+        ]
+    }
+    
+    for (idx, titl) in first_box.enumerated() {
+        Stack(
+            size: 2, title: titl, border: 0, stack: .hsplit,
+            tbx: &scrn.items[0].items[idx], render: !gn
+        )
+    }
+    //print("fan gauge start")
+    autoreleasepool {
         if sd.fan_mode > 0 {
             Stack(
                 size: Int32(sd.fan_mode), title: ["", ""], border: 0,
@@ -505,47 +550,49 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
                 ) // FAN Speed
             }
         }
-        //print("fan gauge finish")
-        
-        let proc_gauge_info = [
-            [disp.ecpu_usg.val, disp.pcpu_usg.val],
-            [disp.gpu_usg.val, disp.ane_usg.val]
-        ]
-        for i in 0...1 {
-            for j in 0...1 {
-                //print("processor gauge start")
-                Gauge(
-                    value: proc_gauge_info[i][j],
-                    gauge: .hgauge,
-                    tbx: &scrn.items[0].items[i].items[j],
-                    render: !gn
-                )
-            }
-        } //processor utilization group
-        //print("processor gauge finish")
-        
-        if sd.fan_exist {
-            let fan_label = scrn.items[0].items[2].items[1].t
-            var mid = Int32((fan_label.h-1)/2)
-            wattron(fan_label.win, COLOR_PAIR(1))
-            for i in disp.airflow_info {
-                wmove(fan_label.win, mid, 0)
-                waddstr(fan_label.win, i)
-                mid += 1
-            }
-            wattroff(fan_label.win, COLOR_PAIR(1))
-            if !gn {
-                wrefresh(fan_label.win)
-            }
+    }
+    //print("fan gauge finish")
+    
+    let proc_gauge_info = [
+        [disp.ecpu_usg.val, disp.pcpu_usg.val],
+        [disp.gpu_usg.val, disp.ane_usg.val]
+    ]
+    for i in 0...1 {
+        for j in 0...1 {
+            //print("processor gauge start")
+            Gauge(
+                value: proc_gauge_info[i][j],
+                gauge: .hgauge,
+                tbx: &scrn.items[0].items[i].items[j],
+                render: !gn
+            )
         }
-        
-        Gauge(
-            value: disp.ram_usg.val,
-            gauge: .hgauge,
-            tbx: &scrn.items[1].items[0],
-            render: !gn
-        ) // RAM Usage
-        //print("ram gauge finish")
+    } //processor utilization group
+    //print("processor gauge finish")
+    
+    if sd.fan_exist {
+        let fan_label = scrn.items[0].items[2].items[1].t
+        var mid = Int32((fan_label.h-1)/2)
+        wattron(fan_label.win, COLOR_PAIR(1))
+        for i in disp.airflow_info {
+            wmove(fan_label.win, mid, 0)
+            waddstr(fan_label.win, i)
+            mid += 1
+        }
+        wattroff(fan_label.win, COLOR_PAIR(1))
+        if !gn {
+            wrefresh(fan_label.win)
+        }
+    }
+    
+    Gauge(
+        value: disp.ram_usg.val,
+        gauge: .hgauge,
+        tbx: &scrn.items[1].items[0],
+        render: !gn
+    ) // RAM Usage
+    //print("ram gauge finish")
+    autoreleasepool {
         Stack(
             size: 4,
             title: [
@@ -555,31 +602,32 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
             border: 0, stack: .hsplit,
             tbx: &scrn.items[1].items[1], render: !gn
         )
-        let bw_grp = [
-            disp.ecpu_bw.val, disp.pcpu_bw.val,
-            disp.gpu_bw.val, disp.media_bw.val
-        ]
-        for i in 0...3 {
-            Gauge(
-                value: bw_grp[i], gauge: .hgauge,
-                tbx: &scrn.items[1].items[1].items[i],
-                render: !gn
-            )
-        } // Bandwidth Group
-        //print("bw gauge finish")
-        Gauge(
-            gauge: .vgauge, tbx: &scrn.items[2].items[0],
-            datapoint: disp.cpu_pwr.val,
-            render: !gn
-        )
-        //print("cpu_pwr gauge finish")
-        Gauge(
-            gauge: .vgauge, tbx: &scrn.items[2].items[1],
-            datapoint: disp.gpu_pwr.val,
-            render: !gn
-        )
-        //print("gpu_pwr gauge finish")
-        screen_bottom()
     }
-    return refreshInfo(tbx: scrn, xy: [cols, lines])
+    
+    let bw_grp = [
+        disp.ecpu_bw.val, disp.pcpu_bw.val,
+        disp.gpu_bw.val, disp.media_bw.val
+    ]
+    for i in 0...3 {
+        Gauge(
+            value: bw_grp[i], gauge: .hgauge,
+            tbx: &scrn.items[1].items[1].items[i],
+            render: !gn
+        )
+    } // Bandwidth Group
+    //print("bw gauge finish")
+    Gauge(
+        gauge: .vgauge, tbx: &scrn.items[2].items[0],
+        datapoint: disp.cpu_pwr.val,
+        render: !gn
+    )
+    //print("cpu_pwr gauge finish")
+    Gauge(
+        gauge: .vgauge, tbx: &scrn.items[2].items[1],
+        datapoint: disp.gpu_pwr.val,
+        render: !gn
+    )
+    //print("gpu_pwr gauge finish")
+    btm = screen_bottom(bottom)
+    return refreshInfo(tbx: scrn, bottom: btm, xy: [cols, lines])
 }
