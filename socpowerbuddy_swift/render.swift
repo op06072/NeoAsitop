@@ -190,10 +190,12 @@ func screen_bottom(_ bottm: OpaquePointer? = nil) -> OpaquePointer? {
         let size = get_size()
         let lines = size[0]-1
         let cols = size[1]
-        var bottom = newwin(1, cols, lines, 0)!
+        var bottom: OpaquePointer? = nil
+        
         if bottm != nil {
-            delwin(bottom)
             bottom = bottm!
+        } else {
+            bottom = newwin(1, cols, lines, 0)
         }
         init_pair(3, Int16(blue), Int16(blue))
         wattron(bottom, COLOR_PAIR(3))
@@ -210,28 +212,33 @@ func screen_bottom(_ bottm: OpaquePointer? = nil) -> OpaquePointer? {
     }
 }
 
-func screen_init() -> tbox {
+func screen_init(dark: Bool = true) -> tbox {
     autoreleasepool {
         let size = get_size()
         let lines = size[0]-1
         let cols = size[1]
-        let screen = newwin(lines, cols, 0, 0)!
+        var screen = newwin(lines, cols, 0, 0)
         //werase(screen)
         init_pair(2, Int16(white), Int16(blue))
         init_pair(3, Int16(blue), Int16(blue))
         init_pair(4, Int16(red), Int16(black))
+        if !dark {
+            wattron(screen, COLOR_PAIR(1))
+            wbkgd(screen, chtype(COLOR_PAIR(1)))
+        }
+        var _ = screen_bottom()
         refresh()
         wrefresh(screen)
-        screen_bottom()
+        screen = nil
         
         return tbox(
-            t: Tile(x: 0, y: 0, w: cols, h: lines, c: 0, win: screen, title: ""),
+            t: Tile(x: 0, y: 0, w: cols, h: lines, c: dark ? 0 : 7, win: screen, title: ""),
             items: []
         )
     }
 }
 
-func Stack(size: Int32, title: [String], border: Int, stack: split, tbx: inout tbox, offset: Int32? = nil, render: Bool) {
+func Stack(size: Int32, title: [String], border: Int, stack: split, tbx: inout tbox, offset: Int32? = nil, render: Bool, dark: Bool) {
     let hstack = 1-stack.mode
     let vstack = stack.mode
     let t = tbx.t
@@ -289,6 +296,7 @@ func Stack(size: Int32, title: [String], border: Int, stack: split, tbx: inout t
                     win = newwin(vsize+spair, hsize, y, x)
                 }
                 wattron(win, COLOR_PAIR(1))
+                wbkgd(win, chtype(COLOR_PAIR(1)))
                 //werase(win)
                 if border > 0 {
                     if border == 2 {
@@ -302,7 +310,7 @@ func Stack(size: Int32, title: [String], border: Int, stack: split, tbx: inout t
                     }
                     box(win, 0, 0)
                 } else {
-                    colr = black
+                    colr = dark ? black : white
                 }
                 var titl = ""
                 if title.count > i {
@@ -449,8 +457,17 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
     let size = get_size()
     let lines = size[0]
     let cols = size[1]
-    var scrn = scrin ?? screen_init()
     var btm: OpaquePointer? = nil
+    var dark: Bool = true
+    
+    if colr == black {
+        init_pair(1, Int16(colr), Int16(white))
+        dark = false
+    } else {
+        init_pair(1, Int16(colr), Int16(black))
+    }
+    
+    var scrn = scrin ?? screen_init(dark: dark)
     
     if lines < 34 || cols < 63 {
         endwin()
@@ -476,10 +493,8 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
             }
             del_tbox(tbx: &scrn)
         }
-        scrn = screen_init()
+        scrn = screen_init(dark: dark)
     }
-    
-    init_pair(1, Int16(colr), Int16(black))
     
     var first_stack: Int32 = 2
     if sd.fan_exist {
@@ -491,23 +506,23 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
         Stack(
             size: 3,
             title: [disp.proc_grp, disp.mem_grp, disp.pwr_grp],
-            border: 1, stack: .vsplit, tbx: &scrn, render: !gn
+            border: 1, stack: .vsplit, tbx: &scrn, render: !gn, dark: dark
         )
         //print("three box")
         Stack(
             size: first_stack,
             title: [], border: 0, stack: .vsplit,
-            tbx: &scrn.items[0], render: !gn
+            tbx: &scrn.items[0], render: !gn, dark: dark
         )
         //print("first box")
         Stack(
             size: 2, title: [disp.ram_usg.title, disp.bw_grp],
-            border: 0, stack: .vsplit, tbx: &scrn.items[1], render: !gn
+            border: 0, stack: .vsplit, tbx: &scrn.items[1], render: !gn, dark: dark
         )
         //print("second box")
         Stack(
             size: 2, title: [disp.cpu_pwr.title, disp.gpu_pwr.title],
-            border: 0, stack: .hsplit, tbx: &scrn.items[2], render: !gn
+            border: 0, stack: .hsplit, tbx: &scrn.items[2], render: !gn, dark: dark
         )
     }
     
@@ -529,7 +544,7 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
     for (idx, titl) in first_box.enumerated() {
         Stack(
             size: 2, title: titl, border: 0, stack: .hsplit,
-            tbx: &scrn.items[0].items[idx], render: !gn
+            tbx: &scrn.items[0].items[idx], render: !gn, dark: dark
         )
     }
     //print("fan gauge start")
@@ -538,7 +553,7 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
             Stack(
                 size: Int32(sd.fan_mode), title: ["", ""], border: 0,
                 stack: .vsplit, tbx: &scrn.items[0].items[2].items[0],
-                render: !gn
+                render: !gn, dark: dark
             )
             for i in 0...sd.fan_mode-1 {
                 Gauge(
@@ -600,7 +615,7 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
                 disp.gpu_bw.title, disp.media_bw.title
             ],
             border: 0, stack: .hsplit,
-            tbx: &scrn.items[1].items[1], render: !gn
+            tbx: &scrn.items[1].items[1], render: !gn, dark: dark
         )
     }
     

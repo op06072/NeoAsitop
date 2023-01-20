@@ -380,40 +380,53 @@ func archError(sd: inout static_data) {
 func generateSocMax(sd: inout static_data) {
     if ["apple", "rosetta 2"].contains(sd.extra[sd.extra.count-1].lowercased()) {
         let tmp = sd.extra[0].lowercased()
+        var ane_bw: Float?    = 7
+        var ane_pwr: Float?   = 8
+        var ane_ratio: Float? = 1
         if tmp.contains("m1") {
             if tmp.contains("pro") {
                 sd.max_pwr = [30, 30]
-                sd.max_bw = [200, 200]
+                sd.max_bw  = [200, 200]
             } else if tmp.contains("max") {
                 sd.max_pwr = [30, 60]
-                sd.max_bw = [250, 400]
+                sd.max_bw  = [250, 400]
             } else if tmp.contains("ultra") {
                 sd.max_pwr = [60, 120]
-                sd.max_bw = [500, 800]
+                sd.max_bw  = [500, 800]
+                ane_ratio  = 2
             } else {
                 sd.max_pwr = [20, 20]
-                sd.max_bw = [70, 70]
+                sd.max_bw  = [70, 70]
             }
         } else if tmp.contains("m2") {
             if tmp.contains("pro") {
                 sd.max_pwr = [40, 25]
-                sd.max_bw = [200, 200]
+                sd.max_bw  = [200, 200]
             } else if tmp.contains("max") {
                 sd.max_pwr = [40, 50]
-                sd.max_bw = [250, 400]
+                sd.max_bw  = [250, 400]
             } else if tmp.contains("ultra") { // hmm...
                 sd.max_pwr = [80, 100] // this is just my sweet dream
-                sd.max_bw = [500, 800] // for next gen mac studio and
+                sd.max_bw  = [500, 800] // for next gen mac studio and
+                ane_ratio  = 2
             } else if tmp.contains("extreme") { // wish of all of us
                 sd.max_pwr = [160, 200] // The apple silicon
-                sd.max_bw = [1000, 1600] // mac pro
+                sd.max_bw  = [1000, 1600] // mac pro
+                ane_ratio  = 4
             } else {
                 sd.max_pwr = [25, 15]
-                sd.max_bw = [100, 100]
+                sd.max_bw  = [100, 100]
             }
         } else {
             sd.max_pwr = [20, 20]
-            sd.max_bw = [70, 70]
+            sd.max_bw  = [70, 70]
         }
+        ane_pwr! *= ane_ratio!
+        ane_bw!  *= ane_ratio!
+        sd.max_pwr.append(ane_pwr!)
+        sd.max_bw.append(ane_bw!)
+        ane_pwr   = nil
+        ane_bw    = nil
+        ane_ratio = nil
     }
 }
