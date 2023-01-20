@@ -25,9 +25,10 @@
 		3A3DA8AC28E0A76D00BFEFAC /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 3A3DA8AB28E0A76D00BFEFAC /* ArgumentParser */; };
 		3A8A035528E3F0800027B16E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A035428E3F0800027B16E /* main.swift */; };
 		3A8A035A28E3F6EE0027B16E /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
-		3A9A722C28D15EBB0021E6F1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A722B28D15EBB0021E6F1 /* main.swift */; };
 		3A9A723328D15F5C0021E6F1 /* static.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A723228D15F5C0021E6F1 /* static.swift */; };
 		3AC9F1EA28F02E7B008C5D5C /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9F1E928F02E6F008C5D5C /* libncurses.tbd */; };
+		3AECE96B297AEB4000D45A12 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 3AECE96A297AEB4000D45A12 /* Alamofire */; };
+		3AECE971297AFCF500D45A12 /* neoasitop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AECE970297AFCF500D45A12 /* neoasitop.swift */; };
 		3AF36E0C28D21A6B00DA3EB3 /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
 		3AF36E0E28D2ACCC00DA3EB3 /* head.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36E0D28D2ACCC00DA3EB3 /* head.swift */; };
 /* End PBXBuildFile section */
@@ -73,9 +74,9 @@
 		3A8A035228E3F0800027B16E /* IOReportDump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IOReportDump; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A8A035428E3F0800027B16E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = socpowerbuddy_swift; sourceTree = BUILT_PRODUCTS_DIR; };
-		3A9A722B28D15EBB0021E6F1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3A9A723228D15F5C0021E6F1 /* static.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = static.swift; sourceTree = "<group>"; };
 		3AC9F1E928F02E6F008C5D5C /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
+		3AECE970297AFCF500D45A12 /* neoasitop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = neoasitop.swift; sourceTree = "<group>"; };
 		3AF36E0728D216A800DA3EB3 /* socpwrbud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = socpwrbud.h; sourceTree = "<group>"; };
 		3AF36E0828D2174A00DA3EB3 /* socpowerbuddy_bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = socpowerbuddy_bridge.h; sourceTree = "<group>"; };
 		3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libIOReport.tbd; path = usr/lib/libIOReport.tbd; sourceTree = SDKROOT; };
@@ -96,6 +97,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AF36E0C28D21A6B00DA3EB3 /* libIOReport.tbd in Frameworks */,
+				3AECE96B297AEB4000D45A12 /* Alamofire in Frameworks */,
 				3A3DA8AC28E0A76D00BFEFAC /* ArgumentParser in Frameworks */,
 				3AC9F1EA28F02E7B008C5D5C /* libncurses.tbd in Frameworks */,
 			);
@@ -135,7 +137,7 @@
 		3A9A722A28D15EBB0021E6F1 /* socpowerbuddy_swift */ = {
 			isa = PBXGroup;
 			children = (
-				3A9A722B28D15EBB0021E6F1 /* main.swift */,
+				3AECE970297AFCF500D45A12 /* neoasitop.swift */,
 				3A9A723228D15F5C0021E6F1 /* static.swift */,
 				3AF36E0728D216A800DA3EB3 /* socpwrbud.h */,
 				3AF36E0828D2174A00DA3EB3 /* socpowerbuddy_bridge.h */,
@@ -203,6 +205,7 @@
 			name = socpowerbuddy_swift;
 			packageProductDependencies = (
 				3A3DA8AB28E0A76D00BFEFAC /* ArgumentParser */,
+				3AECE96A297AEB4000D45A12 /* Alamofire */,
 			);
 			productName = socpowerbuddy_swift;
 			productReference = 3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */;
@@ -237,6 +240,7 @@
 			mainGroup = 3A9A721F28D15EBB0021E6F1;
 			packageReferences = (
 				3A3DA8A628E09E4500BFEFAC /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+				3AECE969297AEB4000D45A12 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = 3A9A722928D15EBB0021E6F1 /* Products */;
 			projectDirPath = "";
@@ -264,6 +268,7 @@
 				3A238E8928D2FBD60033A580 /* sampler.swift in Sources */,
 				3A238F0128D5CCEF0033A580 /* Repeater.swift in Sources */,
 				3A238EE928D5BF410033A580 /* Logger.swift in Sources */,
+				3AECE971297AFCF500D45A12 /* neoasitop.swift in Sources */,
 				3A3DA88628DEDC5B00BFEFAC /* util.swift in Sources */,
 				3A238EEB28D5BFC10033A580 /* helper.swift in Sources */,
 				3A238EF528D5C6710033A580 /* readers.swift in Sources */,
@@ -274,7 +279,6 @@
 				3A238EF128D5C2AA0033A580 /* extensions.swift in Sources */,
 				3A238EFD28D5C9B70033A580 /* Module.swift in Sources */,
 				3A238EE728D5BED50033A580 /* SystemKit.swift in Sources */,
-				3A9A722C28D15EBB0021E6F1 /* main.swift in Sources */,
 				3A238EF928D5C8210033A580 /* reader.swift in Sources */,
 				3A9A723328D15F5C0021E6F1 /* static.swift in Sources */,
 				3A238EF728D5C6910033A580 /* values.swift in Sources */,
@@ -503,6 +507,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		3AECE969297AEB4000D45A12 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -510,6 +522,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3A3DA8A628E09E4500BFEFAC /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
 			productName = ArgumentParser;
+		};
+		3AECE96A297AEB4000D45A12 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3AECE969297AEB4000D45A12 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

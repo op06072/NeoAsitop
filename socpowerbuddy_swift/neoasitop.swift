@@ -1,10 +1,11 @@
 //
-//  main.swift
+//  neoasitop.swift
 //  socpowerbuddy_swift
 //
-//  Created by Eom SeHwan on 2022/09/14.
+//  Created by Eom SeHwan on 2023/01/21.
 //
 
+import Alamofire
 import Foundation
 import IOKit.graphics
 import ArgumentParser
@@ -12,6 +13,9 @@ import ArgumentParser
 var iorep = iorep_data()
 var sd = static_data()
 var cmd = cmd_data()
+
+let cur_ver = "v2.6"
+var newVersion = false
 
 struct Neoasitop: ParsableCommand {
     @Flag(name: .shortAndLong, help: "Print version information")
@@ -28,14 +32,18 @@ struct Neoasitop: ParsableCommand {
     
     func run() throws {
         if version {
-            print("v2.6")
+            print(cur_ver)
         } else {
             launch()
+            if newVersion {
+                print("New version is released! Please update the NeoAsitop.")
+            }
         }
+        Neoasitop.exit(withError: ExitCode(EX_OK))
     }
     
     func launch() {
-
+        
         print("\nNeoAsitop - Sudoless performance monitoring CLI tool for Apple Silicon")
         print("Get help at `https://github.com/op06072/NeoAsitop`")
         print("Thanks to all the projects that inspired and referenced.")
@@ -229,7 +237,7 @@ struct Neoasitop: ParsableCommand {
                 }
                 del_tbox(tbx: &scr)
                 print("\nGood Bye")
-                Neoasitop.exit(withError: ExitCode(EX_OK))
+                return
             default:
                 autoreleasepool {
                     scrin = display(monInfo, false, scr, xy, color, bottomPnt) // 정보 출력
@@ -246,4 +254,32 @@ struct Neoasitop: ParsableCommand {
     }
 }
 
-Neoasitop.main()
+@main
+enum Executable {
+    static func main() async throws {
+        let headers: HTTPHeaders = [
+            .accept("application/vnd.github+json")
+        ]
+        let dataTask = AF.request(
+            "https://api.github.com/repos/op06072/NeoAsitop/releases/latest",
+            headers: headers
+        ).serializingData()
+        switch await dataTask.result {
+        case .success(let value):
+            let object = try JSONSerialization.jsonObject(with: value, options: []) as? NSDictionary
+            if object == nil {
+                Neoasitop.main()
+            } else if (object!.allKeys as! [String]).contains("tag_name") {
+                let version = object!.value(forKey: "tag_name") as! String
+                if version.compare(cur_ver, options: .numeric) == .orderedDescending {
+                    newVersion = true
+                }
+                Neoasitop.main()
+            } else {
+                Neoasitop.main()
+            }
+        case .failure:
+            Neoasitop.main()
+        }
+    }
+}
