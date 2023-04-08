@@ -21,13 +21,13 @@ func generateDvfmTable(sd: inout static_data) {
         }
         
         for i in stride(from: 2, to: -1, by: -1) {
-            let service:CFMutableDictionary! = IOServiceMatching("AppleARMIODevice")
-            if (service == nil) {
+            if let service: CFMutableDictionary = IOServiceMatching("AppleARMIODevice") {
+                if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
+                    print("Failed to access AppleARMIODevice service in IORegistry")
+                    exit(1)
+                }
+            } else {
                 print("Failed to find AppleARMIODevice service in IORegistry")
-                exit(1)
-            }
-            if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
-                print("Failed to access AppleARMIODevice service in IORegistry")
                 exit(1)
             }
             
@@ -131,20 +131,38 @@ func generateCoreCounts(sd: inout static_data) {
             sd.core_ep_counts[0] = cpucore[0]
         }
         
-        size = 0
-        let getfan = "hw.model"
-        sysctlbyname(getfan, nil, &size, nil, 0)
-        var model = [CChar](repeating: 0,  count: size)
-        sysctlbyname(getfan, &model, &size, nil, 0)
-
-        if strcmp(model, "") != 0 {
-            var ttmp = ""
-            model.withUnsafeBufferPointer {
-                ptr in ttmp += String(cString: ptr.baseAddress!)
+        var model_name = ""
+        
+        if let res = process(path: "/usr/sbin/system_profiler", arguments: ["SPHardwareDataType", "-json"]) {
+            do {
+                if let json = try JSONSerialization.jsonObject(with: Data(res.utf8), options: []) as? [String: Any], let obj = json["SPHardwareDataType"] as? [[String: Any]], !obj.isEmpty, let val = obj.first, let name = val["machine_name"] as? String {
+                    model_name = name
+                }
+            } catch let err as NSError {
+                print("error to parse system_profiler SPHardwareDataType: \(err.localizedDescription)")
+                exit(1)
             }
-            if ttmp.lowercased().contains("air") {
+        } else {
+            // legacy
+            // This method is proper up to M1 Max
+            
+            size = 0
+            let getfan = "hw.model"
+            sysctlbyname(getfan, nil, &size, nil, 0)
+            var model = [CChar](repeating: 0,  count: size)
+            sysctlbyname(getfan, &model, &size, nil, 0)
+            
+            if strcmp(model, "") != 0 {
+                model.withUnsafeBufferPointer {
+                    ptr in model_name += String(cString: ptr.baseAddress!)
+                }
+            }
+        }
+
+        if model_name != "" {
+            if model_name.lowercased().contains("air") {
                 sd.fan_exist = false
-            } else if ttmp.lowercased().contains("mini") {
+            } else if model_name.lowercased().contains("mini") {
                 sd.fan_mode = 1
             } else {
                 sd.fan_mode = 2
@@ -161,13 +179,13 @@ func generateCoreCounts(sd: inout static_data) {
             port = kIOMasterPortDefault
         }
         
-        var service = IOServiceMatching("AppleARMIODevice")
-        if service == nil {
+        if let service = IOServiceMatching("AppleARMIODevice") {
+            if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
+                print("Failed to access AppleARMIODevice service in IORegistry")
+                exit(1)
+            }
+        } else {
             print("Failed to find AppleARMIODevice service in IORegistry")
-            exit(1)
-        }
-        if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
-            print("Failed to access AppleARMIODevice service in IORegistry")
             exit(1)
         }
         
@@ -201,24 +219,24 @@ func generateCoreCounts(sd: inout static_data) {
             }
         }
         
-        service = IOServiceMatching("AGXAccelerator")
-        if (service == nil) {
+        if let service = IOServiceMatching("AGXAccelerator") {
+            if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
+                print("Failed to access AGXAccelerator service in IORegistry")
+                exit(1)
+            }
+        } else {
             print("Failed to find AGXAccelerator service in IORegistry")
-            exit(1)
-        }
-        if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
-            print("Failed to access AGXAccelerator service in IORegistry")
             exit(1)
         }
         
         while case let entry = IOIteratorNext(iter), entry != IO_OBJECT_NULL {
-            let gpucorecnt = IORegistryEntrySearchCFProperty(entry, kIOServicePlane, "gpu-core-count" as CFString, kCFAllocatorDefault, IOOptionBits(kIORegistryIterateRecursively + kIORegistryIterateParents))
-            if (gpucorecnt == nil) {
+            if let gpucorecnt = IORegistryEntrySearchCFProperty(entry, kIOServicePlane, "gpu-core-count" as CFString, kCFAllocatorDefault, IOOptionBits(kIORegistryIterateRecursively + kIORegistryIterateParents)) {
+                sd.gpu_core_count = gpucorecnt as? Int ?? 0
+                IOObjectRelease(entry)
+            } else {
                 print("Failed to read \"gpu-core-count\" from AGXAccelerator service in IORegistry")
                 exit(1)
             }
-            sd.gpu_core_count = gpucorecnt as? Int ?? 0
-            IOObjectRelease(entry)
         }
         IOObjectRelease(iter)
     }
@@ -258,11 +276,11 @@ func generateSiliconsIds(sd: inout static_data) {
             port = kIOMasterPortDefault
         }
         
-        let service = IOServiceMatching("IOPlatformExpertDevice")
-        if service == nil {
-            siliconError(sd: &sd)
-        }
-        if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
+        if let service = IOServiceMatching("IOPlatformExpertDevice") {
+            if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
+                siliconError(sd: &sd)
+            }
+        } else {
             siliconError(sd: &sd)
         }
         
@@ -305,9 +323,13 @@ func siliconError(sd: inout static_data) {
                 }
             } else if ttmp.contains("m2") {
                 if ttmp.contains("pro") {
-                    tmp = "T6***"
+                    tmp = "T6020"
                 } else if ttmp.contains("max") {
-                    tmp = "T6***"
+                    tmp = "T6021"
+                } else if ttmp.contains("ultra") {
+                    tmp = "T6022"
+                } else if ttmp.contains("extreme") {
+                    tmp = "T6023"
                 } else {
                     tmp = "T8112"
                 }

@@ -8,6 +8,22 @@
 import Foundation
 import Darwin
 
+let handle = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", 2);
+
+@objc protocol IOHIDEvent: NSObjectProtocol {}
+
+typealias IOHIDEventSystemClientCreate = @convention(c) (_ allocator: CFAllocator?) -> IOHIDEventSystemClient
+typealias IOHIDEventSystemClientSetMatching = @convention(c) (_ client: IOHIDEventSystemClient?, _ matches: CFDictionary?) -> Void
+typealias IOHIDServiceClientCopyEvent = @convention(c) (_ client: IOHIDServiceClient, Int64, Int32, Int64) -> IOHIDEvent
+typealias IOHIDEventGetFloatValue = @convention(c) (_ event: IOHIDEvent, _ field: UInt32) -> Double
+typealias IOHIDServiceClientCopyProperty = @convention(c) (_ service: IOHIDServiceClient, _ property: CFString) -> CFString
+
+let eventSystemClientCreate = unsafeBitCast(dlsym(handle, "IOHIDEventSystemClientCreate"), to: IOHIDEventSystemClientCreate.self)
+let eventSystemClientSetMatching = unsafeBitCast(dlsym(handle, "IOHIDEventSystemClientSetMatching"), to: IOHIDEventSystemClientSetMatching.self)
+let serviceClientCopyEvent = unsafeBitCast(dlsym(handle, "IOHIDServiceClientCopyEvent"), to: IOHIDServiceClientCopyEvent.self)
+let eventGetFloatValue = unsafeBitCast(dlsym(handle, "IOHIDEventGetFloatValue"), to: IOHIDEventGetFloatValue.self)
+let serviceClientCopyProperty = unsafeBitCast(dlsym(handle, "IOHIDServiceClientCopyProperty"), to: IOHIDServiceClientCopyProperty.self)
+
 func sample(iorep: iorep_data,
             sd: static_data,
             vd: inout variating_data,
@@ -219,73 +235,92 @@ func sample(iorep: iorep_data,
     tmp_vd = nil
 }
 
-func appleSiliconSensors(page: Int32, usage: Int32, typ: Int32) -> Dictionary<String, IOHIDFloat>? {
-    var dctionary: Dictionary<String, IOHIDFloat> = [:]
-    let dict = ["PrimaryUsagePage": page, "PrimaryUsage": usage] as CFDictionary
+func AppleSiliconSensors(_ page: Int32, _ usage: Int32, _ type: Int32) -> NSDictionary? {
+    let dict: NSMutableDictionary? = ["PrimaryUsagePage": page, "PrimaryUsage": usage]
+    var systm: IOHIDEventSystemClient? = eventSystemClientCreate(kCFAllocatorDefault)
+    eventSystemClientSetMatching(systm, dict! as CFDictionary)
+    var services: CFArray? = IOHIDEventSystemClientCopyServices(systm!)
     
-    let systm = IOHIDEventSystemClientCreate(kCFAllocatorDefault).takeUnretainedValue()
-    IOHIDEventSystemClientSetMatching(systm, dict)
-    let services = IOHIDEventSystemClientCopyServices(systm) as? Array<IOHIDServiceClient>
     if services == nil {
+        systm = nil
         return nil
-    }
-    
-    autoreleasepool {
-        for i in 0..<services!.count {
-            let service = services![i]
-            var name = IOHIDServiceClientCopyProperty(service, "Product" as CFString)
-            
-            var event = IOHIDServiceClientCopyEvent(service, Int64(typ), 0, 0)
-            if event == nil {
-                continue
+    } else {
+        for var srvice in services as! [IOHIDServiceClient?] {
+            autoreleasepool {
+                var event: IOHIDEvent? = serviceClientCopyEvent(srvice!, Int64(type), 0, 0)
+                if event != nil {
+                    var name: String? = serviceClientCopyProperty(srvice!, "Product" as CFString) as String
+                    if name != nil {
+                        var value: Double? = eventGetFloatValue(event!, UInt32(type << 16))
+                        var tmpstr = name
+                        dict!.setValue(value, forKey: tmpstr!)
+                        value = nil
+                        tmpstr = nil
+                    }
+                    name = nil
+                }
+                event = nil
+                srvice = nil
             }
-            
-            if (name != nil) && (event != nil) {
-                dctionary[name as! String] = IOHIDEventGetFloatValue(event, (typ << 16))
-            }
-            name = nil
-            event = nil
         }
+        services = nil
+        
+        // systm?.release()
+        systm = nil
+        return dict
     }
-    return dctionary
 }
 
-func getSensorVal(vd: inout variating_data, set_mode: Bool = false, sd: inout static_data) {
+func getSensorVal(vd: inout variating_data, set_mode: Bool = false, sd: inout static_data, sense: [any Sensor_p]) {
     autoreleasepool {
-        let sens = Sensors()
-        let sen = sens.sensorsReader
-        sen.read()
-        let sense = sen.list
-        for idx in 0..<sense.count {
-            let sns = sense[idx]
-            if sns.type == SensorType.temperature {
-                vd.soc_temp[sns.name] = sns.value
-            } else if sns.type == SensorType.fan {
-                vd.fan_speed[sns.name] = sns.value
-                if sns.name != "Fastest Fan" {
-                    let tmp = sns as! Fan
+        // var sens: Sensors? = Sensors()
+        // var sen: SensorsReader? = sens!.sensorsReader
+        // var sense: [any Sensor_p]? = sen.list
+        var sensecnt: Int? = sense.count
+        for idx in 0..<sensecnt! {
+            var sns: (any Sensor_p)? = sense[idx]
+            var snsname: String? = sns!.name
+            var snsvalue: Double? = sns!.value
+            var snstype: SensorType? = sns!.type
+            if snstype == SensorType.temperature {
+                vd.soc_temp[snsname!] = snsvalue!
+            } else if snstype == SensorType.fan {
+                vd.fan_speed[snsname!] = snsvalue!
+                // print("Sensor name: \(snsname)")
+                // print("Value: \(snsvalue)")
+                if snsname != "Fastest Fan" {
+                    var tmp = sns as! Fan?
+                    var tmpmin: Double? = tmp!.minSpeed
+                    var tmpmax: Double? = tmp!.maxSpeed
+                    tmp = nil
                     if set_mode {
                         if sd.fan_mode == 2{
-                            if sns.name == "Left fan" {
-                                sd.fan_limit[0][0] = tmp.minSpeed
-                                sd.fan_limit[0][1] = tmp.maxSpeed
+                            if snsname == "Left fan" {
+                                sd.fan_limit[0][0] = tmpmin!
+                                sd.fan_limit[0][1] = tmpmax!
                             } else {
-                                sd.fan_limit[1][0] = tmp.minSpeed
-                                sd.fan_limit[1][1] = tmp.maxSpeed
+                                sd.fan_limit[1][0] = tmpmin!
+                                sd.fan_limit[1][1] = tmpmax!
                             }
                         } else if sd.fan_mode == 1 {
-                            sd.fan_limit[0][0] = tmp.minSpeed
-                            sd.fan_limit[0][1] = tmp.maxSpeed
+                            sd.fan_limit[0][0] = tmpmin!
+                            sd.fan_limit[0][1] = tmpmax!
                         }
-                        
                     }
+                    tmpmin = nil
+                    tmpmax = nil
                 }
-            } else if sns.type == SensorType.power {
-                vd.soc_power[sns.name] = sns.value
-            } else if sns.type == SensorType.energy {
-                vd.soc_energy = sns.value
+            } else if snstype == SensorType.power {
+                vd.soc_power[snsname!] = snsvalue!
+            } else if snstype == SensorType.energy {
+                vd.soc_energy = snsvalue!
             }
+            sns = nil
+            snsname = nil
+            snsvalue = nil
+            snstype = nil
         }
+        sensecnt = nil
     }
 }
 

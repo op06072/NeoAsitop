@@ -13,8 +13,9 @@ import ArgumentParser
 var iorep = iorep_data()
 var sd = static_data()
 var cmd = cmd_data()
+let sens = SensorsReader()
 
-let cur_ver = "v2.6"
+let cur_ver = "v2.7"
 var newVersion = false
 
 struct Neoasitop: ParsableCommand {
@@ -187,11 +188,12 @@ struct Neoasitop: ParsableCommand {
             autoreleasepool {
                 var rd: render_data? = render_data()
                 var vd: variating_data? = vd_init(sd: sd)
+                sens.read()
                 if fan_set {
-                    getSensorVal(vd: &vd!, set_mode: fan_set, sd: &sd) // 센서값
+                    getSensorVal(vd: &vd!, set_mode: fan_set, sd: &sd, sense: sens.list) // 센서값
                     fan_set = false
                 } else {
-                    getSensorVal(vd: &vd!, sd: &sd) // 센서값
+                    getSensorVal(vd: &vd!, sd: &sd, sense: sens.list) // 센서값
                 }
                 getMemUsage(vd: &vd!)
                 sd.ram_capacity = "\(Int(vd!.mem_stat.total[0]))\(ByteUnit(vd!.mem_stat.total[1]))"
@@ -266,18 +268,16 @@ enum Executable {
         ).serializingData()
         switch await dataTask.result {
         case .success(let value):
-            let object = try JSONSerialization.jsonObject(with: value, options: []) as? NSDictionary
-            if object == nil {
-                Neoasitop.main()
-            } else if (object!.allKeys as! [String]).contains("tag_name") {
-                let version = object!.value(forKey: "tag_name") as! String
-                if version.compare(cur_ver, options: .numeric) == .orderedDescending {
-                    newVersion = true
+            if let object = try? JSONSerialization.jsonObject(
+                with: value, options: []
+            ) as? NSDictionary {
+                if let version = object.value(forKey: "tag_name") as? String {
+                    if version.compare(cur_ver, options: .numeric) == .orderedDescending {
+                        newVersion = true
+                    }
                 }
-                Neoasitop.main()
-            } else {
-                Neoasitop.main()
             }
+            Neoasitop.main()
         case .failure:
             Neoasitop.main()
         }

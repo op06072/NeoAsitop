@@ -269,28 +269,28 @@ public class SMC {
         }
         
         if val.dataSize > 0 {
-            if val.bytes.first(where: { $0 != 0}) == nil {
-                return nil
-            }
-            
-            switch val.dataType {
-            case SMCDataType.FDS.rawValue:
-                let c1  = String(UnicodeScalar(val.bytes[4]))
-                let c2  = String(UnicodeScalar(val.bytes[5]))
-                let c3  = String(UnicodeScalar(val.bytes[6]))
-                let c4  = String(UnicodeScalar(val.bytes[7]))
-                let c5  = String(UnicodeScalar(val.bytes[8]))
-                let c6  = String(UnicodeScalar(val.bytes[9]))
-                let c7  = String(UnicodeScalar(val.bytes[10]))
-                let c8  = String(UnicodeScalar(val.bytes[11]))
-                let c9  = String(UnicodeScalar(val.bytes[12]))
-                let c10 = String(UnicodeScalar(val.bytes[13]))
-                let c11 = String(UnicodeScalar(val.bytes[14]))
-                let c12 = String(UnicodeScalar(val.bytes[15]))
-                
-                return (c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10 + c11 + c12).trimmingCharacters(in: .whitespaces)
-            default:
-                print("unsupported data type \(val.dataType) for key: \(key)")
+            if val.bytes.first(where: { $0 != 0}) != nil {
+                switch val.dataType {
+                case SMCDataType.FDS.rawValue:
+                    let c1  = String(UnicodeScalar(val.bytes[4]))
+                    let c2  = String(UnicodeScalar(val.bytes[5]))
+                    let c3  = String(UnicodeScalar(val.bytes[6]))
+                    let c4  = String(UnicodeScalar(val.bytes[7]))
+                    let c5  = String(UnicodeScalar(val.bytes[8]))
+                    let c6  = String(UnicodeScalar(val.bytes[9]))
+                    let c7  = String(UnicodeScalar(val.bytes[10]))
+                    let c8  = String(UnicodeScalar(val.bytes[11]))
+                    let c9  = String(UnicodeScalar(val.bytes[12]))
+                    let c10 = String(UnicodeScalar(val.bytes[13]))
+                    let c11 = String(UnicodeScalar(val.bytes[14]))
+                    let c12 = String(UnicodeScalar(val.bytes[15]))
+                    
+                    return (c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10 + c11 + c12).trimmingCharacters(in: .whitespaces)
+                default:
+                    print("unsupported data type \(val.dataType) for key: \(key)")
+                    return nil
+                }
+            } else {
                 return nil
             }
         }
@@ -301,8 +301,7 @@ public class SMC {
     public func getAllKeys() -> [String] {
         var list: [String] = []
         
-        let keysNum: Double? = self.getValue("#KEY")
-        if keysNum == nil {
+        guard let keysNum: Double = self.getValue("#KEY") else {
             print("ERROR no keys count found")
             return list
         }
@@ -311,7 +310,7 @@ public class SMC {
         var input: SMCKeyData_t = SMCKeyData_t()
         var output: SMCKeyData_t = SMCKeyData_t()
         
-        for i in 0...Int(keysNum!) {
+        for i in 0...Int(keysNum) {
             input = SMCKeyData_t()
             output = SMCKeyData_t()
             

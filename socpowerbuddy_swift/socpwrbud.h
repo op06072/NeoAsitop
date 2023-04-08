@@ -10,6 +10,7 @@
 
 #include <Foundation/Foundation.h>
 #include <sys/sysctl.h>
+#include <CoreFoundation/CoreFoundation.h>
 /* header for read sensor */
 #include <IOKit/hidsystem/IOHIDEventSystemClient.h>
 
@@ -67,5 +68,6 @@ int IOHIDEventSystemClientSetMatching(IOHIDEventSystemClientRef client, CFDictio
 IOHIDEventRef IOHIDServiceClientCopyEvent(IOHIDServiceClientRef, int64_t , int32_t, int64_t);
 CFTypeRef IOHIDServiceClientCopyProperty(IOHIDServiceClientRef service, CFStringRef property);
 IOHIDFloat IOHIDEventGetFloatValue(IOHIDEventRef event, int32_t field);
+NSDictionary*appleSiliconSensors(int page, int usage, int32_t type);
 
 #endif /* socpwrbud_h */

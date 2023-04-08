@@ -94,14 +94,6 @@ public class SystemKit {
     private let log: NextLog = NextLog.shared.copy(category: "SystemKit")
     
     public init() {
-        if let modelName = self.modelName() {
-            if let modelInfo = deviceDict[modelName] {
-                self.device.model = modelInfo
-            } else {
-                print("unknown device \(modelName)")
-            }
-        }
-        
         let procInfo = ProcessInfo()
         let systemVersion = procInfo.operatingSystemVersion
         
@@ -270,92 +262,6 @@ public class SystemKit {
         return (eCores, pCores, list)
     }
 }
-
-let deviceDict: [String: model_s] = [
-    // Mac Mini
-    "Macmini6,1": model_s(name: "Mac mini", year: 2012, type: deviceType.macMini),
-    "Macmini6,2": model_s(name: "Mac mini", year: 2012, type: deviceType.macMini),
-    "Macmini7,1": model_s(name: "Mac mini", year: 2014, type: deviceType.macMini),
-    "Macmini8,1": model_s(name: "Mac mini", year: 2018, type: deviceType.macMini),
-    "Macmini9,1": model_s(name: "Mac mini (M1)", year: 2020, type: deviceType.macMini),
-    
-    // Mac Studio
-    "Mac13,1": model_s(name: "Mac Studio (M1 Max)", year: 2022, type: deviceType.macStudio),
-    "Mac13,2": model_s(name: "Mac Studio (M1 Ultra)", year: 2022, type: deviceType.macStudio),
-    
-    // Mac Pro
-    "MacPro5,1": model_s(name: "Mac Pro", year: 2010, type: deviceType.macPro),
-    "MacPro6,1": model_s(name: "Mac Pro", year: 2016, type: deviceType.macPro),
-    "MacPro7,1": model_s(name: "Mac Pro", year: 2019, type: deviceType.macPro),
-    
-    // iMac
-    "iMac12,1": model_s(name: "iMac 27-Inch", year: 2011, type: deviceType.imac),
-    "iMac13,1": model_s(name: "iMac 21.5-Inch", year: 2012, type: deviceType.imac),
-    "iMac13,2": model_s(name: "iMac 27-Inch", year: 2012, type: deviceType.imac),
-    "iMac14,2": model_s(name: "iMac 27-Inch", year: 2013, type: deviceType.imac),
-    "iMac15,1": model_s(name: "iMac 27-Inch", year: 2014, type: deviceType.imac),
-    "iMac17,1": model_s(name: "iMac 27-Inch", year: 2015, type: deviceType.imac),
-    "iMac18,1": model_s(name: "iMac 21.5-Inch", year: 2017, type: deviceType.imac),
-    "iMac18,2": model_s(name: "iMac 21.5-Inch", year: 2017, type: deviceType.imac),
-    "iMac18,3": model_s(name: "iMac 27-Inch", year: 2017, type: deviceType.imac),
-    "iMac19,1": model_s(name: "iMac 27-Inch", year: 2019, type: deviceType.imac),
-    "iMac20,1": model_s(name: "iMac 27-Inch", year: 2020, type: deviceType.imac),
-    "iMac20,2": model_s(name: "iMac 27-Inch", year: 2020, type: deviceType.imac),
-    "iMac21,1": model_s(name: "iMac 24-Inch (M1)", year: 2021, type: deviceType.imac),
-    "iMac21,2": model_s(name: "iMac 24-Inch (M1)", year: 2021, type: deviceType.imac),
-    
-    // iMac Pro
-    "iMacPro1,1": model_s(name: "iMac Pro", year: 2017, type: deviceType.imacpro),
-    
-    // MacBook
-    "MacBook8,1": model_s(name: "MacBook", year: 2015, type: deviceType.macbook),
-    "MacBook9,1": model_s(name: "MacBook", year: 2016, type: deviceType.macbook),
-    "MacBook10,1": model_s(name: "MacBook", year: 2017, type: deviceType.macbook),
-    
-    // MacBook Air
-    "MacBookAir5,1": model_s(name: "MacBook Air 11\"", year: 2012, type: deviceType.macbookAir),
-    "MacBookAir5,2": model_s(name: "MacBook Air 13\"", year: 2012, type: deviceType.macbookAir),
-    "MacBookAir6,1": model_s(name: "MacBook Air 11\"", year: 2014, type: deviceType.macbookAir),
-    "MacBookAir6,2": model_s(name: "MacBook Air 13\"", year: 2014, type: deviceType.macbookAir),
-    "MacBookAir7,1": model_s(name: "MacBook Air 11\"", year: 2015, type: deviceType.macbookAir),
-    "MacBookAir7,2": model_s(name: "MacBook Air 13\"", year: 2015, type: deviceType.macbookAir),
-    "MacBookAir8,1": model_s(name: "MacBook Air 13\"", year: 2018, type: deviceType.macbookAir),
-    "MacBookAir8,2": model_s(name: "MacBook Air 13\"", year: 2019, type: deviceType.macbookAir),
-    "MacBookAir9,1": model_s(name: "MacBook Air 13\"", year: 2020, type: deviceType.macbookAir),
-    "MacBookAir10,1": model_s(name: "MacBook Air 13\" (M1)", year: 2020, type: deviceType.macbookAir),
-    "Mac14,2": model_s(name: "MacBook Air 13\" (M2)", year: 2022, type: deviceType.macbookAir),
-    
-    // MacBook Pro
-    "MacBookPro9,1": model_s(name: "MacBook Pro 15\"", year: 2012, type: deviceType.macbookPro),
-    "MacBookPro9,2": model_s(name: "MacBook Pro 13\"", year: 2012, type: deviceType.macbookPro),
-    "MacBookPro10,1": model_s(name: "MacBook Pro 15\"", year: 2012, type: deviceType.macbookPro),
-    "MacBookPro10,2": model_s(name: "MacBook Pro 13\"", year: 2012, type: deviceType.macbookPro),
-    "MacBookPro11,1": model_s(name: "MacBook Pro 13\"", year: 2014, type: deviceType.macbookPro),
-    "MacBookPro11,2": model_s(name: "MacBook Pro 15\"", year: 2014, type: deviceType.macbookPro),
-    "MacBookPro11,3": model_s(name: "MacBook Pro 15\"", year: 2014, type: deviceType.macbookPro),
-    "MacBookPro11,4": model_s(name: "MacBook Pro 15\"", year: 2015, type: deviceType.macbookPro),
-    "MacBookPro11,5": model_s(name: "MacBook Pro 15\"", year: 2015, type: deviceType.macbookPro),
-    "MacBookPro12,1": model_s(name: "MacBook Pro 13\"", year: 2015, type: deviceType.macbookPro),
-    "MacBookPro13,1": model_s(name: "MacBook Pro 13\"", year: 2016, type: deviceType.macbookPro),
-    "MacBookPro13,2": model_s(name: "MacBook Pro 13\"", year: 2016, type: deviceType.macbookPro),
-    "MacBookPro13,3": model_s(name: "MacBook Pro 15\"", year: 2016, type: deviceType.macbookPro),
-    "MacBookPro14,1": model_s(name: "MacBook Pro 13\"", year: 2017, type: deviceType.macbookPro),
-    "MacBookPro14,2": model_s(name: "MacBook Pro 13\"", year: 2017, type: deviceType.macbookPro),
-    "MacBookPro14,3": model_s(name: "MacBook Pro 15\"", year: 2017, type: deviceType.macbookPro),
-    "MacBookPro15,1": model_s(name: "MacBook Pro 15\"", year: 2018, type: deviceType.macbookPro),
-    "MacBookPro15,2": model_s(name: "MacBook Pro 13\"", year: 2019, type: deviceType.macbookPro),
-    "MacBookPro15,3": model_s(name: "MacBook Pro 15\"", year: 2019, type: deviceType.macbookPro),
-    "MacBookPro15,4": model_s(name: "MacBook Pro 13\"", year: 2019, type: deviceType.macbookPro),
-    "MacBookPro16,1": model_s(name: "MacBook Pro 16\"", year: 2019, type: deviceType.macbookPro),
-    "MacBookPro16,2": model_s(name: "MacBook Pro 13\"", year: 2019, type: deviceType.macbookPro),
-    "MacBookPro16,3": model_s(name: "MacBook Pro 13\"", year: 2020, type: deviceType.macbookPro),
-    "MacBookPro17,1": model_s(name: "MacBook Pro 13\" (M1)", year: 2020, type: deviceType.macbookPro),
-    "MacBookPro18,1": model_s(name: "MacBook Pro 16\" (M1 Pro)", year: 2021, type: deviceType.macbookPro),
-    "MacBookPro18,2": model_s(name: "MacBook Pro 16\" (M1 Max)", year: 2021, type: deviceType.macbookPro),
-    "MacBookPro18,3": model_s(name: "MacBook Pro 14\" (M1 Pro)", year: 2021, type: deviceType.macbookPro),
-    "MacBookPro18,4": model_s(name: "MacBook Pro 14\" (M1 Max)", year: 2021, type: deviceType.macbookPro),
-    "Mac14,7": model_s(name: "MacBook Pro 13\" (M2)", year: 2022, type: deviceType.macbookPro)
-]
 
 let osDict: [String: String] = [
     "10.13": "High Sierra",

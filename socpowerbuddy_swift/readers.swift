@@ -15,7 +15,7 @@ internal class SensorsReader: Reader<[Sensor_p]> {
     
     private var HIDState: Bool {
         get {
-            return Store.shared.bool(key: "Sensors_hid", defaultValue: false)
+            return Store.shared.bool(key: "Sensors_hid", defaultValue: true)
         }
     }
     
@@ -91,8 +91,9 @@ internal class SensorsReader: Reader<[Sensor_p]> {
         })
         
         #if arch(arm64)
-        if self.HIDState || SystemKit.shared.device.platform?.rawValue == "m1" {
+        if self.HIDState {
             self.list += self.initHIDSensors()
+            // print(self.list)
         }
         #endif
         
@@ -104,7 +105,11 @@ internal class SensorsReader: Reader<[Sensor_p]> {
             if s.group == .hid || s.isComputed {
                 continue
             }
-            self.list[i].value = SMC.shared.getValue(self.list[i].key) ?? 0
+            autoreleasepool {
+                var tmpval: Double? = SMC.shared.getValue(self.list[i].key) ?? 0
+                self.list[i].value = tmpval!
+                tmpval = nil
+            }
         }
         
         var cpuSensors = self.list.filter({ $0.group == .CPU && $0.type == .temperature && $0.average }).map{ $0.value }
@@ -112,17 +117,27 @@ internal class SensorsReader: Reader<[Sensor_p]> {
         let fanSensors = self.list.filter({ $0.type == .fan && !$0.isComputed }).map{ $0.value }
         
         #if arch(arm64)
-        if self.HIDState || SystemKit.shared.device.platform?.rawValue == "m1" {
+        if self.HIDState {
             for typ in SensorsReader.HIDtypes {
                 let (page, usage, type) = self.m1Preset(type: typ)
-                appleSiliconSensors(page: page, usage: usage, typ: type)?.forEach { (key, value) in
-                    guard let key = key as String?, let value = value as Double?, value < 300 && value >= 0 else {
-                        return
+                autoreleasepool {
+                    var sensors = appleSiliconSensors(page, usage, type)
+                    if sensors != nil {
+                        sensors!.forEach { (k, v) in
+                            var ke = k as? String
+                            var val = v as? Double
+                            guard let key = ke, let value = val, value < 300 && value >= 0 else {
+                                return
+                            }
+                            ke = nil
+                            val = nil
+                            
+                            if let idx = self.list.firstIndex(where: { $0.group == .hid && $0.key == key }) {
+                                self.list[idx].value = value
+                            }
+                        }
                     }
-                    
-                    if let idx = self.list.firstIndex(where: { $0.group == .hid && $0.key == key }) {
-                        self.list[idx].value = value
-                    }
+                    sensors = nil
                 }
             }
             
@@ -172,16 +187,18 @@ internal class SensorsReader: Reader<[Sensor_p]> {
         }
         
         // Cumulative power is in watt-hours
-        if let PSTRSensor = self.list.first(where: { $0.key == "PSTR"}) {
-            if let totalIdx = self.list.firstIndex(where: {$0.key == "Total System Consumption"}) {
-                self.list[totalIdx].value += PSTRSensor.value * Date().timeIntervalSince(self.lastRead) / 3600
-                if let avgIdx = self.list.firstIndex(where: {$0.key == "Average System Total"}) {
-                    // Avg power consumption is simply total consumption divided by time online
-                    self.list[avgIdx].value = self.list[totalIdx].value * 3600 / Date().timeIntervalSince(self.firstRead)
-                }
-                self.lastRead = Date()
-            }
-        }
+        if let PSTRSensor = self.list.first(where: { $0.key == "PSTR"}), PSTRSensor.value > 0 {
+                     let sinceLastRead = Date().timeIntervalSince(self.lastRead)
+                     let sinceFirstRead = Date().timeIntervalSince(self.firstRead)
+
+                     if let totalIdx = self.list.firstIndex(where: {$0.key == "Total System Consumption"}), sinceLastRead > 0 {
+                         self.list[totalIdx].value += PSTRSensor.value * sinceLastRead / 3600
+                         if let avgIdx = self.list.firstIndex(where: {$0.key == "Average System Total"}), sinceFirstRead > 0 {
+                             self.list[avgIdx].value = self.list[totalIdx].value * 3600 / sinceFirstRead
+                         }
+                     }
+                     self.lastRead = Date()
+                 }
         
         self.callback(self.list)
     }
@@ -193,7 +210,7 @@ internal class SensorsReader: Reader<[Sensor_p]> {
         var gpuSensors = self.list.filter({ $0.group == .GPU && $0.type == .temperature && $0.average }).map{ $0.value }
         
         #if arch(arm64)
-        if self.HIDState || SystemKit.shared.device.platform?.rawValue == "m1" {
+        if self.HIDState {
             cpuSensors += self.list.filter({ $0.key.hasPrefix("pACC MTR Temp") || $0.key.hasPrefix("eACC MTR Temp") }).map{ $0.value }
             gpuSensors += self.list.filter({ $0.key.hasPrefix("GPU MTR Temp") }).map{ $0.value }
         }
@@ -341,36 +358,44 @@ extension SensorsReader {
         
         for typ in SensorsReader.HIDtypes {
             let (page, usage, type) = self.m1Preset(type: typ)
-            if let sensors = appleSiliconSensors(page: page, usage: usage, typ: type) {
-                sensors.forEach { (key, value) in
-                    guard let key = key as String?, let value = value as Double? else {
-                        return
-                    }
-                    var name: String = key
-                    
-                    HIDSensorsList.forEach { (s: Sensor) in
-                        if s.key.contains("%") {
-                            var index = 1
-                            for i in 0..<64 {
-                                if s.key.replacingOccurrences(of: "%", with: "\(i)") == key {
-                                    name = s.name.replacingOccurrences(of: "%", with: "\(index)")
-                                }
-                                index += 1
-                            }
-                        } else if s.key == key {
-                            name = s.name
+            autoreleasepool {
+                var sensors = appleSiliconSensors(page, usage, type)
+                if sensors != nil {
+                    sensors!.forEach { (k, v) in
+                        var ke = k as? String
+                        var val = v as? Double
+                        guard let key = ke, let value = val else {
+                            return
                         }
+                        var name: String = key
+                        ke = nil
+                        val = nil
+                        
+                        HIDSensorsList.forEach { (s: Sensor) in
+                            if s.key.contains("%") {
+                                var index = 1
+                                for i in 0..<64 {
+                                    if s.key.replacingOccurrences(of: "%", with: "\(i)") == key {
+                                        name = s.name.replacingOccurrences(of: "%", with: "\(index)")
+                                    }
+                                    index += 1
+                                }
+                            } else if s.key == key {
+                                name = s.name
+                            }
+                        }
+                        
+                        list.append(Sensor(
+                            key: key,
+                            name: name,
+                            value: value,
+                            group: .hid,
+                            type: typ,
+                            platforms: Platform.all
+                        ))
                     }
-                    
-                    list.append(Sensor(
-                        key: key,
-                        name: name,
-                        value: value,
-                        group: .hid,
-                        type: typ,
-                        platforms: Platform.all
-                    ))
                 }
+                sensors = nil
             }
         }
         

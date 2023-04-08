@@ -54,13 +54,13 @@ open class Module: Module_p {
         
         self.log = NextLog.shared.copy(category: self.config.name)
         self.available = self.isAvailable()
-        self.enabled = Store.shared.bool(key: "\(self.config.name)_state", defaultValue: self.config.defaultState)
+        self.enabled = Store.shared.bool(key: "\(String(describing: self.config.name))_state", defaultValue: self.config.defaultState)
         
         if !self.available {
             
             if self.enabled {
                 self.enabled = false
-                Store.shared.set(key: "\(self.config.name)_state", value: false)
+                Store.shared.set(key: "\(String(describing: self.config.name))_state", value: false)
             }
             
             return
@@ -90,7 +90,7 @@ open class Module: Module_p {
         guard self.available else { return }
         
         self.enabled = true
-        Store.shared.set(key: "\(self.config.name)_state", value: true)
+        Store.shared.set(key: "\(String(describing: self.config.name))_state", value: true)
         self.readers.forEach { (reader: Reader_p) in
             reader.initStoreValues(title: self.config.name ?? "")
             reader.start()
@@ -103,7 +103,7 @@ open class Module: Module_p {
         
         self.enabled = false
         if !self.pauseState { // omit saving the disable state when toggle by pause, need for resume state restoration
-            Store.shared.set(key: "\(self.config.name)_state", value: false)
+            Store.shared.set(key: "\(String(describing: self.config.name))_state", value: false)
         }
         self.readers.forEach{ $0.stop() }
     }

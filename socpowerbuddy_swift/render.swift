@@ -202,7 +202,11 @@ func screen_bottom(_ bottm: OpaquePointer? = nil) -> OpaquePointer? {
         box(bottom, 0, 0)
         wattroff(bottom, COLOR_PAIR(3))
         let quit_msg = "Press 'q' to Quit."
-        wmove(bottom, 0, cols/8-Int32(quit_msg.count/2))
+        var left = cols/8-Int32(quit_msg.count/2)
+        if left < 0 {
+            left = 1
+        }
+        wmove(bottom, 0, left)
         wattron(bottom, COLOR_PAIR(2))
         waddstr(bottom, quit_msg)
         wattroff(bottom, COLOR_PAIR(2))

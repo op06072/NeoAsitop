@@ -5,10 +5,6 @@
 //  Created by Eom SeHwan on 2022/09/17.
 //
 
-public protocol value_t {
-    var widgetValue: Double { get }
-}
-
 public protocol Reader_p {
     var optional: Bool { get }
     var popup: Bool { get }
@@ -18,7 +14,6 @@ public protocol Reader_p {
     func terminate()
     
     func getValue<T>() -> T
-    func getHistory() -> [value_t]
     
     func start()
     func pause()
@@ -160,10 +155,6 @@ open class Reader<T>: NSObject, ReaderInternal_p {
 extension Reader: Reader_p {
     public func getValue<T>() -> T {
         return self.value as! T
-    }
-    
-    public func getHistory<T>() -> [T] {
-        return self.history as! [T]
     }
     
     public func lock() {

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -26,6 +26,7 @@
 		3A8A035528E3F0800027B16E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A035428E3F0800027B16E /* main.swift */; };
 		3A8A035A28E3F6EE0027B16E /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
 		3A9A723328D15F5C0021E6F1 /* static.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A723228D15F5C0021E6F1 /* static.swift */; };
+		3AC974B5298184EF00DA67A8 /* readers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC974B4298184EF00DA67A8 /* readers.m */; };
 		3AC9F1EA28F02E7B008C5D5C /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9F1E928F02E6F008C5D5C /* libncurses.tbd */; };
 		3AECE96B297AEB4000D45A12 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 3AECE96A297AEB4000D45A12 /* Alamofire */; };
 		3AECE971297AFCF500D45A12 /* neoasitop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AECE970297AFCF500D45A12 /* neoasitop.swift */; };
@@ -75,6 +76,7 @@
 		3A8A035428E3F0800027B16E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3A9A722828D15EBB0021E6F1 /* socpowerbuddy_swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = socpowerbuddy_swift; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A9A723228D15F5C0021E6F1 /* static.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = static.swift; sourceTree = "<group>"; };
+		3AC974B4298184EF00DA67A8 /* readers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = readers.m; sourceTree = "<group>"; };
 		3AC9F1E928F02E6F008C5D5C /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
 		3AECE970297AFCF500D45A12 /* neoasitop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = neoasitop.swift; sourceTree = "<group>"; };
 		3AF36E0728D216A800DA3EB3 /* socpwrbud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = socpwrbud.h; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				3A238F0028D5CCEF0033A580 /* Repeater.swift */,
 				3A3DA87D28DC91C000BFEFAC /* render.swift */,
 				3A3DA88528DEDC5B00BFEFAC /* util.swift */,
+				3AC974B4298184EF00DA67A8 /* readers.m */,
 			);
 			path = socpowerbuddy_swift;
 			sourceTree = "<group>";
@@ -230,7 +233,7 @@
 				};
 			};
 			buildConfigurationList = 3A9A722328D15EBB0021E6F1 /* Build configuration list for PBXProject "socpowerbuddy_swift" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -272,6 +275,7 @@
 				3A3DA88628DEDC5B00BFEFAC /* util.swift in Sources */,
 				3A238EEB28D5BFC10033A580 /* helper.swift in Sources */,
 				3A238EF528D5C6710033A580 /* readers.swift in Sources */,
+				3AC974B5298184EF00DA67A8 /* readers.m in Sources */,
 				3A3DA87E28DC91C000BFEFAC /* render.swift in Sources */,
 				3A238EF328D5C64D0033A580 /* smc.swift in Sources */,
 				3A238EEF28D5C1F20033A580 /* Types.swift in Sources */,
