@@ -15,7 +15,7 @@ var sd = static_data()
 var cmd = cmd_data()
 let sens = SensorsReader()
 
-let cur_ver = "v2.7"
+let cur_ver = "v2.8"
 var newVersion = false
 
 struct Neoasitop: ParsableCommand {
