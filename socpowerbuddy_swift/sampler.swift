@@ -413,7 +413,10 @@ func format(sd: inout static_data, vd: inout variating_data) {
                 }
             }
             
-            vd.cluster_use[i] /= Float(vd.cluster_sums[i])+vd.cluster_use[i]
+            let cluster_usg = Float(vd.cluster_sums[i])+vd.cluster_use[i]
+            if cluster_usg != 0 {
+                vd.cluster_use[i] /= cluster_usg
+            }
             vd.cluster_use[i] *= 100
             if i <= sd.cluster_core_counts.count-1 {
                 for iii in 0..<Int(sd.cluster_core_counts[i]) {
@@ -471,8 +474,10 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         var ecpu_use: Float = 0
         var pcpu_use: Float = 0
         for (idx, cluster) in sd.complex_freq_channels.enumerated() {
+            let usg = vd.cluster_use[idx]
+            
             if cluster.contains("ECPU") {
-                rd.ecpu.usage += vd.cluster_use[idx]
+                rd.ecpu.usage += usg
                 for (i, freq) in vd.core_freqs[idx].enumerated() {
                     rd.ecpu.freq += freq*(vd.core_use[idx][i] as! Float)
                     ecpu_use += (vd.core_use[idx][i] as! Float)
@@ -480,7 +485,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
                 // rd.ecpu.freq += vd.cluster_freqs[idx]
                 ecpu += 1
             } else if cluster.contains("PCPU") {
-                rd.pcpu.usage += vd.cluster_use[idx]
+                rd.pcpu.usage += usg
                 for (i, freq) in vd.core_freqs[idx].enumerated() {
                     rd.pcpu.freq += freq*(vd.core_use[idx][i] as! Float)
                     pcpu_use += (vd.core_use[idx][i] as! Float)
@@ -488,7 +493,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
                 // rd.pcpu.freq += vd.cluster_freqs[idx]
                 pcpu += 1
             } else if cluster.contains("GPU") {
-                rd.gpu.usage += vd.cluster_use[idx]
+                rd.gpu.usage += usg
                 rd.gpu.freq += vd.cluster_freqs[idx]
                 gpu += 1
             }
