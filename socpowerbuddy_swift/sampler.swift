@@ -836,7 +836,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         }
         form = "CPU: %.2fW"
         if stat_disp {
-            form += " (avd: %.\(pwr_unit)fW peak: %.\(pwr_unit)fW)"
+            form += " (avg: %.\(pwr_unit)fW peak: %.\(pwr_unit)fW)"
         }
         rvd.cpu_pwr.title = String(
             format: form,
@@ -868,7 +868,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
         }
         form = "GPU: %.2fW"
         if stat_disp {
-            form += " (avd: %.\(pwr_unit)fW peak: %.\(pwr_unit)fW)"
+            form += " (avg: %.\(pwr_unit)fW peak: %.\(pwr_unit)fW)"
         }
         rvd.gpu_pwr.title = String(
             format: form,

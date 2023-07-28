@@ -102,3 +102,17 @@ struct mem_info {
     var used: [Double] = [0, 0]
     var free: [Double] = [0, 0]
 }
+
+struct avg_pwr {
+    var sys: [Double] = []
+    var cpu: [Float] = []
+    var gpu: [Float] = []
+    var ram: [Float] = []
+}
+
+struct peak_pwr {
+    var sys: Double = 0
+    var cpu: Float = 0
+    var gpu: Float = 0
+    var ram: Float = 0
+}

@@ -15,7 +15,7 @@ var sd = static_data()
 var cmd = cmd_data()
 let sens = SensorsReader()
 
-let cur_ver = "v2.8"
+let cur_ver = "v2.9"
 var newVersion = false
 
 struct Neoasitop: ParsableCommand {
@@ -183,6 +183,9 @@ struct Neoasitop: ParsableCommand {
         var scr = scrin!.tbx
         var bottomPnt: OpaquePointer? = nil
         xy = scrin!.xy
+        
+        var pwr_max: peak_pwr = peak_pwr()
+        var pwr_avg: avg_pwr = avg_pwr()
 
         while true {
             autoreleasepool {
@@ -201,11 +204,32 @@ struct Neoasitop: ParsableCommand {
                 monInfo.cpu_pwr.val = cpu_pwr
                 monInfo.gpu_pwr.val = gpu_pwr
                 
+                monInfo.sys_pwr_max = pwr_max.sys
+                monInfo.cpu_pwr_max = pwr_max.cpu
+                monInfo.gpu_pwr_max = pwr_max.gpu
+                monInfo.ram_pwr_max = pwr_max.ram
+                
+                monInfo.sys_pwr_avg = pwr_avg.sys
+                monInfo.cpu_pwr_avg = pwr_avg.cpu
+                monInfo.gpu_pwr_avg = pwr_avg.gpu
+                monInfo.ram_pwr_avg = pwr_avg.ram
+                
                 sample(iorep: iorep, sd: sd, vd: &vd!, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
                 //print("sampling finish")
                 format(sd: &sd, vd: &vd!) // 포매팅
                 //print("formatting finish")
                 summary(sd: sd, vd: vd!, rd: &rd!, rvd: &monInfo, opt: avg)
+                
+                pwr_max.sys = monInfo.sys_pwr_max
+                pwr_max.cpu = monInfo.cpu_pwr_max
+                pwr_max.gpu = monInfo.gpu_pwr_max
+                pwr_max.ram = monInfo.ram_pwr_max
+                
+                pwr_avg.sys = monInfo.sys_pwr_avg
+                pwr_avg.cpu = monInfo.cpu_pwr_avg
+                pwr_avg.gpu = monInfo.gpu_pwr_avg
+                pwr_avg.ram = monInfo.ram_pwr_avg
+                
                 rd = nil
                 vd = nil
             }
