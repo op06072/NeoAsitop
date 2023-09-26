@@ -193,10 +193,10 @@ struct Neoasitop: ParsableCommand {
                 var vd: variating_data? = vd_init(sd: sd)
                 sens.read()
                 if fan_set {
-                    getSensorVal(vd: &vd!, set_mode: fan_set, sd: &sd, sense: sens.list) // 센서값
+                    getSensorVal(vd: &vd!, set_mode: fan_set, sd: &sd, sense: sens.value!.sensors) // 센서값
                     fan_set = false
                 } else {
-                    getSensorVal(vd: &vd!, sd: &sd, sense: sens.list) // 센서값
+                    getSensorVal(vd: &vd!, sd: &sd, sense: sens.value!.sensors) // 센서값
                 }
                 getMemUsage(vd: &vd!)
                 sd.ram_capacity = "\(Int(vd!.mem_stat.total[0]))\(ByteUnit(vd!.mem_stat.total[1]))"

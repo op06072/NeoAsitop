@@ -42,7 +42,8 @@
       allowLocationSimulation = "YES"
       queueDebuggingEnabled = "No"
       memoryGraphOnResourceException = "Yes"
-      consoleMode = "1">
+      consoleMode = "1"
+      structuredConsoleMode = "3">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference

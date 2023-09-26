@@ -190,8 +190,8 @@
             filePath = "socpowerbuddy_swift/Sensors.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "12"
-            endingLineNumber = "12"
+            startingLineNumber = "16"
+            endingLineNumber = "16"
             landmarkName = "init()"
             landmarkType = "7">
          </BreakpointContent>
@@ -238,8 +238,8 @@
             filePath = "socpowerbuddy_swift/Sensors.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "11"
-            endingLineNumber = "11"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
             landmarkName = "init()"
             landmarkType = "7">
             <Locations>
@@ -286,9 +286,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
-            landmarkName = "init()"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "sensors()"
             landmarkType = "7">
             <Locations>
                <Location
@@ -320,6 +320,36 @@
                   startingLineNumber = "85"
                   endingLineNumber = "85"
                   offsetFromSymbolStart = "164">
+               </Location>
+               <Location
+                  uuid = "F3BD51E5-A5CF-4FBA-8CE9-E4AE9BC0C9AC - b20ced284c1629c4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "socpowerbuddy_swift.SensorsReader.sensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor_p&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "105"
+                  endingLineNumber = "105"
+                  offsetFromSymbolStart = "2844">
+               </Location>
+               <Location
+                  uuid = "F3BD51E5-A5CF-4FBA-8CE9-E4AE9BC0C9AC - c6fe5f69f64fffbc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #8 (socpowerbuddy_swift.Sensor_p) -&gt; Swift.Bool in socpowerbuddy_swift.SensorsReader.sensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor_p&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "106"
+                  endingLineNumber = "106"
+                  offsetFromSymbolStart = "144">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -382,8 +412,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "104"
-            endingLineNumber = "104"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
             landmarkName = "read()"
             landmarkType = "7">
          </BreakpointContent>
@@ -398,8 +428,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
             landmarkName = "read()"
             landmarkType = "7">
             <Locations>
@@ -461,8 +491,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
             landmarkName = "read()"
             landmarkType = "7">
          </BreakpointContent>
@@ -477,8 +507,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
             landmarkName = "read()"
             landmarkType = "7">
             <Locations>
@@ -540,8 +570,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
             landmarkName = "read()"
             landmarkType = "7">
             <Locations>
@@ -603,8 +633,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
             landmarkName = "init()"
             landmarkType = "7">
             <Locations>
@@ -651,9 +681,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "222"
-            endingLineNumber = "222"
-            landmarkName = "initCalculatedSensors()"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
+            landmarkName = "initCalculatedSensors(_:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -699,9 +729,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
-            landmarkName = "initCalculatedSensors()"
+            startingLineNumber = "240"
+            endingLineNumber = "240"
+            landmarkName = "initCalculatedSensors(_:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -762,9 +792,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "210"
-            endingLineNumber = "210"
-            landmarkName = "initCalculatedSensors()"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
+            landmarkName = "initCalculatedSensors(_:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -825,9 +855,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "247"
-            endingLineNumber = "247"
-            landmarkName = "initCalculatedSensors()"
+            startingLineNumber = "278"
+            endingLineNumber = "278"
+            landmarkName = "initCalculatedSensors(_:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -873,8 +903,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
+            startingLineNumber = "142"
+            endingLineNumber = "142"
             landmarkName = "read()"
             landmarkType = "7">
          </BreakpointContent>
@@ -889,9 +919,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
-            landmarkName = "init()"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "sensors()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -905,9 +935,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
-            landmarkName = "init()"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "sensors()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -921,9 +951,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
-            landmarkName = "init()"
+            startingLineNumber = "70"
+            endingLineNumber = "70"
+            landmarkName = "sensors()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -937,8 +967,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
             landmarkName = "init()"
             landmarkType = "7">
          </BreakpointContent>
@@ -953,9 +983,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
-            landmarkName = "init()"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "sensors()"
             landmarkType = "7">
             <Locations>
                <Location
@@ -1016,9 +1046,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
-            landmarkName = "init()"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "sensors()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1032,9 +1062,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "init()"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "sensors()"
             landmarkType = "7">
             <Locations>
                <Location
@@ -1080,9 +1110,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
-            landmarkName = "init()"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "sensors()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1096,9 +1126,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
-            landmarkName = "init()"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
+            landmarkName = "sensors()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1144,9 +1174,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
-            landmarkName = "initCalculatedSensors()"
+            startingLineNumber = "245"
+            endingLineNumber = "245"
+            landmarkName = "initCalculatedSensors(_:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -1207,9 +1237,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "213"
-            endingLineNumber = "213"
-            landmarkName = "initCalculatedSensors()"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
+            landmarkName = "initCalculatedSensors(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1223,9 +1253,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
-            landmarkName = "init()"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "sensors()"
             landmarkType = "7">
             <Locations>
                <Location
@@ -1319,9 +1349,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "25"
-            endingLineNumber = "25"
-            landmarkName = "init()"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "sensors()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1335,9 +1365,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "init()"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "sensors()"
             landmarkType = "7">
             <Locations>
                <Location
@@ -1370,6 +1400,21 @@
                   endingLineNumber = "39"
                   offsetFromSymbolStart = "736">
                </Location>
+               <Location
+                  uuid = "DE8682F7-64AD-40C3-ACE3-0270F74390B1 - 1a3179c934c1132d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "socpowerbuddy_swift.SensorsReader.init() -&gt; socpowerbuddy_swift.SensorsReader"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "39"
+                  endingLineNumber = "39"
+                  offsetFromSymbolStart = "564">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -1383,9 +1428,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "init()"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "sensors()"
             landmarkType = "7">
             <Locations>
                <Location
@@ -1418,6 +1463,21 @@
                   endingLineNumber = "43"
                   offsetFromSymbolStart = "1060">
                </Location>
+               <Location
+                  uuid = "F46FF7C2-16D6-4C64-8BFC-469A77747750 - 1a3179c934c113a1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "socpowerbuddy_swift.SensorsReader.init() -&gt; socpowerbuddy_swift.SensorsReader"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "43"
+                  endingLineNumber = "43"
+                  offsetFromSymbolStart = "884">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -1431,9 +1491,9 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "init()"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "sensors()"
             landmarkType = "7">
             <Locations>
                <Location
@@ -1479,8 +1539,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
             landmarkName = "init()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1495,8 +1555,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
             landmarkName = "init()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1511,8 +1571,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "166"
-            endingLineNumber = "166"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "getCPUInfo()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1527,8 +1587,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "180"
-            endingLineNumber = "180"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
             landmarkName = "getCPUInfo()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1543,8 +1603,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
+            startingLineNumber = "195"
+            endingLineNumber = "195"
             landmarkName = "getCPUInfo()"
             landmarkType = "7">
             <Locations>
@@ -1591,8 +1651,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "getCPUInfo()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1607,8 +1667,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "206"
-            endingLineNumber = "206"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1623,8 +1683,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "257"
-            endingLineNumber = "257"
+            startingLineNumber = "268"
+            endingLineNumber = "268"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1639,8 +1699,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "243"
-            endingLineNumber = "243"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1655,8 +1715,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "248"
-            endingLineNumber = "248"
+            startingLineNumber = "259"
+            endingLineNumber = "259"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
             <Locations>
@@ -1703,8 +1763,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "239"
-            endingLineNumber = "239"
+            startingLineNumber = "250"
+            endingLineNumber = "250"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
             <Locations>
@@ -1766,8 +1826,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
             <Locations>
@@ -1814,8 +1874,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "220"
-            endingLineNumber = "220"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
             <Locations>
@@ -1862,8 +1922,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "221"
-            endingLineNumber = "221"
+            startingLineNumber = "232"
+            endingLineNumber = "232"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
             <Locations>
@@ -1925,8 +1985,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
+            startingLineNumber = "234"
+            endingLineNumber = "234"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1941,8 +2001,8 @@
             filePath = "socpowerbuddy_swift/SystemKit.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
             landmarkName = "getCPUCores()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2213,8 +2273,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
+            startingLineNumber = "144"
+            endingLineNumber = "144"
             landmarkName = "read()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2229,8 +2289,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "144"
-            endingLineNumber = "144"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
             landmarkName = "read()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2245,8 +2305,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
             landmarkName = "read()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2261,8 +2321,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "147"
-            endingLineNumber = "147"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
             landmarkName = "read()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2277,8 +2337,8 @@
             filePath = "socpowerbuddy_swift/readers.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
+            startingLineNumber = "170"
+            endingLineNumber = "170"
             landmarkName = "read()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2393,6 +2453,228 @@
             endingLineNumber = "204"
             landmarkName = "launch()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9ACE91F5-E71E-4A6D-A1D8-5F8E4B2D193D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/readers.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "sensors()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9ACE91F5-E71E-4A6D-A1D8-5F8E4B2D193D - 1a3179c934c11225"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "socpowerbuddy_swift.SensorsReader.init() -&gt; socpowerbuddy_swift.SensorsReader"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "47"
+                  endingLineNumber = "47"
+                  offsetFromSymbolStart = "1440">
+               </Location>
+               <Location
+                  uuid = "9ACE91F5-E71E-4A6D-A1D8-5F8E4B2D193D - 51469cc08746e344"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.String) -&gt; Swift.Bool in socpowerbuddy_swift.SensorsReader.init() -&gt; socpowerbuddy_swift.SensorsReader"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "48"
+                  endingLineNumber = "48"
+                  offsetFromSymbolStart = "52">
+               </Location>
+               <Location
+                  uuid = "9ACE91F5-E71E-4A6D-A1D8-5F8E4B2D193D - b20ced284c1630be"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "socpowerbuddy_swift.SensorsReader.sensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor_p&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "51"
+                  endingLineNumber = "51"
+                  offsetFromSymbolStart = "1196">
+               </Location>
+               <Location
+                  uuid = "9ACE91F5-E71E-4A6D-A1D8-5F8E4B2D193D - ae0049bf56b3e612"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.String) -&gt; Swift.Bool in socpowerbuddy_swift.SensorsReader.sensors() -&gt; Swift.Array&lt;socpowerbuddy_swift.Sensor_p&gt;"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/readers.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "52"
+                  endingLineNumber = "52"
+                  offsetFromSymbolStart = "52">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "35856475-7A5A-48B1-A9F8-408ADFE278AB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/sampler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "282"
+            endingLineNumber = "282"
+            landmarkName = "getSensorVal(vd:set_mode:sd:sense:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5CADC6CA-2F0A-4753-BCF8-52841E388CD9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/sampler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "288"
+            endingLineNumber = "288"
+            landmarkName = "getSensorVal(vd:set_mode:sd:sense:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6D71B419-F8AE-4619-BF91-D55C852C77F2"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/neoasitop.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "194"
+            endingLineNumber = "194"
+            landmarkName = "launch()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "03E66A3C-82E6-4691-BDDC-33251762E95E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/readers.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "sensors()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E8148FDE-389D-475B-888A-437A20B02E47"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/neoasitop.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "195"
+            endingLineNumber = "195"
+            landmarkName = "launch()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0E422C75-D220-41AC-9FCF-BB85DFB7666C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/neoasitop.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
+            landmarkName = "launch()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "70607862-AFE1-460D-A86C-0B1E6F9742AF"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/readers.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "sensors()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "47D7E043-35BB-42C4-AA31-A62971C1C745"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/readers.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "234"
+            endingLineNumber = "234"
+            landmarkName = "read()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "574576B5-4F07-4188-9D9F-8D8FFCD60FBF"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/sampler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "293"
+            endingLineNumber = "293"
+            landmarkName = "getSensorVal(vd:set_mode:sd:sense:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

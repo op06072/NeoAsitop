@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Platform: String {
+public enum Platform: String, Codable {
     case intel
     
     case m1
@@ -16,9 +16,20 @@ public enum Platform: String {
     case m1Ultra
     
     case m2
+    case m2Pro
+    case m2Max
+    case m2Ultra
+    
+    public static var m1series: [Platform] {
+        return [.m1, .m1Pro, .m1Max, .m1Ultra]
+    }
+    
+    public static var m2series: [Platform] {
+        return [.m2, .m2Pro, .m2Max, .m2Ultra]
+    }
     
     public static var apple: [Platform] {
-        return [.m1, .m1Pro, .m1Max, .m1Ultra, .m2]
+        return m1series + m2series
     }
     
     public static var all: [Platform] {
@@ -269,5 +280,6 @@ let osDict: [String: String] = [
     "10.15": "Catalina",
     "11": "Big Sur",
     "12": "Monterey",
-    "13": "Ventura"
+    "13": "Ventura",
+    "14": "Sonoma",
 ]

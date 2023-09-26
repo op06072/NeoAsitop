@@ -6,7 +6,11 @@
 //
 
 public class Sensors: Module {
-    var sensorsReader: SensorsReader
+    private var sensorsReader: SensorsReader
+    
+    private var fanValueState: FanValue {
+        FanValue(rawValue: Store.shared.string(key: "\(self.config.name ?? "left")_fanValue", defaultValue: "percentage")) ?? .percentage
+    }
     
     public override init() {
         self.sensorsReader = SensorsReader()
@@ -25,19 +29,27 @@ public class Sensors: Module {
     }
     
     public override func isAvailable() -> Bool {
-        return !self.sensorsReader.list.isEmpty
+        return !self.sensorsReader.list.sensors.isEmpty
     }
     
-    private func usageCallback(_ raw: [Sensor_p]?) {
+    private func usageCallback(_ raw: Sensors_List?) {
         guard let value = raw, self.enabled else {
             return
         }
         
-        var list: [KeyValue_t] = []
+        var list: [Stack_t] = []
+        var flatList: [[Double]] = []
         
-        value.forEach { (s: Sensor_p) in
+        value.sensors.forEach { (s: Sensor_p) in
             if s.state {
-                list.append(KeyValue_t(key: s.key, value: s.formattedMiniValue, additional: s.name))
+                var value = s.formattedMiniValue
+                if let f = s as? Fan {
+                    flatList.append([((f.value*100)/f.maxSpeed)/100])
+                    if self.fanValueState == .percentage {
+                        value = "\(f.percentage)%"
+                    }
+                }
+                list.append(Stack_t(key: s.key, value: value, additional: s.name))
             }
         }
     }

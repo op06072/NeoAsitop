@@ -5,15 +5,16 @@
 //  Created by Eom SeHwan on 2022/09/17.
 //
 
-internal enum SensorGroup: String {
+public enum SensorGroup: String, Codable {
     case CPU = "CPU"
     case GPU = "GPU"
     case system = "Systems"
     case sensor = "Sensors"
     case hid = "HID"
+    case unknown = "Unknown"
 }
 
-internal enum SensorType: String {
+public enum SensorType: String, Codable {
     case temperature = "Temperature"
     case voltage = "Voltage"
     case current = "Current"
@@ -22,7 +23,7 @@ internal enum SensorType: String {
     case fan = "Fans"
 }
 
-internal protocol Sensor_p {
+public protocol Sensor_p {
     var key: String { get }
     var name: String { get }
     var value: Double { get set }
@@ -39,19 +40,91 @@ internal protocol Sensor_p {
     var formattedMiniValue: String { get }
 }
 
-internal struct Sensor: Sensor_p {
-    var key: String
-    var name: String
+public struct Sensors_List: Codable {
+    private var queue: DispatchQueue = DispatchQueue(label: "kr.umk.NeoAsitop.Sensors.SynchronizedArray", attributes: .concurrent)
+    private var list: [Sensor_p] = []
+    public var sensors: [Sensor_p] {
+        get {
+            self.queue.sync{self.list}
+        }
+        set(newValue) {
+            self.queue.sync {
+                self.list = newValue
+            }
+        }
+    }
     
-    var value: Double = 0
+    private enum CodingKeys: String, CodingKey {
+        case sensors
+    }
     
-    var group: SensorGroup
-    var type: SensorType
-    var platforms: [Platform]
-    var isComputed: Bool = false
-    var average: Bool = false
+    public init() {}
     
-    var unit: String {
+    public func encode(to encoder: Encoder) throws {
+        let wrappers = sensors.map { Sensor_w($0) }
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(wrappers, forKey: .sensors)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let wrappers = try container.decode([Sensor_w].self, forKey: .sensors)
+        self.sensors = wrappers.map { $0.sensor }
+    }
+}
+
+public struct Sensor_w: Codable {
+    let sensor: Sensor_p
+    
+    private enum CodingKeys: String, CodingKey {
+        case base, payload
+    }
+    
+    private enum Typ: Int, Codable {
+        case sensor
+        case fan
+    }
+    
+    init(_ sensor: Sensor_p) {
+        self.sensor = sensor
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let base = try container.decode(Typ.self, forKey: .base)
+        switch base {
+        case .sensor: self.sensor = try container.decode(Sensor.self, forKey: .payload)
+        case .fan: self.sensor = try container.decode(Fan.self, forKey: .payload)
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch sensor {
+        case let payload as Sensor:
+            try container.encode(Typ.sensor, forKey: .base)
+            try container.encode(payload, forKey: .payload)
+        case let payload as Fan:
+            try container.encode(Typ.fan, forKey: .base)
+            try container.encode(payload, forKey: .payload)
+        default: break
+        }
+    }
+}
+
+public struct Sensor: Sensor_p, Codable {
+    public var key: String
+    public var name: String
+    
+    public var value: Double = 0
+    
+    public var group: SensorGroup
+    public var type: SensorType
+    public var platforms: [Platform]
+    public var isComputed: Bool = false
+    public var average: Bool = false
+    
+    public var unit: String {
         get {
             switch self.type {
             case .temperature:
@@ -70,7 +143,7 @@ internal struct Sensor: Sensor_p {
         }
     }
     
-    var formattedValue: String {
+    public var formattedValue: String {
         get {
             switch self.type {
             case .temperature:
@@ -89,7 +162,7 @@ internal struct Sensor: Sensor_p {
             }
         }
     }
-    var formattedMiniValue: String {
+    public var formattedMiniValue: String {
         get {
             switch self.type {
             case .temperature:
@@ -103,13 +176,13 @@ internal struct Sensor: Sensor_p {
         }
     }
     
-    var state: Bool {
+    public var state: Bool {
         get {
             return Store.shared.bool(key: "sensor_\(self.key)", defaultValue: false)
         }
     }
     
-    func copy() -> Sensor {
+    public func copy() -> Sensor {
         return Sensor(
             key: self.key,
             name: self.name,
@@ -122,41 +195,42 @@ internal struct Sensor: Sensor_p {
     }
 }
 
-internal struct Fan: Sensor_p {
-    let id: Int
-    var key: String
-    var name: String
-    let minSpeed: Double
-    let maxSpeed: Double
-    var value: Double
-    var mode: FanMode
+public struct Fan: Sensor_p, Codable {
+    public let id: Int
+    public var key: String
+    public var name: String
+    public let minSpeed: Double
+    public let maxSpeed: Double
+    public var value: Double
+    public var mode: FanMode
     
-    var group: SensorGroup = .sensor
-    var type: SensorType = .fan
-    var platforms: [Platform] = Platform.all
-    var isIntelOnly: Bool = false
-    var isComputed: Bool = false
-    var average: Bool = false
-    var unit: String = "RPM"
-    
-    var formattedValue: String {
-        get {
-            return "\(Int(value)) RPM"
+    public var percentage: Int {
+        if self.value != 0 && self.maxSpeed != 0 && self.value != 1 && self.maxSpeed != 1 {
+            return (100*Int(self.value)) / Int(self.maxSpeed)
         }
-    }
-    var formattedMiniValue: String {
-        get {
-            return "\(Int(value))"
-        }
+        return 0
     }
     
-    var state: Bool {
-        get {
-            return Store.shared.bool(key: "sensor_\(self.key)", defaultValue: false)
-        }
+    public var group: SensorGroup = .sensor
+    public var type: SensorType = .fan
+    public var platforms: [Platform] = Platform.all
+    public var isIntelOnly: Bool = false
+    public var isComputed: Bool = false
+    public var average: Bool = false
+    public var unit: String = "RPM"
+    
+    public var formattedValue: String {
+        "\(Int(value)) RPM"
+    }
+    public var formattedMiniValue: String {
+        "\(Int(value))"
     }
     
-    var customSpeed: Int? {
+    public var state: Bool {
+        Store.shared.bool(key: "sensor_\(self.key)", defaultValue: false)
+    }
+    
+    public var customSpeed: Int? {
         get {
             if !Store.shared.exist(key: "fan_\(self.id)_speed") {
                 return nil
@@ -171,7 +245,7 @@ internal struct Fan: Sensor_p {
             }
         }
     }
-    var customMode: FanMode? {
+    public var customMode: FanMode? {
         get {
             if !Store.shared.exist(key: "fan_\(self.id)_mode") {
                 return nil
@@ -222,40 +296,43 @@ internal let SensorsList: [Sensor] = [
     Sensor(key: "TH%B", name: "Disk % (B)", group: .system, type: .temperature, platforms: Platform.all),
     Sensor(key: "TH%C", name: "Disk % (C)", group: .system, type: .temperature, platforms: Platform.all),
     
+    Sensor(key: "TTLD", name: "Thunderbolt left", group: .system, type: .temperature, platforms: Platform.all),
+    Sensor(key: "TTRD", name: "Thunderbolt right", group: .system, type: .temperature, platforms: Platform.all),
+    
     Sensor(key: "TN0D", name: "Northbridge diode", group: .system, type: .temperature, platforms: Platform.all),
     Sensor(key: "TN0H", name: "Northbridge heatsink", group: .system, type: .temperature, platforms: Platform.all),
     Sensor(key: "TN0P", name: "Northbridge proximity", group: .system, type: .temperature, platforms: Platform.all),
     
     // Apple Silicon
-    Sensor(key: "Tp09", name: "CPU efficiency core 1", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tp0T", name: "CPU efficiency core 2", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tp01", name: "CPU performance core 1", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tp05", name: "CPU performance core 2", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tp0D", name: "CPU performance core 3", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tp0H", name: "CPU performance core 4", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tp0L", name: "CPU performance core 5", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tp0P", name: "CPU performance core 6", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tp0X", name: "CPU performance core 7", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tp0b", name: "CPU performance core 8", group: .CPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
+    Sensor(key: "Tp09", name: "CPU efficiency core 1", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tp0T", name: "CPU efficiency core 2", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tp01", name: "CPU performance core 1", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tp05", name: "CPU performance core 2", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tp0D", name: "CPU performance core 3", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tp0H", name: "CPU performance core 4", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tp0L", name: "CPU performance core 5", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tp0P", name: "CPU performance core 6", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tp0X", name: "CPU performance core 7", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tp0b", name: "CPU performance core 8", group: .CPU, type: .temperature, platforms: Platform.m1series, average: true),
     
-    Sensor(key: "Tg05", name: "GPU 1", group: .GPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tg0D", name: "GPU 2", group: .GPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tg0L", name: "GPU 3", group: .GPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
-    Sensor(key: "Tg0T", name: "GPU 4", group: .GPU, type: .temperature, platforms: [.m1, .m1Pro, .m1Max, .m1Ultra], average: true),
+    Sensor(key: "Tg05", name: "GPU 1", group: .GPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tg0D", name: "GPU 2", group: .GPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tg0L", name: "GPU 3", group: .GPU, type: .temperature, platforms: Platform.m1series, average: true),
+    Sensor(key: "Tg0T", name: "GPU 4", group: .GPU, type: .temperature, platforms: Platform.m1series, average: true),
     
     // M2
-    Sensor(key: "Tp05", name: "CPU efficiency core 1", group: .CPU, type: .temperature, platforms: [.m2], average: true),
-    Sensor(key: "Tp0D", name: "CPU efficiency core 2", group: .CPU, type: .temperature, platforms: [.m2], average: true),
-    Sensor(key: "Tp0j", name: "CPU efficiency core 3", group: .CPU, type: .temperature, platforms: [.m2], average: true),
-    Sensor(key: "Tp0r", name: "CPU efficiency core 4", group: .CPU, type: .temperature, platforms: [.m2], average: true),
+    Sensor(key: "Tp05", name: "CPU efficiency core 1", group: .CPU, type: .temperature, platforms: Platform.m2series, average: true),
+    Sensor(key: "Tp0D", name: "CPU efficiency core 2", group: .CPU, type: .temperature, platforms: Platform.m2series, average: true),
+    Sensor(key: "Tp0j", name: "CPU efficiency core 3", group: .CPU, type: .temperature, platforms: Platform.m2series, average: true),
+    Sensor(key: "Tp0r", name: "CPU efficiency core 4", group: .CPU, type: .temperature, platforms: Platform.m2series, average: true),
     
-    Sensor(key: "Tp01", name: "CPU performance core 1", group: .CPU, type: .temperature, platforms: [.m2], average: true),
-    Sensor(key: "Tp09", name: "CPU performance core 2", group: .CPU, type: .temperature, platforms: [.m2], average: true),
-    Sensor(key: "Tp0f", name: "CPU performance core 3", group: .CPU, type: .temperature, platforms: [.m2], average: true),
-    Sensor(key: "Tp0n", name: "CPU performance core 4", group: .CPU, type: .temperature, platforms: [.m2], average: true),
+    Sensor(key: "Tp01", name: "CPU performance core 1", group: .CPU, type: .temperature, platforms: Platform.m2series, average: true),
+    Sensor(key: "Tp09", name: "CPU performance core 2", group: .CPU, type: .temperature, platforms: Platform.m2series, average: true),
+    Sensor(key: "Tp0f", name: "CPU performance core 3", group: .CPU, type: .temperature, platforms: Platform.m2series, average: true),
+    Sensor(key: "Tp0n", name: "CPU performance core 4", group: .CPU, type: .temperature, platforms: Platform.m2series, average: true),
     
-    Sensor(key: "Tg0f", name: "GPU 1", group: .GPU, type: .temperature, platforms: [.m2], average: true),
-    Sensor(key: "Tg0n", name: "GPU 2", group: .GPU, type: .temperature, platforms: [.m2], average: true),
+    Sensor(key: "Tg0f", name: "GPU 1", group: .GPU, type: .temperature, platforms: Platform.m2series, average: true),
+    Sensor(key: "Tg0n", name: "GPU 2", group: .GPU, type: .temperature, platforms: Platform.m2series, average: true),
     
     Sensor(key: "TaLP", name: "Airflow left", group: .sensor, type: .temperature, platforms: Platform.apple),
     Sensor(key: "TaRF", name: "Airflow right", group: .sensor, type: .temperature, platforms: Platform.apple),

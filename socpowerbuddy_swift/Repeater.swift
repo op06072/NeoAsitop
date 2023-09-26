@@ -14,7 +14,7 @@ public class Repeater {
     private var callback: (() -> Void)
     private var state: State = .paused
     
-    private var timer: DispatchSourceTimer = DispatchSource.makeTimerSource(queue: DispatchQueue(label: "eu.exelban.Stats"))
+    private var timer: DispatchSourceTimer = DispatchSource.makeTimerSource(queue: DispatchQueue(label: "kr.umk.NeoAsitop"))
     
     public init(seconds: Int, callback: @escaping (() -> Void)) {
         self.callback = callback
