@@ -15,14 +15,18 @@ var sd = static_data()
 var cmd = cmd_data()
 let sens = SensorsReader()
 
-let cur_ver = "v2.9"
+let cur_ver = "v2.10"
 var newVersion = false
+var beta = false
 
 struct Neoasitop: ParsableCommand {
     @Flag(name: .shortAndLong, help: "Print version information")
     var version = false
     
-    @Option(name: .shortAndLong, help: "Display interval and sampling interval for info gathering (seconds)")
+    @Flag(name: .long, help: "Show detail information of this system like OS codename, CPU architecture name, etc.")
+    var verbose = false
+    
+    @Option(name: .shortAndLong, help: "Display interval and sampling interval for info gathering (seconds) [0.01~]")
     var interval: Double = 1
     
     @Option(name: .shortAndLong, help: "Choose display color (0~7)")
@@ -56,6 +60,8 @@ struct Neoasitop: ParsableCommand {
         while cmd.interval/1000 >= interval {
             cmd.interval /= 2
         }
+        
+        sd.verbosed = verbose
 
         let procInfo = ProcessInfo()
         let systemVersion = procInfo.operatingSystemVersion
@@ -65,6 +71,7 @@ struct Neoasitop: ParsableCommand {
         //print("dvfm table gen finish")
         generateProcessorName(sd: &sd)
         //print("process name gen finish")
+        getOSCode(sd: &sd)
 
         let tmp = sd.extra[0].lowercased()
         //tmp = "m1 ultra"
@@ -262,7 +269,7 @@ struct Neoasitop: ParsableCommand {
                     }
                 }
                 del_tbox(tbx: &scr)
-                print("\nGood Bye")
+                print("\nGood Bye\(beta ? " Beta User!" : "")")
                 return
             default:
                 autoreleasepool {
@@ -298,6 +305,8 @@ enum Executable {
                 if let version = object.value(forKey: "tag_name") as? String {
                     if version.compare(cur_ver, options: .numeric) == .orderedDescending {
                         newVersion = true
+                    } else if version.compare(cur_ver, options: .numeric) == .orderedAscending {
+                        beta = true
                     }
                 }
             }

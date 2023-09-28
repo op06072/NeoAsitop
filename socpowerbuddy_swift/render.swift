@@ -130,8 +130,9 @@ struct dispInfo {
                     cpu_title += "[Rosetta 2] (cores: \(sd.core_ep_counts.reduce(0,+))C+"
                 }
                 cpu_title += "\(sd.gpu_core_count)GPU+\(sd.ram_capacity))"
+                cpu_title = "\(sd.verbosed ? sd.marketing_name + " " : "")\(cpu_title)"
             }
-            cpu_title += " \(sd.os_ver)"
+            cpu_title += " \(sd.os_ver)\(sd.verbosed ? " " + sd.os_code_name : "")"
             
             proc_grp = cpu_title
         }
@@ -473,9 +474,9 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
     
     var scrn = scrin ?? screen_init(dark: dark)
     
-    if lines < 34 || cols < 63 {
+    if lines < 34 || cols < 63 + (sd.verbosed ? 22 : 0) {
         endwin()
-        print("Terminal size is too small!\nThis tool needs 63 cols and 34 lines at least!")
+        print("Terminal size is too small!\nThis tool needs \(sd.verbosed ? 85 : 63) cols and 34 lines at least!")
         exit(1)
     }
 

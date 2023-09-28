@@ -33,6 +33,7 @@ struct iorep_data {
 
 struct static_data {
     var gpu_core_count = 0
+    var gpu_arch_name: String = ""
     var dvfm_states_holder: Array<Array<Double>> = []
     var dvfm_states: Array<Array<Double>> = []
     var cluster_core_counts: Array<UInt8> = []
@@ -49,6 +50,9 @@ struct static_data {
     var fan_mode = 0
     var fan_limit: [[Double]] = [[0, 0], [0, 0]]
     var os_ver: String = "macOS"
+    var marketing_name: String = "mac"
+    var os_code_name: String = ""
+    var verbosed = false
 }
 
 struct variating_data {

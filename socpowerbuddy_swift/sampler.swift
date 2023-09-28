@@ -638,11 +638,11 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             var space0 = 0 // 추가 내용 뺀 부분의 여분길이
             var space1 = 0
             // CPU & GPU 온도
-            if w.ws_col >= 73 {
+            if w.ws_col >= 73 + (sd.verbosed ? 17 : 0) {
                 rvd.gpu_usg.title += String(
                     format:" (%.1f°C)", rd.gpu.temp
                 )
-                if w.ws_col >= 80 {
+                if w.ws_col >= 80 + (sd.verbosed ? 24 : 0) {
                     rvd.ecpu_usg.title += String(
                         format:" (%.1f°C)", rd.ecpu.temp
                     )
@@ -651,6 +651,9 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
                     )
                 }
             }
+            rvd.ecpu_usg.title = "\(rvd.ecpu_usg.title)\(sd.verbosed ? " [\(sd.extra[2])]" : "")"
+            rvd.pcpu_usg.title = "\(rvd.pcpu_usg.title)\(sd.verbosed ? " [\(sd.extra[3])]" : "")"
+            rvd.gpu_usg.title = "\(rvd.gpu_usg.title)\(sd.verbosed ? " [\(sd.gpu_arch_name)]" : "")"
             // Memory Bandwidth
             space = 0
             var tmp_val = 200.0

@@ -158,13 +158,14 @@ func generateCoreCounts(sd: inout static_data) {
                 }
             }
         }
-
-        if model_name != "" {
-            if model_name.lowercased().contains("air") {
+        
+        if let count = SMC.shared.getValue("FNum") {
+            switch count {
+            case 0.0:
                 sd.fan_exist = false
-            } else if model_name.lowercased().contains("mini") {
+            case 1.0:
                 sd.fan_mode = 1
-            } else {
+            default:
                 sd.fan_mode = 2
             }
         } else {
@@ -179,27 +180,57 @@ func generateCoreCounts(sd: inout static_data) {
             port = kIOMasterPortDefault
         }
         
-        if let service = IOServiceMatching("AppleARMIODevice") {
+        func regAccessFailed(_ name: String) {
+            print("Failed to access \(name) service in IORegistry")
+            exit(1)
+        }
+        
+        let option_bits = IOOptionBits(kIORegistryIterateRecursively + kIORegistryIterateParents)
+        
+        var name = "product"
+        if let service = IOServiceNameMatching(name) {
             if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
-                print("Failed to access AppleARMIODevice service in IORegistry")
-                exit(1)
+                regAccessFailed(name)
             }
         } else {
-            print("Failed to find AppleARMIODevice service in IORegistry")
-            exit(1)
+            regAccessFailed(name)
+        }
+        
+        while case let entry = IOIteratorNext(iter), entry != IO_OBJECT_NULL {
+            if let productname = IORegistryEntrySearchCFProperty(entry, kIOServicePlane, "product-name" as CFString, kCFAllocatorDefault, option_bits) {
+                sd.marketing_name = ""
+                let prodname = productname.bytes?.assumingMemoryBound(to: CChar.self)
+                for ii in 0...productname.length {
+                    sd.marketing_name += String(format: "%c", prodname![ii])
+                }
+            } else {
+                print("Failed to read \"product-name\" from \(name) service in IORegistry")
+                exit(1)
+            }
+            IOObjectRelease(entry)
+        }
+        
+        name = "AppleARMIODevice"
+        if let service = IOServiceMatching(name) {
+            if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
+                regAccessFailed(name)
+            }
+        } else {
+            regAccessFailed(name)
         }
         
         while case let entry = IOIteratorNext(iter), entry != IO_OBJECT_NULL {
             if IORegistryEntryCreateCFProperties(entry, &servicedict, kCFAllocatorDefault, 0) != kIOReturnSuccess {
-                print("Failed to create CFProperties for AppleARMIODevice service in IORegistry")
+                print("Failed to create CFProperties for \(name) service in IORegistry")
                 exit(1)
             }
             
             guard let serviceDict = servicedict?.takeRetainedValue() as? [String : AnyObject] else { continue }
             
-            if case let data = serviceDict["clusters"], data != nil {
-                let databytes = data?.bytes?.assumingMemoryBound(to: UInt8.self)
-                for ii in stride(from:0, to:data!.length, by:4) {
+            //if case let data = serviceDict["clusters"], data != nil {
+            if let data = serviceDict["clusters"] {
+                let databytes = data.bytes?.assumingMemoryBound(to: UInt8.self)
+                for ii in stride(from:0, to:data.length, by:4) {
                     let cores = UInt8(atoi(String(format: "%02x", databytes![ii])))
                     sd.cluster_core_counts.append(cores)
                     var die_num = 1
@@ -219,26 +250,54 @@ func generateCoreCounts(sd: inout static_data) {
             }
         }
         
-        if let service = IOServiceMatching("AGXAccelerator") {
+        name = "AGXAccelerator"
+        if let service = IOServiceMatching(name) {
             if IOServiceGetMatchingServices(port, service, &iter) != kIOReturnSuccess {
-                print("Failed to access AGXAccelerator service in IORegistry")
-                exit(1)
+                regAccessFailed(name)
             }
         } else {
-            print("Failed to find AGXAccelerator service in IORegistry")
-            exit(1)
+            regAccessFailed(name)
         }
         
         while case let entry = IOIteratorNext(iter), entry != IO_OBJECT_NULL {
-            if let gpucorecnt = IORegistryEntrySearchCFProperty(entry, kIOServicePlane, "gpu-core-count" as CFString, kCFAllocatorDefault, IOOptionBits(kIORegistryIterateRecursively + kIORegistryIterateParents)) {
+            if IORegistryEntryCreateCFProperties(entry, &servicedict, kCFAllocatorDefault, 0) != kIOReturnSuccess {
+                print("Failed to create CFProperties for \(name) service in IORegistry")
+                exit(1)
+            }
+            
+            guard let serviceDict = servicedict?.takeRetainedValue() as? [String : AnyObject] else { continue }
+            
+            if let gpucorecnt = serviceDict["gpu-core-count"] {
                 sd.gpu_core_count = gpucorecnt as? Int ?? 0
                 IOObjectRelease(entry)
             } else {
-                print("Failed to read \"gpu-core-count\" from AGXAccelerator service in IORegistry")
+                print("Failed to read \"gpu-core-count\" from \(name) service in IORegistry")
                 exit(1)
             }
+            
+            if let gpuname = serviceDict["IOClass"] {
+                sd.gpu_arch_name = gpuname as? String ?? ""
+                if let range = sd.gpu_arch_name.range(of: name) {
+                    sd.gpu_arch_name.removeSubrange(range)
+                }
+            } else {
+                print("Failed to read \"gpu-arch-name\" from \(name) service in IORegistry")
+                exit(1)
+            }
+            IOObjectRelease(entry)
         }
         IOObjectRelease(iter)
+    }
+}
+
+func getOSCode(sd: inout static_data) {
+    autoreleasepool {
+        let code_file = File("/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf")
+        while let code_line = code_file?.getLine() {
+            if code_line.contains("SOFTWARE LICENSE AGREEMENT FOR macOS") {
+                sd.os_code_name = String(code_line.split(separator: " ").last ?? "").replacingOccurrences(of: "\\\n", with: "")
+            }
+        }
     }
 }
 
@@ -360,7 +419,7 @@ func generateMicroArchs(sd: inout static_data) {
             sd.extra.append(String(
                 format: "%s",
                 (data?.takeRetainedValue().bytes?.assumingMemoryBound(to: UInt8.self))!
-            ))
+            ).replacingOccurrences(of: "apple,", with: "").capitalized)
         } else {
             archError(sd: &sd)
         }
@@ -370,7 +429,7 @@ func generateMicroArchs(sd: inout static_data) {
             sd.extra.append(String(
                 format: "%s",
                 (data?.takeRetainedValue().bytes?.assumingMemoryBound(to: UInt8.self))!
-            ))
+            ).replacingOccurrences(of: "apple,", with: "").capitalized)
         } else {
             archError(sd: &sd)
         }

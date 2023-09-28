@@ -1142,8 +1142,8 @@
             filePath = "socpowerbuddy_swift/static.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "403"
-            endingLineNumber = "403"
+            startingLineNumber = "462"
+            endingLineNumber = "462"
             landmarkName = "generateSocMax(sd:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1301,10 +1301,10 @@
             filePath = "socpowerbuddy_swift/head.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "render_data"
+            landmarkType = "14">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2049,8 +2049,8 @@
             filePath = "socpowerbuddy_swift/render.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "224"
-            endingLineNumber = "224"
+            startingLineNumber = "225"
+            endingLineNumber = "225"
             landmarkName = "screen_init(dark:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2065,8 +2065,8 @@
             filePath = "socpowerbuddy_swift/render.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
+            startingLineNumber = "227"
+            endingLineNumber = "227"
             landmarkName = "screen_init(dark:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2081,8 +2081,8 @@
             filePath = "socpowerbuddy_swift/render.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "192"
-            endingLineNumber = "192"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
             landmarkName = "screen_bottom(_:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2091,6 +2091,22 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "0011B592-CC43-4149-95A5-5C73084B3C04"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/render.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "535"
+            endingLineNumber = "535"
+            landmarkName = "display(_:_:_:_:_:_:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7CBAA7BE-1004-4BBE-9436-3F8B084722DB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -2106,39 +2122,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7CBAA7BE-1004-4BBE-9436-3F8B084722DB"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "socpowerbuddy_swift/render.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "533"
-            endingLineNumber = "533"
-            landmarkName = "display(_:_:_:_:_:_:)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "9482686F-351D-48DF-9847-419240A917A6"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "socpowerbuddy_swift/render.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "296"
-            endingLineNumber = "296"
-            landmarkName = "Stack(size:title:border:stack:tbx:offset:render:dark:)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D5531EE9-74B4-4EE5-8F52-495B57D6A789"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -2154,7 +2138,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A5CF2EAA-957D-44F9-84D9-B145C9529156"
+            uuid = "D5531EE9-74B4-4EE5-8F52-495B57D6A789"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -2170,6 +2154,22 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "A5CF2EAA-957D-44F9-84D9-B145C9529156"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/render.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "299"
+            endingLineNumber = "299"
+            landmarkName = "Stack(size:title:border:stack:tbx:offset:render:dark:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
             uuid = "3B8876BA-AD77-498D-9393-7D613C4AF5E2"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -2177,8 +2177,8 @@
             filePath = "socpowerbuddy_swift/render.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "300"
-            endingLineNumber = "300"
+            startingLineNumber = "301"
+            endingLineNumber = "301"
             landmarkName = "Stack(size:title:border:stack:tbx:offset:render:dark:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2193,8 +2193,8 @@
             filePath = "socpowerbuddy_swift/render.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "510"
-            endingLineNumber = "510"
+            startingLineNumber = "511"
+            endingLineNumber = "511"
             landmarkName = "display(_:_:_:_:_:_:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2209,8 +2209,8 @@
             filePath = "socpowerbuddy_swift/render.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
+            startingLineNumber = "340"
+            endingLineNumber = "340"
             landmarkName = "Stack(size:title:border:stack:tbx:offset:render:dark:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2449,8 +2449,8 @@
             filePath = "socpowerbuddy_swift/neoasitop.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
+            startingLineNumber = "211"
+            endingLineNumber = "211"
             landmarkName = "launch()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2575,8 +2575,8 @@
             filePath = "socpowerbuddy_swift/neoasitop.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "launch()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2607,8 +2607,8 @@
             filePath = "socpowerbuddy_swift/neoasitop.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "195"
-            endingLineNumber = "195"
+            startingLineNumber = "202"
+            endingLineNumber = "202"
             landmarkName = "launch()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2623,8 +2623,8 @@
             filePath = "socpowerbuddy_swift/neoasitop.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
+            startingLineNumber = "203"
+            endingLineNumber = "203"
             landmarkName = "launch()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2674,6 +2674,358 @@
             startingLineNumber = "293"
             endingLineNumber = "293"
             landmarkName = "getSensorVal(vd:set_mode:sd:sense:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0DA36C8E-F784-4851-B0C4-04EBBC0CAE23"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/static.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
+            landmarkName = "generateCoreCounts(sd:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "0DA36C8E-F784-4851-B0C4-04EBBC0CAE23 - 981b570555c2a373"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.generateCoreCounts(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "260"
+                  endingLineNumber = "260"
+                  offsetFromSymbolStart = "32160">
+               </Location>
+               <Location
+                  uuid = "0DA36C8E-F784-4851-B0C4-04EBBC0CAE23 - 981b570555c2a373"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.generateCoreCounts(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "260"
+                  endingLineNumber = "260"
+                  offsetFromSymbolStart = "31072">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "502411D0-08F5-406C-BB5E-0C2435A75A1D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/static.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "289"
+            endingLineNumber = "289"
+            landmarkName = "generateCoreCounts(sd:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BCE2AFBC-2399-425C-8A14-863EB6FAA217"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/static.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
+            landmarkName = "generateCoreCounts(sd:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "BCE2AFBC-2399-425C-8A14-863EB6FAA217 - 981b570555c2db1c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.generateCoreCounts(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "201"
+                  endingLineNumber = "201"
+                  offsetFromSymbolStart = "25464">
+               </Location>
+               <Location
+                  uuid = "BCE2AFBC-2399-425C-8A14-863EB6FAA217 - 981b570555c2db1c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.generateCoreCounts(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "201"
+                  endingLineNumber = "201"
+                  offsetFromSymbolStart = "24344">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D17D8594-D6B1-458E-B1A2-0126278A91FA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/static.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "199"
+            endingLineNumber = "199"
+            landmarkName = "generateCoreCounts(sd:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "D17D8594-D6B1-458E-B1A2-0126278A91FA - 981b570555c2db3f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.generateCoreCounts(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "200"
+                  endingLineNumber = "200"
+                  offsetFromSymbolStart = "24276">
+               </Location>
+               <Location
+                  uuid = "D17D8594-D6B1-458E-B1A2-0126278A91FA - 981b570555c2db3f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.generateCoreCounts(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "200"
+                  endingLineNumber = "200"
+                  offsetFromSymbolStart = "24304">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BAA68F95-AE5A-4102-B05C-0EDE87551B0A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/static.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
+            landmarkName = "generateCoreCounts(sd:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0CD6DC86-B5F7-48A8-9126-62B7F8DBA6DD"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/static.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "298"
+            endingLineNumber = "298"
+            landmarkName = "getOSCode(sd:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "0CD6DC86-B5F7-48A8-9126-62B7F8DBA6DD - e03001eab7ab7f9c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.getOSCode(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "346"
+                  endingLineNumber = "346"
+                  offsetFromSymbolStart = "968">
+               </Location>
+               <Location
+                  uuid = "0CD6DC86-B5F7-48A8-9126-62B7F8DBA6DD - e03001eab7ab7f9c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.getOSCode(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "346"
+                  endingLineNumber = "346"
+                  offsetFromSymbolStart = "480">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "720AE974-E6FD-4501-ACB2-273D88FA5FF2"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/static.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "296"
+            endingLineNumber = "296"
+            landmarkName = "getOSCode(sd:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "720AE974-E6FD-4501-ACB2-273D88FA5FF2 - e03001eab7ab7f5e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.getOSCode(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "344"
+                  endingLineNumber = "344"
+                  offsetFromSymbolStart = "128">
+               </Location>
+               <Location
+                  uuid = "720AE974-E6FD-4501-ACB2-273D88FA5FF2 - e03001eab7ab7f5e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.getOSCode(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "344"
+                  endingLineNumber = "344"
+                  offsetFromSymbolStart = "344">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6DF57805-5B6A-40B6-9805-B93A5A276C78"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/static.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "297"
+            endingLineNumber = "297"
+            landmarkName = "getOSCode(sd:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "6DF57805-5B6A-40B6-9805-B93A5A276C78 - e03001eab7ab7fbd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.getOSCode(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "345"
+                  endingLineNumber = "345"
+                  offsetFromSymbolStart = "456">
+               </Location>
+               <Location
+                  uuid = "6DF57805-5B6A-40B6-9805-B93A5A276C78 - e03001eab7ab7fbd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in socpowerbuddy_swift.getOSCode(sd: inout socpowerbuddy_swift.static_data) -&gt; ()"
+                  moduleName = "socpowerbuddy_swift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/eomsehwan/XcodeProjects/socpowerbuddy_swift/socpowerbuddy_swift/static.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "345"
+                  endingLineNumber = "345"
+                  offsetFromSymbolStart = "368">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B8C9BACA-61A4-4942-99D2-26C9BA5EB45A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/sampler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
+            landmarkName = "sample(iorep:sd:vd:cmd:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B6D5C201-DD00-425D-AD9B-20D8912E13AA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "socpowerbuddy_swift/sampler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "152"
+            endingLineNumber = "152"
+            landmarkName = "sample(iorep:sd:vd:cmd:)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
