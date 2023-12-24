@@ -90,7 +90,7 @@ func sample(iorep: iorep_data,
                     if ii <= sd.cluster_core_counts.count-1 {
                         for iii in 0..<Int(sd.cluster_core_counts[ii]) {
                             autoreleasepool {
-                                var key: String? = String(format: "%@%d", sd.core_freq_channels[ii], iii)
+                                var key: String? = String(format: "%@%d0", sd.core_freq_channels[ii], iii)
                                 if chann_name == key! {
                                     if idx_name!.contains(ptype_state) || idx_name!.contains(vtype_state) {
                                         var tmp_sum: UInt64? = tmp_vd!.core_sums[ii][iii] + residency

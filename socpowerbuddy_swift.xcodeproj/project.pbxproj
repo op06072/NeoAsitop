@@ -26,6 +26,7 @@
 		3A8A035528E3F0800027B16E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A035428E3F0800027B16E /* main.swift */; };
 		3A8A035A28E3F6EE0027B16E /* libIOReport.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF36E0B28D21A4C00DA3EB3 /* libIOReport.tbd */; };
 		3A9A723328D15F5C0021E6F1 /* static.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A723228D15F5C0021E6F1 /* static.swift */; };
+		3AC4FF342ACEBA9100880617 /* render.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3DA87D28DC91C000BFEFAC /* render.swift */; };
 		3AC974B5298184EF00DA67A8 /* readers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC974B4298184EF00DA67A8 /* readers.m */; };
 		3AC9F1EA28F02E7B008C5D5C /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9F1E928F02E6F008C5D5C /* libncurses.tbd */; };
 		3AECE96B297AEB4000D45A12 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 3AECE96A297AEB4000D45A12 /* Alamofire */; };
@@ -261,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A8A035528E3F0800027B16E /* main.swift in Sources */,
+				3AC4FF342ACEBA9100880617 /* render.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
