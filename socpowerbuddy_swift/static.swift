@@ -6,6 +6,151 @@
 //
 
 import Foundation
+import ArgumentParser
+
+class File {
+    init? (_ path: String) {
+        errno = 0
+        file = fopen(path, "r")
+        if file == nil {
+            perror(nil)
+            return nil
+        }
+    }
+    
+    deinit {
+        fclose(file)
+    }
+
+    func testIndex(line: String) -> Bool {
+        guard line.lastIndex(of: "\r") == nil else {
+            return false
+        }
+        guard line.lastIndex(of: "\n") == nil else {
+            return false
+        }
+        guard line.lastIndex(of: "\r\n") == nil else {
+            return false
+        }
+        return true
+    }
+
+    func getLine() -> String? {
+        var line = ""
+        repeat {
+            var buf = [CChar](repeating: 0, count: 1024)
+            errno = 0
+            if fgets(&buf, Int32(buf.count), file) == nil {
+                if feof(file) != 0 {
+                    return nil
+                } else {
+                    perror(nil)
+                    return nil
+                }
+            }
+            line += String(cString: buf)
+        } while testIndex(line: line)
+        return line
+    }
+    private var file: UnsafeMutablePointer<FILE>? = nil
+}
+
+public func process(path: String, arguments: [String]) -> String? {
+    let task = Process()
+    task.launchPath = path
+    task.arguments = arguments
+    
+    let outputPipe = Pipe()
+    defer {
+        outputPipe.fileHandleForReading.closeFile()
+    }
+    task.standardOutput = outputPipe
+    
+    do {
+        try task.run()
+    } catch let error {
+        print("Failed to run SystemProfiler")
+        print("system_profiler \(arguments[0]): \(error.localizedDescription)")
+        return nil
+    }
+    
+    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+    let output = String(decoding: outputData, as: UTF8.self)
+    
+    if output.isEmpty {
+        return nil
+    }
+    
+    return output
+}
+
+func staticInit(sd: inout static_data) {
+    let procInfo = ProcessInfo()
+    let systemVersion = procInfo.operatingSystemVersion
+    sd.os_ver = "macOS \(systemVersion.majorVersion).\(systemVersion.minorVersion)"
+
+    generateDvfmTable(sd: &sd)
+    //print("dvfm table gen finish")
+    generateProcessorName(sd: &sd)
+    //print("process name gen finish")
+    getOSCode(sd: &sd)
+    
+    let tmp = sd.extra[0].lowercased()
+    if tmp.contains("virtual") {
+        print("You can't use this tool on apple virtual machine.")
+        exit(2)
+    } else if tmp.contains("pro") || tmp.contains("max") {
+        sd.complex_pwr_channels = ["EACC_CPU", "PACC0_CPU", "PACC1_CPU", "GPU0", "ANE0", "DRAM0"]
+        sd.core_pwr_channels = ["EACC_CPU", "PACC0_CPU", "PACC1_CPU"]
+        
+        sd.complex_freq_channels = ["ECPU", "PCPU", "PCPU1", "GPUPH"]
+        sd.core_freq_channels = ["ECPU0", "PCPU0", "PCPU1"]
+        
+        let ttmp = sd.dvfm_states_holder
+        sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[1], ttmp[2]]
+    } else if tmp.contains("ultra") {
+        sd.complex_pwr_channels = ["DIE_0_EACC_CPU", "DIE_1_EACC_CPU", "DIE_0_PACC0_CPU", "DIE_0_PACC1_CPU", "DIE_1_PACC0_CPU", "DIE_1_PACC1_CPU", "GPU0_0", "ANE0_0", "ANE0_1", "DRAM0_0", "DRAM0_1"]
+        sd.core_pwr_channels = ["DIE_0_EACC_CPU", "DIE_1_EACC_CPU", "DIE_0_PACC0_CPU", "DIE_0_PACC1_CPU", "DIE_1_PACC0_CPU", "DIE_1_PACC1_CPU"]
+        
+        sd.complex_freq_channels = ["DIE_0_ECPU", "DIE_1_ECPU", "DIE_0_PCPU", "DIE_0_PCPU1", "DIE_1_PCPU", "DIE_1_PCPU1", "GPUPH"]
+        sd.core_freq_channels = ["DIE_0_ECPU_CPU", "DIE_1_ECPU_CPU", "DIE_0_PCPU_CPU", "DIE_0_PCPU1_CPU", "DIE_1_PCPU_CPU", "DIE_1_PCPU1_CPU"]
+        
+        let ttmp = sd.dvfm_states_holder
+        sd.dvfm_states = [ttmp[0], ttmp[0], ttmp[1], ttmp[1], ttmp[1], ttmp[1], ttmp[2]]
+    } else {
+        sd.complex_pwr_channels = ["ECPU", "PCPU", "GPU", "ANE", "DRAM"]
+        sd.core_pwr_channels = ["ECPU", "PCPU"]
+        
+        sd.complex_freq_channels = ["ECPU", "PCPU", "GPUPH"]
+        sd.core_freq_channels = ["ECPU", "PCPU"]
+        
+        let ttmp = sd.dvfm_states_holder
+        sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[2]]
+    }
+    //print("channel name table gen finish")
+    generateCoreCounts(sd: &sd)
+    //print("core counting finish")
+    generateSiliconsIds(sd: &sd)
+    //print("id gen finish")
+    generateMicroArchs(sd: &sd)
+    //print("arch get finish")
+
+    if sd.extra[0].lowercased().contains("apple") {
+        var size = 0
+        let getarch = "sysctl.proc_translated"
+        sysctlbyname(getarch, nil, &size, nil, 0)
+        var mode = 0
+        sysctlbyname(getarch, &mode, &size, nil, 0)
+        if mode == 0 {
+            sd.extra.append("Apple")
+        } else if mode == 1 {
+            sd.extra.append("Rosetta 2")
+        }
+    }
+
+    generateSocMax(sd: &sd)
+    //print("soc max gen finish")
+}
 
 func generateDvfmTable(sd: inout static_data) {
     autoreleasepool {
@@ -509,5 +654,38 @@ func generateSocMax(sd: inout static_data) {
         ane_pwr   = nil
         ane_bw    = nil
         ane_ratio = nil
+    }
+}
+
+func generateFanLimit(sd: inout static_data, sense: [any Sensor_p]) {
+    autoreleasepool {
+        var sensecnt: Int? = sense.count
+        for idx in 0..<sensecnt! {
+            var sns: (any Sensor_p)? = sense[idx]
+            var snsname: String? = sns!.name
+            var snstype: SensorType? = sns!.type
+            if snstype == SensorType.fan {
+                if snsname != "Fastest Fan" {
+                    var tmp = sns as! Fan?
+                    var tmpmin: Double? = tmp!.minSpeed
+                    var tmpmax: Double? = tmp!.maxSpeed
+                    tmp = nil
+                    if sd.fan_mode == 2 {
+                        if snsname == "Left fan" {
+                            sd.fan_limit[0][0] = tmpmin!
+                            sd.fan_limit[0][1] = tmpmax!
+                        } else {
+                            sd.fan_limit[1][0] = tmpmin!
+                            sd.fan_limit[1][1] = tmpmax!
+                        }
+                    } else if sd.fan_mode == 1 {
+                        sd.fan_limit[0][0] = tmpmin!
+                        sd.fan_limit[0][1] = tmpmax!
+                    }
+                    tmpmin = nil
+                    tmpmax = nil
+                }
+            }
+        }
     }
 }

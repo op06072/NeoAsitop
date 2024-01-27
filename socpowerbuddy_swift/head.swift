@@ -7,6 +7,11 @@
 
 import Foundation
 
+struct report_data {
+    var iorep: iorep_data? = nil
+    var dump_path: String? = nil
+}
+
 struct iorep_data {
     /* data for Energy Model*/
     var pwrsub: IOReportSubscriptionRef? = nil
@@ -31,7 +36,7 @@ struct iorep_data {
     var bwchn: Unmanaged<CFMutableDictionary>? = nil
 }
 
-struct static_data {
+struct static_data: Codable {
     var gpu_core_count = 0
     var gpu_arch_name: String = ""
     var dvfm_states_holder: Array<Array<Double>> = []
@@ -119,4 +124,14 @@ struct peak_pwr {
     var cpu: Float = 0
     var gpu: Float = 0
     var ram: Float = 0
+}
+
+struct dump_data {
+    var grp: String = ""
+    var subgrp: String = ""
+    var chn: String = ""
+    var value: CLong? = nil
+    var state: String? = nil
+    var res: CLongLong? = nil
+    var arr: CUnsignedLongLong? = nil
 }

@@ -25,26 +25,37 @@ extension kIORep {
     }
 }
 
-var cpu = ""
-var size = 0
-let getcpu = "machdep.cpu.brand_string"
-sysctlbyname(getcpu, nil, &size, nil, 0)
-var cpubrand = [CChar](repeating: 0,  count: size)
-sysctlbyname(getcpu, &cpubrand, &size, nil, 0)
+// dump static_data
+var sd = static_data()
+
+staticInit(sd: &sd)
+
+// sensor reader
+let sens = SensorsReader()
+sens.read()
+if sd.fan_exist {
+    generateFanLimit(sd: &sd, sense: sens.value!.sensors)
+}
+
+print("static data")
+
+let encoder = JSONEncoder()
+encoder.outputFormatting = .prettyPrinted
+
+do {
+    let data = try encoder.encode(sd)  //convert user to json data here
+    print(String(data: data, encoding: .utf8)!)   //print to console
+} catch {
+    print("fail")
+}
+
+// dump ioreport
+var cpu = sd.extra[0]
 var clusters = 2
 
-if strcmp(cpubrand, "") != 0 {
-    cpubrand.withUnsafeBufferPointer {
-        ptr in cpu += String(cString: ptr.baseAddress!)
-    }
-}
 cpu = cpu.lowercased()
 
-if cpu.contains("pro") || cpu.contains("max") {
-    clusters = 3
-} else if cpu.contains("ultra") {
-    clusters = 6
-}
+clusters = sd.cluster_core_counts.count
 
 var subchn: Unmanaged<CFMutableDictionary>? = nil
 var chn = IOReportCopyAllChannels(0, 0)
@@ -64,6 +75,7 @@ samples_a?.release()
 samples_b?.release()
 
 let names = ["CPU Stats", "GPU Stats", "AMC Stats", "CLPC Stats", "PMP", "Energy Model"]
+print("ioreport data")
 IOReportIterate(samp_delta?.takeUnretainedValue(), { sample in
     autoreleasepool {
         var group = IOReportChannelGetGroup(sample)

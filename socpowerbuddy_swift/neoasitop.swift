@@ -15,7 +15,7 @@ var sd = static_data()
 var cmd = cmd_data()
 let sens = SensorsReader()
 
-let cur_ver = "v2.10"
+let cur_ver = "v2.11"
 var newVersion = false
 var beta = false
 
@@ -26,6 +26,9 @@ struct Neoasitop: ParsableCommand {
     @Flag(name: .long, help: "Show detail information of this system like OS codename, CPU architecture name, etc.")
     var verbose = false
     
+    @Flag(name: .shortAndLong, help: "Test the features with dumped file from iorepdump.")
+    var test = false
+    
     @Option(name: .shortAndLong, help: "Display interval and sampling interval for info gathering (seconds) [0.01~]")
     var interval: Double = 1
     
@@ -35,7 +38,10 @@ struct Neoasitop: ParsableCommand {
     @Option(name: .long, help: "Interval for averaged values (seconds)")
     var avg: Double = 30
     
-    func run() throws {
+    @Option(name: .shortAndLong, help: "Path of the dumped file.")
+    var dump = ""
+    
+    mutating func run() throws {
         if version {
             print(cur_ver)
         } else {
@@ -63,72 +69,7 @@ struct Neoasitop: ParsableCommand {
         
         sd.verbosed = verbose
 
-        let procInfo = ProcessInfo()
-        let systemVersion = procInfo.operatingSystemVersion
-        sd.os_ver = "macOS \(systemVersion.majorVersion).\(systemVersion.minorVersion)"
-
-        generateDvfmTable(sd: &sd)
-        //print("dvfm table gen finish")
-        generateProcessorName(sd: &sd)
-        //print("process name gen finish")
-        getOSCode(sd: &sd)
-
-        let tmp = sd.extra[0].lowercased()
-        //tmp = "m1 ultra"
-        if tmp.contains("virtual") {
-            print("You can't use this tool on apple virtual machine.")
-            Neoasitop.exit(withError: ExitCode(2))
-        } else if tmp.contains("pro") || tmp.contains("max") {
-            sd.complex_pwr_channels = ["EACC_CPU", "PACC0_CPU", "PACC1_CPU", "GPU0", "ANE0", "DRAM0"]
-            sd.core_pwr_channels = ["EACC_CPU", "PACC0_CPU", "PACC1_CPU"]
-            
-            sd.complex_freq_channels = ["ECPU", "PCPU", "PCPU1", "GPUPH"]
-            sd.core_freq_channels = ["ECPU0", "PCPU0", "PCPU1"]
-            
-            let ttmp = sd.dvfm_states_holder
-            sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[1], ttmp[2]]
-        } else if tmp.contains("ultra") {
-            sd.complex_pwr_channels = ["DIE_0_EACC_CPU", "DIE_1_EACC_CPU", "DIE_0_PACC0_CPU", "DIE_0_PACC1_CPU", "DIE_1_PACC0_CPU", "DIE_1_PACC1_CPU", "GPU0_0", "ANE0_0", "ANE0_1", "DRAM0_0", "DRAM0_1"]
-            sd.core_pwr_channels = ["DIE_0_EACC_CPU", "DIE_1_EACC_CPU", "DIE_0_PACC0_CPU", "DIE_0_PACC1_CPU", "DIE_1_PACC0_CPU", "DIE_1_PACC1_CPU"]
-            
-            sd.complex_freq_channels = ["DIE_0_ECPU", "DIE_1_ECPU", "DIE_0_PCPU", "DIE_0_PCPU1", "DIE_1_PCPU", "DIE_1_PCPU1", "GPUPH"]
-            sd.core_freq_channels = ["DIE_0_ECPU_CPU", "DIE_1_ECPU_CPU", "DIE_0_PCPU_CPU", "DIE_0_PCPU1_CPU", "DIE_1_PCPU_CPU", "DIE_1_PCPU1_CPU"]
-            
-            let ttmp = sd.dvfm_states_holder
-            sd.dvfm_states = [ttmp[0], ttmp[0], ttmp[1], ttmp[1], ttmp[1], ttmp[1], ttmp[2]]
-        } else {
-            sd.complex_pwr_channels = ["ECPU", "PCPU", "GPU", "ANE", "DRAM"]
-            sd.core_pwr_channels = ["ECPU", "PCPU"]
-            
-            sd.complex_freq_channels = ["ECPU", "PCPU", "GPUPH"]
-            sd.core_freq_channels = ["ECPU", "PCPU"]
-            
-            let ttmp = sd.dvfm_states_holder
-            sd.dvfm_states = [ttmp[0], ttmp[1], ttmp[2]]
-        }
-        //print("channel name table gen finish")
-        generateCoreCounts(sd: &sd)
-        //print("core counting finish")
-        generateSiliconsIds(sd: &sd)
-        //print("id gen finish")
-        generateMicroArchs(sd: &sd)
-        //print("arch get finish")
-
-        if sd.extra[0].lowercased().contains("apple") {
-            var size = 0
-            let getarch = "sysctl.proc_translated"
-            sysctlbyname(getarch, nil, &size, nil, 0)
-            var mode = 0
-            sysctlbyname(getarch, &mode, &size, nil, 0)
-            if mode == 0 {
-                sd.extra.append("Apple")
-            } else if mode == 1 {
-                sd.extra.append("Rosetta 2")
-            }
-        }
-
-        generateSocMax(sd: &sd)
-        //print("soc max gen finish")
+        staticInit(sd: &sd)
 
         iorep.cpusubchn  = nil
         iorep.pwrsubchn  = nil
@@ -193,18 +134,18 @@ struct Neoasitop: ParsableCommand {
         
         var pwr_max: peak_pwr = peak_pwr()
         var pwr_avg: avg_pwr = avg_pwr()
+        
+        sens.read()
+        if fan_set {
+            generateFanLimit(sd: &sd, sense: sens.value!.sensors)
+        }
 
         while true {
             autoreleasepool {
                 var rd: render_data? = render_data()
                 var vd: variating_data? = vd_init(sd: sd)
                 sens.read()
-                if fan_set {
-                    getSensorVal(vd: &vd!, set_mode: fan_set, sd: &sd, sense: sens.value!.sensors) // 센서값
-                    fan_set = false
-                } else {
-                    getSensorVal(vd: &vd!, sd: &sd, sense: sens.value!.sensors) // 센서값
-                }
+                getSensorVal(vd: &vd!, sd: &sd, sense: sens.value!.sensors) // sensor value
                 getMemUsage(vd: &vd!)
                 sd.ram_capacity = "\(Int(vd!.mem_stat.total[0]))\(ByteUnit(vd!.mem_stat.total[1]))"
                 monInfo = dispInfo(sd: sd)
@@ -221,7 +162,10 @@ struct Neoasitop: ParsableCommand {
                 monInfo.gpu_pwr_avg = pwr_avg.gpu
                 monInfo.ram_pwr_avg = pwr_avg.ram
                 
-                sample(iorep: iorep, sd: sd, vd: &vd!, cmd: cmd) // 데이터 샘플링 (애플 비공개 함수 이용)
+                
+                let repData = test ? report_data(dump_path: dump) : report_data(iorep: iorep)
+                
+                report(repData: repData, vd: &vd!, cmd: cmd, test: test) // 데이터 샘플링 (애플 비공개 함수 이용)
                 //print("sampling finish")
                 format(sd: &sd, vd: &vd!) // 포매팅
                 //print("formatting finish")
@@ -249,26 +193,7 @@ struct Neoasitop: ParsableCommand {
             // Wait for user input
             // Exit on 'q'
             case Int32(UnicodeScalar("q").value):
-                endwin()
-                if scr.items.count != 0 {
-                    if scr.items[0].items.count != 0 {
-                        if sd.fan_exist {
-                            del_tbox(tbx: &scr.items[0].items[2].items[0])
-                        }
-                        for i in (0...2).reversed() {
-                            del_tbox(tbx: &scr.items[0].items[i])
-                        }
-                    }
-                    if scr.items[1].items.count != 0 {
-                        for i in (0...1).reversed() {
-                            del_tbox(tbx: &scr.items[1].items[i])
-                        }
-                    }
-                    for i in 0...2 {
-                        del_tbox(tbx: &scr.items[i])
-                    }
-                }
-                del_tbox(tbx: &scr)
+                fin(scr: &scr)
                 print("\nGood Bye\(beta ? " Beta User!" : "")")
                 return
             default:
@@ -282,8 +207,36 @@ struct Neoasitop: ParsableCommand {
                 wclear(scr.t.win)
                 //print("render finish")
             }
+            if test {
+                fin(scr: &scr)
+                print("\nGood Bye Test User!")
+                return
+            }
             Thread.sleep(forTimeInterval: interval-(cmd.interval*1e-3))
         }
+    }
+    
+    func fin(scr: inout tbox) {
+        endwin()
+        if scr.items.count != 0 {
+            if scr.items[0].items.count != 0 {
+                if sd.fan_exist {
+                    del_tbox(tbx: &scr.items[0].items[2].items[0])
+                }
+                for i in (0...2).reversed() {
+                    del_tbox(tbx: &scr.items[0].items[i])
+                }
+            }
+            if scr.items[1].items.count != 0 {
+                for i in (0...1).reversed() {
+                    del_tbox(tbx: &scr.items[1].items[i])
+                }
+            }
+            for i in 0...2 {
+                del_tbox(tbx: &scr.items[i])
+            }
+        }
+        del_tbox(tbx: &scr)
     }
 }
 
