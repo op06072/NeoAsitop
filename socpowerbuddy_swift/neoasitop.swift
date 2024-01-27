@@ -45,6 +45,10 @@ struct Neoasitop: ParsableCommand {
         if version {
             print(cur_ver)
         } else {
+            if test && dump == "" {
+                print("Please give the dump file path with dump option for using test option.")
+                Neoasitop.exit(withError: ExitCode(EX_USAGE))
+            }
             launch()
             if newVersion {
                 print("New version is released! Please update the NeoAsitop.")
