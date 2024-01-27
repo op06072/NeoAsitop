@@ -179,32 +179,3 @@ public func Temperature(_ value: Double, defaultUnit: UnitTemperature = UnitTemp
     
     return formatter.string(from: measurement)
 }
-
-public func process(path: String, arguments: [String]) -> String? {
-    let task = Process()
-    task.launchPath = path
-    task.arguments = arguments
-    
-    let outputPipe = Pipe()
-    defer {
-        outputPipe.fileHandleForReading.closeFile()
-    }
-    task.standardOutput = outputPipe
-    
-    do {
-        try task.run()
-    } catch let error {
-        print("Failed to run SystemProfiler")
-        print("system_profiler \(arguments[0]): \(error.localizedDescription)")
-        return nil
-    }
-    
-    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-    let output = String(decoding: outputData, as: UTF8.self)
-    
-    if output.isEmpty {
-        return nil
-    }
-    
-    return output
-}
