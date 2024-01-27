@@ -19,45 +19,66 @@
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
+		<key>Spectre (Playground) 1.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>Spectre (Playground) 2.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>Spectre (Playground).xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 		<key>Test area (Playground) 1.xcscheme</key>
 		<dict>
 			<key>isShown</key>
-			<false />
+			<false/>
 			<key>orderHint</key>
 			<integer>4</integer>
 		</dict>
 		<key>Test area (Playground) 2.xcscheme</key>
 		<dict>
 			<key>isShown</key>
-			<false />
+			<false/>
 			<key>orderHint</key>
 			<integer>6</integer>
 		</dict>
 		<key>Test area (Playground) 3.xcscheme</key>
 		<dict>
 			<key>isShown</key>
-			<false />
+			<false/>
 			<key>orderHint</key>
 			<integer>7</integer>
 		</dict>
 		<key>Test area (Playground) 4.xcscheme</key>
 		<dict>
 			<key>isShown</key>
-			<false />
+			<false/>
 			<key>orderHint</key>
 			<integer>8</integer>
 		</dict>
 		<key>Test area (Playground) 5.xcscheme</key>
 		<dict>
 			<key>isShown</key>
-			<false />
+			<false/>
 			<key>orderHint</key>
 			<integer>9</integer>
 		</dict>
 		<key>Test area (Playground).xcscheme</key>
 		<dict>
 			<key>isShown</key>
-			<false />
+			<false/>
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
@@ -65,6 +86,14 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>3A8A035128E3F0800027B16E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

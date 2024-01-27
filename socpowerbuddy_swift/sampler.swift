@@ -126,21 +126,21 @@ func sample(iorep: iorep_data,
         var group       = IOReportChannelGetGroup(sample)
         var value: Int? = IOReportSimpleGetIntegerValue(sample, 0)
         
-        for ii in 0..<sd.complex_pwr_channels.count {
+        for i in 0..<sd.complex_pwr_channels.count {
             if group == "Energy Model" {
-                if chann_name == sd.complex_pwr_channels[ii] {
-                    var tmp: Float? = Float(value!)/Float(cmd.interval/1e+3)
-                    tmp_vd!.cluster_pwrs[ii] = tmp!
+                if chann_name == sd.complex_pwr_channels[i] {
+                    var tmp: Float? = Float(value!)/Float(cmd.interval/1e3)
+                    tmp_vd!.cluster_pwrs[i] = tmp!
                     tmp = nil
                 }
                     
-                if ii <= sd.cluster_core_counts.count-1 {
-                    for iii in 0..<Int(sd.cluster_core_counts[ii]) {
+                if i <= sd.cluster_core_counts.count-1 {
+                    for ii in 0..<Int(sd.cluster_core_counts[i]) {
                         autoreleasepool {
-                            var val: String? = String(format: "%@%d", sd.core_pwr_channels[ii], iii)
+                            var val: String? = String(format: "%@%d", sd.core_pwr_channels[i], ii)
                             if chann_name == val! {
-                                var tmp: Float? = Float(value!)/Float(cmd.interval/1e+3)
-                                tmp_vd!.core_pwrs[ii][iii] = tmp!
+                                var tmp: Float? = Float(value!)/Float(cmd.interval/1e3)
+                                tmp_vd!.core_pwrs[i][ii] = tmp!
                                 tmp = nil
                             }
                             val = nil
@@ -151,7 +151,7 @@ func sample(iorep: iorep_data,
             
             if sd.extra[0].lowercased() == "apple m1" || sd.extra[0].lowercased() == "apple m2" {
                 if group?.uppercased() == "PMP" {
-                    var tmp_flt: Float? = Float(value!)/Float(cmd.interval/1e+3)
+                    var tmp_flt: Float? = Float(value!)/Float(cmd.interval/1e3)
                     if chann_name?.uppercased() == "GPU" {
                         tmp_vd!.cluster_pwrs[2] = tmp_flt!
                     } else if chann_name?.uppercased() == "ANE" {
@@ -205,7 +205,7 @@ func sample(iorep: iorep_data,
         var chann_name: String? = IOReportChannelGetChannelName(sample).lowercased()
         
         if chann_name!.contains("dcs") && (chann_name!.contains("rd") || chann_name!.contains("wr")) {
-            var raw: Double? = (Double(IOReportSimpleGetIntegerValue(sample, 0))/Double(cmd.interval/1e+3))/1e9
+            var raw: Double? = (Double(IOReportSimpleGetIntegerValue(sample, 0))/Double(cmd.interval/1e3))/1e9
             
             if chann_name! == last_name!+" wr" {
                 tmp_vd!.bandwidth_cnt[last_name!]!.append(raw!)
@@ -271,7 +271,7 @@ func AppleSiliconSensors(_ page: Int32, _ usage: Int32, _ type: Int32) -> NSDict
     }
 }
 
-func getSensorVal(vd: inout variating_data, set_mode: Bool = false, sd: inout static_data, sense: [any Sensor_p]) {
+func getSensorVal(vd: inout variating_data, sd: inout static_data, sense: [any Sensor_p]) {
     autoreleasepool {
         // var sens: Sensors? = Sensors()
         // var sen: SensorsReader? = sens!.sensorsReader
@@ -288,28 +288,6 @@ func getSensorVal(vd: inout variating_data, set_mode: Bool = false, sd: inout st
                 vd.fan_speed[snsname!] = snsvalue!
                 // print("Sensor name: \(snsname)")
                 // print("Value: \(snsvalue)")
-                if snsname != "Fastest Fan" {
-                    var tmp = sns as! Fan?
-                    var tmpmin: Double? = tmp!.minSpeed
-                    var tmpmax: Double? = tmp!.maxSpeed
-                    tmp = nil
-                    if set_mode {
-                        if sd.fan_mode == 2{
-                            if snsname == "Left fan" {
-                                sd.fan_limit[0][0] = tmpmin!
-                                sd.fan_limit[0][1] = tmpmax!
-                            } else {
-                                sd.fan_limit[1][0] = tmpmin!
-                                sd.fan_limit[1][1] = tmpmax!
-                            }
-                        } else if sd.fan_mode == 1 {
-                            sd.fan_limit[0][0] = tmpmin!
-                            sd.fan_limit[0][1] = tmpmax!
-                        }
-                    }
-                    tmpmin = nil
-                    tmpmax = nil
-                }
             } else if snstype == SensorType.power {
                 vd.soc_power[snsname!] = snsvalue!
             } else if snstype == SensorType.energy {
