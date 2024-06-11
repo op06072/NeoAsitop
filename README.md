@@ -92,14 +92,17 @@ Some information is guesstimated and hardcoded as there doesn't seem to be a off
 **Note:** Tool usage is listed by `neoasitop --help`
 ```shell
 # advanced options
-USAGE: neoasitop [--version] [--interval <interval>] [--color <color>] [--avg <avg>]
+USAGE: neoasitop [--version] [--verbose] [--test] [--interval <interval>] [--color <color>] [--avg <avg>] [--dump <dump>]
 
 OPTIONS:
   -v, --version           Print version information
+  --verbose               Show detail information of this system like OS codename, CPU architecture name, etc.
+  -t, --test              Test the features with dumped file from iorepdump.
   -i, --interval <interval>
-                          Display interval and sampling interval for info gathering (seconds) (default: 1.0)
+                          Display interval and sampling interval for info gathering (seconds) [0.01~] (default: 1.0)
   -c, --color <color>     Choose display color (0~7) (default: 2)
   --avg <avg>             Interval for averaged values (seconds) (default: 30.0)
+  -d, --dump <dump>       Path of the dumped file.
   -h, --help              Show help information.
 ```
 ### color
