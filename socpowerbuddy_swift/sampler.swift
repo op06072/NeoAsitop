@@ -90,8 +90,8 @@ func sample(iorep: iorep_data,
                     if ii <= sd.cluster_core_counts.count-1 {
                         for iii in 0..<Int(sd.cluster_core_counts[ii]) {
                             autoreleasepool {
-                                var key: String? = String(format: "%@%d0", sd.core_freq_channels[ii], iii)
-                                if chann_name == key! {
+                                var key: String? = String(format: "%@%d", sd.core_freq_channels[ii], iii)
+                                if chann_name!.starts(with: key!) {
                                     if idx_name!.contains(ptype_state) || idx_name!.contains(vtype_state) {
                                         var tmp_sum: UInt64? = tmp_vd!.core_sums[ii][iii] + residency
                                         var tmp_flt: Float? = Float(residency)
@@ -407,21 +407,32 @@ func format(sd: inout static_data, vd: inout variating_data) {
             }
         }
         
-        for i in ["pcpu", "jpg", "venc"] {
-            vd.bandwidth_cnt["\(i) dcs"] = [0, 0]
+        var dcs_prefix = ""
+        if !vd.bandwidth_cnt.keys.contains("ecpu dcs") {
+            dcs_prefix = "die0 "
+            vd.bandwidth_cnt["ecpu dcs"] = vd.bandwidth_cnt["die0 ecpu0 dcs"]
+            vd.bandwidth_cnt["gfx dcs"] = vd.bandwidth_cnt["die0 gfx dcs"]
+        }
+        for i in ["pcpu", "jpg", "jpeg", "venc", "prores"] {
+            var apnd = false
+            var new_dcs = [0.0, 0.0]
             for ii in 0...4 {
-                if vd.bandwidth_cnt.keys.contains("\(i)\(ii) dcs") {
+                if vd.bandwidth_cnt.keys.contains("\(dcs_prefix)\(i)\(ii) dcs") {
+                    apnd = true
                     for iii in 0...1 {
-                        vd.bandwidth_cnt[i+" dcs"]![iii] += vd.bandwidth_cnt["\(i)\(ii) dcs"]![iii]
+                        new_dcs[iii] += vd.bandwidth_cnt["\(dcs_prefix)\(i)\(ii) dcs"]![iii]
                     }
                 }
             }
+            if apnd {
+                vd.bandwidth_cnt["\(i) dcs"] = new_dcs
+            }
         }
         vd.bandwidth_cnt["media dcs"] = [0, 0]
-        for i in ["isp", "strm codec", "prores", "vdec", "venc", "jpg"] {
+        for i in ["isp", "strm codec", "prores", "vdec", "venc", "jpeg", "jpg"] {
             for ii in 0...1 {
-                if vd.bandwidth_cnt.keys.contains("\(i) dcs") {
-                    vd.bandwidth_cnt["media dcs"]![ii] += vd.bandwidth_cnt["\(i) dcs"]![ii]
+                if vd.bandwidth_cnt.keys.contains("\(dcs_prefix)\(i) dcs") {
+                    vd.bandwidth_cnt["media dcs"]![ii] += vd.bandwidth_cnt["\(dcs_prefix)\(i) dcs"]![ii]
                 }
             }
         }
@@ -636,6 +647,7 @@ func summary(sd: static_data, vd: variating_data, rd: inout render_data, rvd: in
             space = 0
             var tmp_val = 200.0
             var sum_num: Double = 0
+            
             for i in ["ecpu", "pcpu", "gfx", "media"] {
                 sum_num = 0
                 for j in 0...1 {

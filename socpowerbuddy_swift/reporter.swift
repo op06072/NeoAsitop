@@ -36,12 +36,26 @@ func dumpParser(dumpPath: String, vd: inout variating_data) {
             throw ExitCode(EX_IOERR)
         }
         sdParser(sdDump: dumpList[0], sd: &sd)
+        vd = vd_init(sd: sd)
+        dummySensor(vd: &vd)
         dumpLoader(dumpedData: dumpList[1], vd: &vd)
         // print(dumpList)
     } catch {
         print("Cannot read the static dump file!")
         Neoasitop.exit(withError: ExitCode(EX_IOERR))
     }
+}
+
+func dummySensor(vd: inout variating_data) {
+    if sd.fan_mode > 0 {
+        if sd.fan_mode == 2 {
+            vd.fan_speed["Left fan"] = 0
+            vd.fan_speed["Right fan"] = 0
+        } else if sd.fan_mode == 1 {
+            vd.fan_speed["Fan #0"] = 0
+        }
+    }
+    vd.soc_power["System Total"] = 0
 }
 
 func sdParser(sdDump: String, sd: inout static_data) {
@@ -144,11 +158,12 @@ func dumpSampleTest(dumpArr: [dump_data], vd: inout variating_data) {
                     if i <= sd.cluster_core_counts.count - 1 {
                         for ii in 0..<Int(sd.cluster_core_counts[i]) {
                             autoreleasepool {
-                                var key: String? = String(format: "%@%d0", sd.core_freq_channels[i], ii)
-                                if chann_name == key! {
+                                var key: String? = String(format: "%@%d", sd.core_freq_channels[i], ii)
+                                if chann_name!.starts(with: key!) {
                                     if idx_name!.contains(ptype_state) || idx_name!.contains(vtype_state) {
                                         var tmp_sum: UInt64? = tmp_vd!.core_sums[i][ii] + UInt64(residency)
                                         var tmp_flt: Float? = Float(residency)
+                                        // print(tmp_flt)
                                         tmp_vd!.core_sums[i][ii] = tmp_sum!
                                         tmp_vd!.core_residencies[i][ii].append(tmp_flt!)
                                         tmp_sum = nil
