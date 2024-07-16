@@ -118,7 +118,7 @@ OPTIONS:
 | 7 | white |  |
 
 ## Install using Homebrew
-1. If you dont have Hombrew, [install it](https://brew.sh/index_ko)!
+1. If you dont have Hombrew, [install it](https://brew.sh/)!
 2. Add my tap using `brew tap op06072/neoasitop`
 3. Install the tool with `brew install neoasitop`
 4. Run `neoasitop`!
