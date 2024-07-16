@@ -1,0 +1,14 @@
+{
+    "workspace": "${workspaceRoot}/socpowerbuddy_swift.xcodeproj/project.xcworkspace",
+    "scheme": "socpowerbuddy_swift",
+    "debugConfigurations": [
+        {
+            "name": "test",
+            "cwd": "${workspaceRoot}",
+            "program": "${buildPath}/socpowerbuddy_swift",
+            "args": [
+                
+            ]
+        }
+    ]
+}
