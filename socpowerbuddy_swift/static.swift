@@ -515,30 +515,58 @@ func siliconError(sd: inout static_data) {
             tmp = "T****"
         } else {
             let ttmp = sd.extra[0].lowercased()
-            if ttmp.contains("m1") {
-                if ttmp.contains("pro") {
-                    tmp = "T6000"
-                } else if ttmp.contains("max") {
-                    tmp = "T6001"
+            let socver = Int(
+                ttmp.getRegexArr(regex: "m[0-9]+")[0].getRegexArr(regex: "[0-9]+")[0]
+            )
+            var socnum = 6000
+            
+            switch socver {
+            case 1:
+                if ttmp.contains("max") {
+                    socnum += 1
                 } else if ttmp.contains("ultra") {
-                    tmp = "T6002"
-                } else {
-                    tmp = "T8103"
+                    socnum += 2
+                } else if !ttmp.contains("pro") {
+                    socnum = 8103
                 }
-            } else if ttmp.contains("m2") {
-                if ttmp.contains("pro") {
-                    tmp = "T6020"
-                } else if ttmp.contains("max") {
-                    tmp = "T6021"
+            case 2:
+                socnum += 20
+                if ttmp.contains("max") {
+                    socnum += 1
                 } else if ttmp.contains("ultra") {
-                    tmp = "T6022"
+                    socnum += 2
                 } else if ttmp.contains("extreme") {
-                    tmp = "T6023"
-                } else {
-                    tmp = "T8112"
+                    socnum += 3
+                } else if !ttmp.contains("pro") {
+                    socnum = 8112
                 }
-            } else {
-                tmp = "T****"
+            case 3:
+                socnum += 30
+                if ttmp.contains("max") {
+                    if sd.core_ep_counts.reduce(0, +) < 16 {
+                        socnum += 4
+                    } else {
+                        socnum += 1
+                    }
+                } else if !ttmp.contains("pro") {
+                    socnum = 8122
+                }
+            case 4:
+                socnum += 40
+                if ttmp.contains("max") {
+                    if sd.core_ep_counts.reduce(0, +) < 16 {
+                        socnum += 4
+                    } else {
+                        socnum += 1
+                    }
+                } else if !ttmp.contains("pro") {
+                    socnum = 8132
+                }
+            default:
+                socnum = 0
+            }
+            if socnum != 0 {
+                tmp = "T\(socnum)"
             }
         }
         sd.extra.append(tmp!)
@@ -587,17 +615,22 @@ func archError(sd: inout static_data) {
         tmp.append("Unknown")
         tmp.append("Unknown")
     } else {
-        let ttmp = tmp[0]
-        if ttmp.contains("M1") {
-            tmp.append("Icestorm")
-            tmp.append("Firestorm")
-        } else if ttmp.contains("M2") {
-            tmp.append("Blizzard")
-            tmp.append("Avalanche")
-        } else {
-            tmp.append("Unknown")
-            tmp.append("Unknown")
+        let socnum = Int(
+            tmp[0].lowercased().getRegexArr(regex: "M[0-9]+")[0].getRegexArr(regex: "[0-9]+")[0]
+        )
+        var archs: [String] = []
+        
+        switch socnum {
+        case 1:
+            archs = ["Icestorm", "Firestorm"]
+        case 2:
+            archs = ["Blizzard", "Avalanche"]
+        case 3, 4:
+            archs = ["Sawtooth", "Everest"]
+        default:
+            archs = ["Unknown", "Unknown"]
         }
+        tmp += archs
     }
     
     sd.extra = tmp
@@ -609,7 +642,11 @@ func generateSocMax(sd: inout static_data) {
         var ane_bw: Float?    = 7
         var ane_pwr: Float?   = 8
         var ane_ratio: Float? = 1
-        if tmp.contains("m1") {
+        let socnum = Int(
+            tmp.getRegexArr(regex: "M[0-9]+")[0].getRegexArr(regex: "[0-9]+")[0]
+        )
+        switch socnum {
+        case 1:
             if tmp.contains("pro") {
                 sd.max_pwr = [30, 30]
                 sd.max_bw  = [200, 200]
@@ -624,26 +661,49 @@ func generateSocMax(sd: inout static_data) {
                 sd.max_pwr = [20, 20]
                 sd.max_bw  = [70, 70]
             }
-        } else if tmp.contains("m2") {
+        case 2:
             if tmp.contains("pro") {
-                sd.max_pwr = [40, 25]
+                sd.max_pwr = [30, 35]
                 sd.max_bw  = [200, 200]
             } else if tmp.contains("max") {
-                sd.max_pwr = [40, 50]
+                sd.max_pwr = [30, 70]
                 sd.max_bw  = [250, 400]
             } else if tmp.contains("ultra") { // hmm...
-                sd.max_pwr = [80, 100] // this is just my sweet dream
+                sd.max_pwr = [80, 140] // this is just my sweet dream
                 sd.max_bw  = [500, 800] // for next gen mac studio and
                 ane_ratio  = 2
             } else if tmp.contains("extreme") { // wish of all of us
-                sd.max_pwr = [160, 200] // The apple silicon
+                sd.max_pwr = [160, 280] // The apple silicon
                 sd.max_bw  = [1000, 1600] // mac pro
                 ane_ratio  = 4
             } else {
-                sd.max_pwr = [25, 15]
+                sd.max_pwr = [20, 15]
                 sd.max_bw  = [100, 100]
             }
-        } else {
+        case 3:
+            if tmp.contains("pro") {
+                sd.max_pwr = [40, 40]
+                sd.max_bw  = [150, 150]
+            } else if tmp.contains("max") {
+                sd.max_pwr = [55, 80]
+                if sd.core_ep_counts.reduce(0, +) < 16 {
+                    sd.max_bw  = [200, 300]
+                } else {
+                    sd.max_bw  = [250, 400]
+                }
+            } else if tmp.contains("ultra") { // hmm...
+                sd.max_pwr = [110, 160] // this is just my sweet dream
+                sd.max_bw  = [500, 800] // for next gen mac studio and
+                ane_ratio  = 2
+            } else if tmp.contains("extreme") { // wish of all of us
+                sd.max_pwr = [220, 320] // The apple silicon
+                sd.max_bw  = [1000, 1600] // mac pro
+                ane_ratio  = 4
+            } else {
+                sd.max_pwr = [20, 20]
+                sd.max_bw  = [100, 100]
+            }
+        default:
             sd.max_pwr = [20, 20]
             sd.max_bw  = [70, 70]
         }
@@ -659,11 +719,11 @@ func generateSocMax(sd: inout static_data) {
 
 func generateFanLimit(sd: inout static_data, sense: [any Sensor_p]) {
     autoreleasepool {
-        var sensecnt: Int? = sense.count
+        let sensecnt: Int? = sense.count
         for idx in 0..<sensecnt! {
-            var sns: (any Sensor_p)? = sense[idx]
-            var snsname: String? = sns!.name
-            var snstype: SensorType? = sns!.type
+            let sns: (any Sensor_p)? = sense[idx]
+            let snsname: String? = sns!.name
+            let snstype: SensorType? = sns!.type
             if snstype == SensorType.fan {
                 if snsname != "Fastest Fan" {
                     var tmp = sns as! Fan?
