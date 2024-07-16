@@ -63,23 +63,18 @@ func vd_init(sd: static_data) -> variating_data {
     return vd
 }
 
-func del_tbox(tbx: inout tbox) {
-    for i in tbx.items {
-        delwin(i.t.win)
-    }
-    tbx.items.removeAll()
-}
-
-func dfs_kill(tbx: inout tbox) {
-    while true {
-        if tbx.items.count != 0 {
-            for var i in tbx.items {
-                dfs_kill(tbx: &i)
+extension String {
+    func getRegexArr(regex: String) -> [String] {
+        do {
+            let regex = try NSRegularExpression(pattern: "m[0-9]+")
+            let results = regex.matches(in: self, range: NSRange(self.startIndex..., in: self))
+            return results.map {
+                String(self[Range($0.range, in:self)!])
             }
-            tbx.items.removeAll()
-        } else {
-            delwin(tbx.t.win)
-            break
+        } catch _ {
+            // print("invalid regex: \(error.localizedDescription)")
+            return []
         }
     }
 }
+

@@ -122,7 +122,7 @@ struct Neoasitop: ParsableCommand {
         iorep.bwchn      = nil
 
         print("\n [2/2] Gathering System Info\n")
-        var fan_set = sd.fan_exist
+        let fan_set = sd.fan_exist
         gen_screen()
         //print("gen screen")
         var monInfo = dispInfo(sd: sd)
@@ -170,9 +170,9 @@ struct Neoasitop: ParsableCommand {
                 let repData = test ? report_data(dump_path: dump) : report_data(iorep: iorep)
                 
                 report(repData: repData, vd: &vd!, cmd: cmd, test: test) // 데이터 샘플링 (애플 비공개 함수 이용)
-                //print("sampling finish")
+                // print("sampling finish")
                 format(sd: &sd, vd: &vd!) // 포매팅
-                //print("formatting finish")
+                // print("formatting finish")
                 summary(sd: sd, vd: vd!, rd: &rd!, rvd: &monInfo, opt: avg)
                 
                 pwr_max.sys = monInfo.sys_pwr_max
@@ -191,14 +191,14 @@ struct Neoasitop: ParsableCommand {
             
             cpu_pwr = monInfo.cpu_pwr.val
             gpu_pwr = monInfo.gpu_pwr.val
-            //print("summarize finish")
+            // print("summarize finish")
             
             switch getch() {
             // Wait for user input
             // Exit on 'q'
             case Int32(UnicodeScalar("q").value):
                 fin(scr: &scr)
-                print("\nGood Bye\(beta ? " Beta User!" : "")")
+                print("\nGood Bye\(beta ? " Beta User!" : "!")")
                 return
             default:
                 autoreleasepool {

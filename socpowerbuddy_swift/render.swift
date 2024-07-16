@@ -651,3 +651,24 @@ func display(_ disp: dispInfo, _ gn: Bool = false, _ scrin: tbox? = nil, _ xy: [
     btm = screen_bottom(bottom)
     return refreshInfo(tbx: scrn, bottom: btm, xy: [cols, lines])
 }
+
+func del_tbox(tbx: inout tbox) {
+    for i in tbx.items {
+        delwin(i.t.win)
+    }
+    tbx.items.removeAll()
+}
+
+func dfs_kill(tbx: inout tbox) {
+    while true {
+        if tbx.items.count != 0 {
+            for var i in tbx.items {
+                dfs_kill(tbx: &i)
+            }
+            tbx.items.removeAll()
+        } else {
+            delwin(tbx.t.win)
+            break
+        }
+    }
+}
