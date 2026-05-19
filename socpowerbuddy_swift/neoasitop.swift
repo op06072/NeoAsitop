@@ -222,21 +222,23 @@ struct Neoasitop: ParsableCommand {
     
     func fin(scr: inout tbox) {
         endwin()
-        if scr.items.count != 0 {
-            if scr.items[0].items.count != 0 {
-                if sd.fan_exist {
+        if !scr.items.isEmpty {
+            if scr.items.indices.contains(0), !scr.items[0].items.isEmpty {
+                if sd.fan_exist,
+                   scr.items[0].items.indices.contains(2),
+                   scr.items[0].items[2].items.indices.contains(0) {
                     del_tbox(tbx: &scr.items[0].items[2].items[0])
                 }
-                for i in (0...2).reversed() {
+                for i in scr.items[0].items.indices.reversed() {
                     del_tbox(tbx: &scr.items[0].items[i])
                 }
             }
-            if scr.items[1].items.count != 0 {
-                for i in (0...1).reversed() {
+            if scr.items.indices.contains(1), !scr.items[1].items.isEmpty {
+                for i in scr.items[1].items.indices.reversed() {
                     del_tbox(tbx: &scr.items[1].items[i])
                 }
             }
-            for i in 0...2 {
+            for i in scr.items.indices {
                 del_tbox(tbx: &scr.items[i])
             }
         }
